@@ -54,6 +54,18 @@
 		icon: 'OrderedListOutlined',
 		component: './TodoList',
 	},
+	{
+		path: '/bai-1',
+		name: 'Bài 1',
+		component: './NumberGuessing',
+		icon: 'TrophyOutlined',
+	},
+	{
+		path: '/bai-2',
+		name: 'Bài 2',
+		component: './StudyTracker',
+		icon: 'BookOutlined',
+	},
 
 	// DANH MUC HE THONG
 	// {
