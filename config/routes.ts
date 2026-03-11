@@ -43,28 +43,49 @@
 		hideInMenu: true,
 	},
 	{
-		path: '/random-user',
-		name: 'RandomUser',
-		component: './RandomUser',
-		icon: 'ArrowsAltOutlined',
-	},
-	{
 		path: '/todo-list',
 		name: 'TodoList',
 		icon: 'OrderedListOutlined',
 		component: './TodoList',
 	},
 	{
-		path: '/bai-1',
-		name: 'Bài 1',
-		component: './NumberGuessing',
-		icon: 'TrophyOutlined',
+		path: '/oan-tu-ti',
+		name: 'Oẳn Tù Tì',
+		component: './RockPaperScissors',
+		icon: 'ScissorOutlined',
 	},
 	{
-		path: '/bai-2',
-		name: 'Bài 2',
-		component: './StudyTracker',
-		icon: 'BookOutlined',
+		path: '/ngan-hang-cau-hoi',
+		name: 'Ngân hàng câu hỏi',
+		icon: 'DatabaseOutlined',
+		routes: [
+			{
+				path: '/ngan-hang-cau-hoi/khoi-kien-thuc',
+				name: 'Khối kiến thức',
+				component: './QuestionBank/KnowledgeBlocks',
+			},
+			{
+				path: '/ngan-hang-cau-hoi/mon-hoc',
+				name: 'Môn học',
+				component: './QuestionBank/Subjects',
+			},
+			{
+				path: '/ngan-hang-cau-hoi/cau-hoi',
+				name: 'Câu hỏi',
+				component: './QuestionBank/Questions',
+			},
+			{
+				path: '/ngan-hang-cau-hoi/de-thi',
+				name: 'Đề thi',
+				component: './QuestionBank/Exams',
+			},
+			{
+				path: '/ngan-hang-cau-hoi/tao-de-thi',
+				name: 'Tạo đề thi',
+				component: './QuestionBank/Exams/CreateExam',
+				hideInMenu: true,
+			},
+		],
 	},
 
 	// DANH MUC HE THONG
