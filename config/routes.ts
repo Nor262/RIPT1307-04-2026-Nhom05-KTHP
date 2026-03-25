@@ -1,4 +1,4 @@
-﻿export default [
+export default [
 	{
 		path: '/user',
 		layout: false,
@@ -54,6 +54,39 @@
 				path: '/dat-lich-hen/thong-ke',
 				name: 'Thống kê',
 				component: './AppointmentBooking/Statistics',
+			},
+		],
+	},
+
+	{
+		path: '/quan-ly-van-bang',
+		name: 'Quản lý văn bằng',
+		icon: 'SolutionOutlined',
+		routes: [
+			{
+				path: '/quan-ly-van-bang/so-van-bang',
+				name: 'Sổ văn bằng',
+				component: './ManageDiploma/DiplomaBooks',
+			},
+			{
+				path: '/quan-ly-van-bang/quyet-dinh',
+				name: 'Quyết định tốt nghiệp',
+				component: './ManageDiploma/Decisions',
+			},
+			{
+				path: '/quan-ly-van-bang/cau-hinh-mau',
+				name: 'Cấu hình mẫu',
+				component: './ManageDiploma/FormConfig',
+			},
+			{
+				path: '/quan-ly-van-bang/thong-tin',
+				name: 'Thông tin văn bằng',
+				component: './ManageDiploma/DiplomaInfo',
+			},
+			{
+				path: '/quan-ly-van-bang/tra-cuu',
+				name: 'Tra cứu',
+				component: './ManageDiploma/Inquiries',
 			},
 		],
 	},
