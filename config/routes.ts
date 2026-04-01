@@ -91,6 +91,34 @@ export default [
 		],
 	},
 
+	{
+		path: '/quan-ly-clb',
+		name: 'Quản lý Câu lạc bộ',
+		icon: 'TeamOutlined',
+		routes: [
+			{
+				path: '/quan-ly-clb/danh-sach',
+				name: 'Danh sách CLB',
+				component: './ClubManagement/ClubList',
+			},
+			{
+				path: '/quan-ly-clb/don-dang-ky',
+				name: 'Quản lý đơn đăng ký',
+				component: './ClubManagement/Registration',
+			},
+			{
+				path: '/quan-ly-clb/thanh-vien',
+				name: 'Quản lý thành viên',
+				component: './ClubManagement/Members',
+			},
+			{
+				path: '/quan-ly-clb/thong-ke',
+				name: 'Báo cáo thống kê',
+				component: './ClubManagement/Statistics',
+			},
+		],
+	},
+
 	// DANH MUC HE THONG
 	// {
 	// 	name: 'DanhMuc',
