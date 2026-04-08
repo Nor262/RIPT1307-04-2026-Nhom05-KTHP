@@ -130,8 +130,35 @@ export default [
 	// 			path: 'chuc-vu',
 	// 			component: './DanhMuc/ChucVu',
 	// 		},
-	// 	],
 	// },
+
+	{
+		path: '/travel-planner',
+		name: 'Kế hoạch Du lịch',
+		icon: 'CompassOutlined',
+		routes: [
+			{
+				path: '/travel-planner/explore',
+				name: 'Khám phá',
+				component: './TravelPlanner/Explore',
+			},
+			{
+				path: '/travel-planner/itinerary',
+				name: 'Lịch trình',
+				component: './TravelPlanner/Itinerary',
+			},
+			{
+				path: '/travel-planner/budget',
+				name: 'Ngân sách',
+				component: './TravelPlanner/Budget',
+			},
+			{
+				path: '/travel-planner/admin',
+				name: 'Quản trị điểm đến',
+				component: './TravelPlanner/Admin',
+			},
+		],
+	},
 
 	{
 		path: '/notification',
