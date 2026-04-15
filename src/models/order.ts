@@ -7,6 +7,8 @@ export interface OrderItem {
     price: number;
 }
 
+export type OrderStatus = 'Chờ xác nhận' | 'Đang giao' | 'Hoàn thành' | 'Hủy';
+
 export interface Order {
     id: string; // e.g., DH001
     customerName: string;
@@ -14,7 +16,7 @@ export interface Order {
     address: string;
     products: OrderItem[];
     totalAmount: number;
-    status: 'Chờ xử lý' | 'Đang giao' | 'Hoàn thành' | 'Đã hủy';
+    status: OrderStatus;
     createdAt: string;
 }
 
@@ -28,7 +30,7 @@ const initialOrders: Order[] = [
             { productId: 1, productName: 'Laptop Dell XPS 13', quantity: 1, price: 25000000 },
         ],
         totalAmount: 25000000,
-        status: 'Chờ xử lý',
+        status: 'Chờ xác nhận',
         createdAt: '2024-01-15',
     },
 ];
@@ -52,15 +54,21 @@ export default () => {
         }
     };
 
-    const addOrder = useCallback((order: Omit<Order, 'id' | 'createdAt' | 'status'>) => {
+    const addOrder = useCallback((order: Omit<Order, 'createdAt'>) => {
         setOrders((prev) => {
             const newOrder: Order = {
                 ...order,
-                id: `DH${Date.now()}`, // Simple ID generation
-                status: 'Chờ xử lý',
                 createdAt: new Date().toISOString().split('T')[0],
             };
             const newData = [newOrder, ...prev];
+            saveToLocalStorage(newData);
+            return newData;
+        });
+    }, []);
+
+    const updateOrder = useCallback((updatedOrder: Order) => {
+        setOrders((prev) => {
+            const newData = prev.map((item) => (item.id === updatedOrder.id ? { ...updatedOrder } : item));
             saveToLocalStorage(newData);
             return newData;
         });
@@ -77,6 +85,7 @@ export default () => {
     return {
         orders,
         addOrder,
+        updateOrder,
         updateOrderStatus,
     };
 };

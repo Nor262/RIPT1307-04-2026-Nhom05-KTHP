@@ -161,6 +161,14 @@ export default [
 	},
 
 	{
+		path: '/quan-ly-don-hang',
+		name: 'Quản lý đơn hàng',
+		icon: 'ShoppingCartOutlined',
+		component: './OrderManagement',
+	},
+
+
+	{
 		path: '/notification',
 		routes: [
 			{
