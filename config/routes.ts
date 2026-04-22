@@ -161,6 +161,48 @@ export default [
 	},
 
 	{
+		path: '/blog',
+		name: 'Blog cá nhân',
+		icon: 'ReadOutlined',
+		routes: [
+			{
+				path: '/blog/home',
+				name: 'Trang chủ',
+				component: './Blog/Home',
+			},
+			{
+				path: '/blog/post/:slug',
+				name: 'Chi tiết bài viết',
+				component: './Blog/Detail',
+				hideInMenu: true,
+			},
+			{
+				path: '/blog/about',
+				name: 'Giới thiệu',
+				component: './Blog/About',
+			},
+		],
+	},
+
+	{
+		path: '/quan-ly-blog',
+		name: 'Quản lý Blog',
+		icon: 'SettingOutlined',
+		routes: [
+			{
+				path: '/quan-ly-blog/bai-viet',
+				name: 'Quản lý bài viết',
+				component: './BlogManagement/Posts',
+			},
+			{
+				path: '/quan-ly-blog/the',
+				name: 'Quản lý thẻ',
+				component: './BlogManagement/Tags',
+			},
+		],
+	},
+
+	{
 		path: '/quan-ly-don-hang',
 		name: 'Quản lý đơn hàng',
 		icon: 'ShoppingCartOutlined',
