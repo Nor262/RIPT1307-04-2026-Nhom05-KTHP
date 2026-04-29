@@ -1,4 +1,4 @@
-﻿export default [
+export default [
 	{
 		path: '/user',
 		layout: false,
@@ -21,26 +21,102 @@
 	{
 		path: '/dashboard',
 		name: 'Dashboard',
-		component: './TrangChu',
+		component: './Dashboard', // Updated to new Dashboard page
 		icon: 'HomeOutlined',
 	},
+
 	{
-		path: '/gioi-thieu',
-		name: 'About',
-		component: './TienIch/GioiThieu',
-		hideInMenu: true,
+		path: '/dat-lich-hen',
+		name: 'Đặt lịch hẹn',
+		icon: 'CalendarOutlined',
+		routes: [
+			{
+				path: '/dat-lich-hen/nhan-vien',
+				name: 'Nhân viên',
+				component: './AppointmentBooking/Staff',
+			},
+			{
+				path: '/dat-lich-hen/dich-vu',
+				name: 'Dịch vụ',
+				component: './AppointmentBooking/Services',
+			},
+			{
+				path: '/dat-lich-hen/lich-hen',
+				name: 'Lịch hẹn',
+				component: './AppointmentBooking/Appointments',
+			},
+			{
+				path: '/dat-lich-hen/danh-gia',
+				name: 'Đánh giá',
+				component: './AppointmentBooking/Reviews',
+			},
+			{
+				path: '/dat-lich-hen/thong-ke',
+				name: 'Thống kê',
+				component: './AppointmentBooking/Statistics',
+			},
+		],
 	},
+
 	{
-		path: '/random-user',
-		name: 'RandomUser',
-		component: './RandomUser',
-		icon: 'ArrowsAltOutlined',
+		path: '/quan-ly-van-bang',
+		name: 'Quản lý văn bằng',
+		icon: 'SolutionOutlined',
+		routes: [
+			{
+				path: '/quan-ly-van-bang/so-van-bang',
+				name: 'Sổ văn bằng',
+				component: './ManageDiploma/DiplomaBooks',
+			},
+			{
+				path: '/quan-ly-van-bang/quyet-dinh',
+				name: 'Quyết định tốt nghiệp',
+				component: './ManageDiploma/Decisions',
+			},
+			{
+				path: '/quan-ly-van-bang/cau-hinh-mau',
+				name: 'Cấu hình mẫu',
+				component: './ManageDiploma/FormConfig',
+			},
+			{
+				path: '/quan-ly-van-bang/thong-tin',
+				name: 'Thông tin văn bằng',
+				component: './ManageDiploma/DiplomaInfo',
+			},
+			{
+				path: '/quan-ly-van-bang/tra-cuu',
+				name: 'Tra cứu',
+				component: './ManageDiploma/Inquiries',
+			},
+		],
 	},
+
 	{
-		path: '/todo-list',
-		name: 'TodoList',
-		icon: 'OrderedListOutlined',
-		component: './TodoList',
+		path: '/quan-ly-clb',
+		name: 'Quản lý Câu lạc bộ',
+		icon: 'TeamOutlined',
+		routes: [
+			{
+				path: '/quan-ly-clb/danh-sach',
+				name: 'Danh sách CLB',
+				component: './ClubManagement/ClubList',
+			},
+			{
+				path: '/quan-ly-clb/don-dang-ky',
+				name: 'Quản lý đơn đăng ký',
+				component: './ClubManagement/Registration',
+			},
+			{
+				path: '/quan-ly-clb/thanh-vien',
+				name: 'Quản lý thành viên',
+				component: './ClubManagement/Members',
+			},
+			{
+				path: '/quan-ly-clb/thong-ke',
+				name: 'Báo cáo thống kê',
+				component: './ClubManagement/Statistics',
+			},
+		],
 	},
 
 	// DANH MUC HE THONG
@@ -54,8 +130,85 @@
 	// 			path: 'chuc-vu',
 	// 			component: './DanhMuc/ChucVu',
 	// 		},
-	// 	],
 	// },
+
+	{
+		path: '/travel-planner',
+		name: 'Kế hoạch Du lịch',
+		icon: 'CompassOutlined',
+		routes: [
+			{
+				path: '/travel-planner/explore',
+				name: 'Khám phá',
+				component: './TravelPlanner/Explore',
+			},
+			{
+				path: '/travel-planner/itinerary',
+				name: 'Lịch trình',
+				component: './TravelPlanner/Itinerary',
+			},
+			{
+				path: '/travel-planner/budget',
+				name: 'Ngân sách',
+				component: './TravelPlanner/Budget',
+			},
+			{
+				path: '/travel-planner/admin',
+				name: 'Quản trị điểm đến',
+				component: './TravelPlanner/Admin',
+			},
+		],
+	},
+
+	{
+		path: '/blog',
+		name: 'Blog cá nhân',
+		icon: 'ReadOutlined',
+		routes: [
+			{
+				path: '/blog/home',
+				name: 'Trang chủ',
+				component: './Blog/Home',
+			},
+			{
+				path: '/blog/post/:slug',
+				name: 'Chi tiết bài viết',
+				component: './Blog/Detail',
+				hideInMenu: true,
+			},
+			{
+				path: '/blog/about',
+				name: 'Giới thiệu',
+				component: './Blog/About',
+			},
+		],
+	},
+
+	{
+		path: '/quan-ly-blog',
+		name: 'Quản lý Blog',
+		icon: 'SettingOutlined',
+		routes: [
+			{
+				path: '/quan-ly-blog/bai-viet',
+				name: 'Quản lý bài viết',
+				component: './BlogManagement/Posts',
+			},
+			{
+				path: '/quan-ly-blog/the',
+				name: 'Quản lý thẻ',
+				component: './BlogManagement/Tags',
+			},
+		],
+	},
+
+	{
+		path: '/quan-ly-don-hang',
+		name: 'Quản lý đơn hàng',
+		icon: 'ShoppingCartOutlined',
+		component: './OrderManagement',
+	},
+
 
 	{
 		path: '/notification',
