@@ -310,106 +310,93 @@ erDiagram
     }
 ```
 
-### 11.2. Mã DBML (Dành cho dbdiagram.io)
+### 11.2. Từ điển Dữ liệu (Data Dictionary)
 
-```dbml
-// Database Schema for Equipment Management System
-// Industry Expert Level Design
+Dưới đây là cấu trúc chi tiết của các bảng dữ liệu cốt lõi trong hệ thống:
 
-Project Equipment_Management_System {
-  database_type: 'PostgreSQL'
-  Note: 'Schema quản lý mượn trả thiết bị đa nền tảng'
-}
+**1. Bảng `equipment_categories` (Danh mục thiết bị)**
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | integer | PK, Auto Increment | Khóa chính |
+| `name` | varchar(255) | Unique, Not Null | Tên danh mục |
+| `description` | text | | Mô tả danh mục |
+| `created_at` | timestamp | Default: now() | Ngày tạo |
 
-Table equipment_categories {
-  id integer [primary key, increment]
-  name varchar(255) [not null, unique]
-  description text
-  created_at timestamp [default: `now()`]
-}
+**2. Bảng `suppliers` (Nhà cung cấp)**
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | integer | PK, Auto Increment | Khóa chính |
+| `name` | varchar(255) | Not Null | Tên nhà cung cấp |
+| `contact_info` | text | | Thông tin liên hệ |
+| `address` | varchar(500) | | Địa chỉ nhà cung cấp |
 
-Table suppliers {
-  id integer [primary key, increment]
-  name varchar(255) [not null]
-  contact_info text
-  address varchar(500)
-}
+**3. Bảng `storage_locations` (Vị trí lưu trữ)**
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | integer | PK, Auto Increment | Khóa chính |
+| `name` | varchar(255) | Not Null | Tên vị trí/kho |
+| `address` | varchar(500) | | Địa chỉ kho |
+| `manager_id` | integer | FK | ID Quản lý kho |
 
-Table storage_locations {
-  id integer [primary key, increment]
-  name varchar(255) [not null]
-  address varchar(500)
-  manager_id integer
-}
+**4. Bảng `equipment` (Thông tin thiết bị)**
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | integer | PK, Auto Increment | Khóa chính |
+| `category_id` | integer | FK | Tham chiếu `equipment_categories.id` |
+| `supplier_id` | integer | FK | Tham chiếu `suppliers.id` |
+| `location_id` | integer | FK | Tham chiếu `storage_locations.id` |
+| `name` | varchar(255) | Not Null | Tên thiết bị |
+| `serial_number` | varchar(100) | Unique, Not Null | Số Sê-ri |
+| `sku` | varchar(100) | Unique | Mã SKU |
+| `status` | varchar(50) | Default: 'available' | `available`, `in_use`, `broken`... |
+| `specifications` | jsonb | | Thông số kỹ thuật động |
+| `qr_code_data` | text | Unique | Chuỗi mã QR |
+| `image_url` | text | | Link ảnh thiết bị |
+| `purchase_date` | date | | Ngày mua |
+| `current_condition` | text | | Tình trạng hiện tại |
 
-Table equipment {
-  id integer [primary key, increment]
-  category_id integer [ref: > equipment_categories.id]
-  supplier_id integer [ref: > suppliers.id]
-  location_id integer [ref: > storage_locations.id]
-  name varchar(255) [not null]
-  serial_number varchar(100) [unique, not null]
-  sku varchar(100) [unique]
-  status varchar(50) [default: 'available']
-  specifications jsonb
-  qr_code_data text [unique]
-  image_url text
-  purchase_date date
-  current_condition text
-  
-  indexes {
-    serial_number [name: 'idx_serial']
-    status [name: 'idx_status']
-    category_id
-  }
-}
+**5. Bảng `users` (Người dùng/Tài khoản)**
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | integer | PK, Auto Increment | Khóa chính |
+| `username` | varchar(100) | Unique, Not Null | Tên đăng nhập |
+| `email` | varchar(255) | Unique, Not Null | Địa chỉ Email |
+| `password_hash` | varchar(255) | Not Null | Mật khẩu đã mã hóa |
+| `full_name` | varchar(255) | | Họ và tên |
+| `role` | varchar(50) | | `admin`, `storekeeper`, `borrower` |
+| `fcm_token` | text | | Token nhận Push Notification |
+| `is_active` | boolean | Default: true | Trạng thái hoạt động |
+| `created_at` | timestamp | Default: now() | Ngày tạo tài khoản |
 
-Table users {
-  id integer [primary key, increment]
-  username varchar(100) [unique, not null]
-  email varchar(255) [unique, not null]
-  password_hash varchar(255) [not null]
-  full_name varchar(255)
-  role varchar(50) [note: 'admin, storekeeper, borrower']
-  fcm_token text
-  is_active boolean [default: true]
-  created_at timestamp [default: `now()`]
-}
+**6. Bảng `transactions` (Giao dịch Mượn/Trả)**
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | integer | PK, Auto Increment | Khóa chính |
+| `equipment_id` | integer | FK | Tham chiếu `equipment.id` |
+| `borrower_id` | integer | FK | ID Người mượn (`users.id`) |
+| `approver_id` | integer | FK | ID Người duyệt (`users.id`) |
+| `storekeeper_id`| integer | FK | ID Người giao/nhận đồ (`users.id`) |
+| `type` | varchar(50) | | `borrow`, `return` |
+| `status` | varchar(50) | | `pending`, `approved`, `completed`... |
+| `request_date` | timestamp | Default: now() | Ngày tạo yêu cầu |
+| `approval_date` | timestamp | | Ngày duyệt |
+| `due_date` | timestamp | Not Null | Hạn trả dự kiến |
+| `actual_check_out`| timestamp| | Ngày giờ thực tế giao đồ |
+| `actual_check_in` | timestamp| | Ngày giờ thực tế nhận đồ |
+| `condition_at_check_out`| text | | Tình trạng lúc giao |
+| `condition_at_check_in` | text | | Tình trạng lúc nhận |
+| `notes` | text | | Ghi chú thêm |
 
-Table transactions {
-  id integer [primary key, increment]
-  equipment_id integer [ref: > equipment.id]
-  borrower_id integer [ref: > users.id]
-  approver_id integer [ref: > users.id]
-  storekeeper_id integer [ref: > users.id]
-  type varchar(50) [note: 'borrow, return']
-  status varchar(50) [note: 'pending, approved, in_progress, completed, rejected']
-  request_date timestamp [default: `now()`]
-  approval_date timestamp
-  due_date timestamp [not null]
-  actual_check_out timestamp
-  actual_check_in timestamp
-  condition_at_check_out text
-  condition_at_check_in text
-  notes text
-
-  indexes {
-    (equipment_id, status)
-    due_date
-    borrower_id
-  }
-}
-
-Table maintenance_history {
-  id integer [primary key, increment]
-  equipment_id integer [ref: > equipment.id]
-  maintenance_date date
-  performed_by varchar(255)
-  details text
-  cost decimal(15, 2)
-  next_maintenance_date date
-}
-```
+**7. Bảng `maintenance_history` (Lịch sử bảo trì)**
+| Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
+|---|---|---|---|
+| `id` | integer | PK, Auto Increment | Khóa chính |
+| `equipment_id` | integer | FK | Tham chiếu `equipment.id` |
+| `maintenance_date`| date | | Ngày bảo trì |
+| `performed_by` | varchar(255) | | Người thực hiện |
+| `details` | text | | Chi tiết sửa chữa |
+| `cost` | decimal(15,2) | | Chi phí |
+| `next_maintenance_date`| date | | Hẹn bảo trì lần sau |
 
 ### 11.3. Giải quyết Bài toán Chống Mượn Trùng (Concurrency Control)
 Để giải quyết tình trạng **Double Booking** (nhiều người cùng đặt 1 thiết bị lúc đó), hệ thống sử dụng cơ chế **Khóa Bi quan (Pessimistic Locking)** với câu lệnh `SELECT ... FOR UPDATE` khi cập nhật trạng thái thiết bị. Điều này kết hợp với thời gian chờ (Timeout) ngắn giúp cân bằng giữa tính an toàn và hiệu năng.
