@@ -4,16 +4,11 @@ import { unitName } from '@/services/base/constant';
 import { useModel } from 'umi';
 
 const TrangChu = () => {
-	const { data } = useModel('randomuser');
-
 	return (
 		<Card bodyStyle={{ height: '100%' }}>
 			<div className='home-welcome'>
-				<div>
-					<b>{data.length} users</b>
-				</div>
-				<h1 className='title'>THỰC HÀNH LẬP TRÌNH WEB</h1>
-				<h2 className='sub-title'>{unitName.toUpperCase()}</h2>
+				<h1 className='title'>Bài tập lớn Web 2026</h1>
+				<h2 className='sub-title'>B24DCCC229</h2>
 			</div>
 		</Card>
 	);
