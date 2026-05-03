@@ -53,7 +53,11 @@
   ],
   "dependencies": {
     "@ant-design/icons": "~4.5.0",
+    "@ant-design/pro-card": "^1.20.22",
+    "@ant-design/pro-descriptions": "^1.12.7",
+    "@ant-design/pro-form": "^1.74.7",
     "@ant-design/pro-layout": "~6.15.3",
+    "@ant-design/pro-table": "^1.2.9",
     "@monaco-editor/react": "^4.6.0",
     "@sentry/react": "^7.65.0",
     "@tinymce/tinymce-react": "^4.2.0",
@@ -61,13 +65,14 @@
     "@types/react-highlight-words": "^0.16.4",
     "@types/styled-components": "^5.1.26",
     "@umijs/route-utils": "^1.0.36",
-    "antd": "4.21.0",
+    "antd": "^4.24.15",
     "antd-img-crop": "^4.2.4",
     "apexcharts": "^3.41.1",
     "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "fs-extra": "^11.2.0",
     "js-file-download": "^0.4.12",
+    "jsqr": "^1.4.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
@@ -99,7 +104,8 @@
     "tinymce": "^5.10.0",
     "umi": "~3.5.0",
     "umi-serve": "~1.9.10",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",

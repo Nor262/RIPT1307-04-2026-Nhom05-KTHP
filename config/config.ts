@@ -13,7 +13,7 @@ export default defineConfig({
 	},
 	layout: {
 		// https://umijs.org/zh-CN/plugins/plugin-layout
-		locale: true,
+		locale: false,
 		...defaultSettings,
 	},
 	// https://umijs.org/zh-CN/plugins/plugin-locale

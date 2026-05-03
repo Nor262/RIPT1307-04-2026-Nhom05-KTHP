@@ -1,4 +1,4 @@
-﻿export default [
+export default [
 	{
 		path: '/user',
 		layout: false,
@@ -8,6 +8,12 @@
 				layout: false,
 				name: 'login',
 				component: './user/Login',
+			},
+			{
+				path: '/user/register',
+				layout: false,
+				name: 'register',
+				component: './user/Register',
 			},
 			{
 				path: '/user',
@@ -24,26 +30,109 @@
 		component: './TrangChu',
 		icon: 'HomeOutlined',
 	},
+
+	// QUẢN LÝ TÀI SẢN
+	{
+		path: '/asset',
+		name: 'Quản lý Tài sản',
+		icon: 'DatabaseOutlined',
+		routes: [
+			{
+				path: '/asset/equipment',
+				name: 'Thiết bị',
+				component: './Equipment',
+				icon: 'ToolOutlined',
+			},
+			{
+				path: '/asset/categories',
+				name: 'Danh mục',
+				component: './Categories',
+				icon: 'AppstoreOutlined',
+			},
+			{
+				path: '/asset/suppliers',
+				name: 'Nhà cung cấp',
+				component: './Suppliers',
+				icon: 'ShopOutlined',
+			},
+			{
+				path: '/asset/locations',
+				name: 'Vị trí kho',
+				component: './Locations',
+				icon: 'EnvironmentOutlined',
+			},
+			{
+				path: '/asset/maintenance',
+				name: 'Bảo trì thiết bị',
+				component: './Maintenance',
+				icon: 'ToolOutlined',
+			},
+		],
+	},
+
+	// NGHIỆP VỤ MƯỢN/TRẢ
+	{
+		path: '/booking',
+		name: 'Mượn / Trả',
+		icon: 'SwapOutlined',
+		routes: [
+			{
+				path: '/booking/list',
+				name: 'Danh sách đơn mượn',
+				component: './Bookings',
+				icon: 'UnorderedListOutlined',
+			},
+			{
+				path: '/booking/handle',
+				name: 'Bàn giao / Thu hồi',
+				component: './Transactions/HandleTransaction',
+				icon: 'ScanOutlined',
+			},
+		],
+	},
+
+	// BÁO CÁO & THỐNG KÊ
+	{
+		path: '/reports',
+		name: 'Báo cáo',
+		icon: 'BarChartOutlined',
+		routes: [
+			{
+				path: '/reports/overdue',
+				name: 'Quá hạn trả',
+				component: './Reports/Overdue',
+				icon: 'WarningOutlined',
+			},
+			{
+				path: '/reports/export',
+				name: 'Xuất báo cáo',
+				component: './Reports/ExportReport',
+				icon: 'FileExcelOutlined',
+			},
+		],
+	},
+
+	// QUẢN TRỊ HỆ THỐNG
+	{
+		path: '/system',
+		name: 'Hệ thống',
+		icon: 'SettingOutlined',
+		routes: [
+			{
+				path: '/system/users',
+				name: 'Quản lý người dùng',
+				component: './Users',
+				icon: 'TeamOutlined',
+			},
+		],
+	},
+
 	{
 		path: '/gioi-thieu',
 		name: 'About',
 		component: './TienIch/GioiThieu',
 		hideInMenu: true,
 	},
-
-	// DANH MUC HE THONG
-	// {
-	// 	name: 'DanhMuc',
-	// 	path: '/danh-muc',
-	// 	icon: 'copy',
-	// 	routes: [
-	// 		{
-	// 			name: 'ChucVu',
-	// 			path: 'chuc-vu',
-	// 			component: './DanhMuc/ChucVu',
-	// 		},
-	// 	],
-	// },
 
 	{
 		path: '/notification',

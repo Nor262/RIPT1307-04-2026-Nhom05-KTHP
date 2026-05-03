@@ -1,184 +1,166 @@
-// import { refreshAccesssToken } from '@/services/ant-design-pro/api';
-import { message, notification } from 'antd';
 import axios from 'axios';
-// import { history } from 'umi';
-import data from './data';
+import { message, notification } from 'antd';
+import { history } from 'umi';
 
-// function routeLogin(errorCode: string) {
-//   // notification.warning({
-//   //   message: 'Vui lòng đăng nhập lại',
-//   //   description: data.error[errorCode],
-//   // });
-//   // localStorage.clear();
-//   history.replace({
-//     pathname: '/user/login',
-//   });
-// }
+axios.defaults.baseURL = 'http://localhost:3000/v1';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-// for multiple request
-// let isRefreshing = false;
-// let failedQueue: any[] = [];
-// const processQueue = (error: any, token: any = null) => {
-//   failedQueue.forEach((prom) => {
-//     if (error) {
-//       prom.reject(error);
-//     } else {
-//       prom.resolve(token);
-//     }
-//   });
-//   failedQueue = [];
-// };
+let isRefreshing = false;
+let failedQueue: any[] = [];
 
-/**
- * Chuyển sang xử lý access_token with OIDC auth ở Technical Support
- */
-// Add a request interceptor
-// axios.interceptors.request.use(
-//   (config) => {
-//     if (!config.headers.Authorization) {
-//       const token = localStorage.getItem('token');
-//       if (token) {
-//         // eslint-disable-next-line no-param-reassign
-//         config.headers.Authorization = `Bearer ${token}`;
-//       }
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error),
-// );
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
 
-// Add a response interceptor
+// Request Interceptor
+axios.interceptors.request.use(
+  (config) => {
+    // Đọc token trực tiếp từ localStorage của Zustand persist
+    const storageStr = localStorage.getItem('auth-storage');
+    if (storageStr) {
+      try {
+        const { state } = JSON.parse(storageStr);
+        if (state?.accessToken && config.headers) {
+          config.headers.Authorization = `Bearer ${state.accessToken}`;
+        }
+      } catch (e) {
+        console.error('Error parsing auth storage', e);
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response Interceptor
 axios.interceptors.response.use(
-	(response) =>
-		// Do something with response data
-		response,
-	(error) => {
-		let er = error?.response?.data;
-		// Convert response data to JSON
-		if ((error?.response?.config?.responseType as string)?.toLowerCase() === 'arraybuffer') {
-			const decoder = new TextDecoder('utf-8');
-			er = JSON.parse(decoder.decode(er));
-		}
-		const descriptionError = Array.isArray(er?.detail?.exception?.response?.message)
-			? er?.detail?.exception?.response?.message?.join(', ')
-			: // Sequelize validation Errors
-			Array.isArray(er?.detail?.exception?.errors)
-			? er?.detail?.exception?.errors?.map((e: any) => e?.message)?.join(', ')
-			: data.error[er?.detail?.errorCode || er?.errorCode] ||
-			  er?.detail?.message ||
-			  er?.message ||
-			  er?.errorDescription;
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    const status = error?.response?.status;
+    const descriptionError = error?.response?.data?.message || error?.message || 'Có lỗi xảy ra';
 
-		const originalRequest = error.config;
-		let originData = originalRequest?.data;
-		if (typeof originData === 'string') originData = JSON.parse(originData);
-		if (typeof originData !== 'object' || !Object.keys(originData ?? {}).includes('silent') || !originData?.silent)
-			switch (error?.response?.status) {
-				case 400:
-					notification.error({
-						message: 'Dữ liệu chưa đúng (004)',
-						description: descriptionError,
-					});
-					break;
+    switch (status) {
+      case 400:
+        notification.error({
+          message: 'Dữ liệu không hợp lệ (400)',
+          description: Array.isArray(descriptionError) ? descriptionError.join(', ') : descriptionError,
+        });
+        break;
 
-				case 401:
-					// Nếu có access token (có thể access token hết hạn) thì mới cảnh báo
-					if (originalRequest?.headers?.Authorization)
-						notification.error({
-							message: 'Phiên đăng nhập đã thay đổi (104)',
-							description: 'Vui lòng tải lại trang (F5) để cập nhật. Chú ý các dữ liệu chưa lưu sẽ bị mất!',
-						});
-					if (originalRequest._retry) break;
-					break;
-				// return routeLogin('Unauthorize');
+      case 401:
+        if (originalRequest.url === '/auth/login') {
+          notification.error({ message: 'Đăng nhập thất bại', description: 'Email hoặc mật khẩu không đúng' });
+          break;
+        }
 
-				///////////////////////////////////////////////////////////////////
-				// Tobe removed, token refreshing is handled by OIDC context
-				///////////////////////////////////////////////////////////////////
-				// const refreshToken = localStorage.getItem('refreshToken');
-				// if (!refreshToken || error?.response?.config?.data?.includes('refresh')) {
-				//   return routeLogin(error?.response?.data?.errorCode);
-				// }
-				// if (error?.response?.config?.data?.includes('grant_type')) return;
+        // Bắt đầu logic Refresh Token
+        if (!originalRequest._retry) {
+          if (isRefreshing) {
+            return new Promise(function(resolve, reject) {
+              failedQueue.push({ resolve, reject });
+            })
+              .then((token) => {
+                originalRequest.headers.Authorization = 'Bearer ' + token;
+                return axios(originalRequest);
+              })
+              .catch((err) => Promise.reject(err));
+          }
 
-				// if (isRefreshing) {
-				//   // Nếu đang có 1 cái refresh thì thêm request này vào queue;
-				//   return new Promise((resolve, reject) => {
-				//     failedQueue.push({ resolve, reject });
-				//   })
-				//     .then((token) => {
-				//       // gán lại token mới cho request này rồi gửi lại nó
-				//       originalRequest.headers.Authorization = 'Bearer ' + token;
-				//       return axios(originalRequest);
-				//     })
-				//     .catch((err) => {
-				//       return Promise.reject(err);
-				//     });
-				// }
+          originalRequest._retry = true;
+          isRefreshing = true;
 
-				// originalRequest._retry = true;
-				// isRefreshing = true; // Request đầu tiên bị lỗi => call refresh token => isRefreshing
+          const storageStr = localStorage.getItem('auth-storage');
+          let refreshToken = null;
+          if (storageStr) {
+            try {
+              const { state } = JSON.parse(storageStr);
+              refreshToken = state?.refreshToken;
+            } catch (e) {}
+          }
 
-				// return new Promise((resolve, reject) => {
-				//   refreshAccesssToken({ refreshToken })
-				//     .then((response) => {
-				//       // Lưu token mới vào localStorage
-				//       localStorage.setItem('token', response?.data?.access_token);
-				//       localStorage.setItem('refreshToken', response?.data?.refresh_token);
-				//       // Set lại token cho axios
-				//       axios.defaults.headers.common.Authorization = `Bearer ${response?.data?.access_token}`;
-				//       originalRequest.headers.Authorization = `Bearer ${response?.data?.access_token}`;
-				//       processQueue(null, response?.data?.access_token); // Chạy lại các request ở trong queue với token mới
-				//       resolve(axios(originalRequest)); // Gửi lại request đầu tiên
-				//     })
-				//     .catch((err) => {
-				//       // Nếu get refresh cũng lỗi => refresh hết hạn => logout
-				//       processQueue(err, null);
-				//       reject(err);
-				//       routeLogin(error?.response?.data?.errorCode);
-				//     })
-				//     .then(() => {
-				//       isRefreshing = false;
-				//     });
-				// });
+          if (!refreshToken) {
+            // Không có refresh token -> Logout luôn
+            isRefreshing = false;
+            // Clear zustand persist
+            localStorage.removeItem('auth-storage');
+            history.replace('/user/login');
+            return Promise.reject(error);
+          }
 
-				case 403:
-				case 405:
-					notification.error({
-						message: 'Thao tác không được phép (304)',
-						description: descriptionError,
-					});
-					break;
+          try {
+            // Gọi api refresh (Giả định endpoint là POST /auth/refresh)
+            const rs = await axios.post('/auth/refresh', { refreshToken });
+            const newAccessToken = rs.data?.data?.accessToken;
+            const newRefreshToken = rs.data?.data?.refreshToken;
+            
+            if (newAccessToken) {
+              // Cập nhật lại zustand storage thủ công
+              if (storageStr) {
+                const parsed = JSON.parse(storageStr);
+                parsed.state.accessToken = newAccessToken;
+                if (newRefreshToken) parsed.state.refreshToken = newRefreshToken;
+                localStorage.setItem('auth-storage', JSON.stringify(parsed));
+              }
+              
+              axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+              processQueue(null, newAccessToken);
+              return axios(originalRequest);
+            }
+          } catch (refreshError) {
+            processQueue(refreshError, null);
+            // Refresh token hết hạn hoặc lỗi -> Xóa token và bắt đăng nhập lại
+            localStorage.removeItem('auth-storage');
+            notification.error({
+              message: 'Phiên đăng nhập đã hết hạn',
+              description: 'Vui lòng đăng nhập lại.',
+            });
+            history.replace('/user/login');
+            return Promise.reject(refreshError);
+          } finally {
+            isRefreshing = false;
+          }
+        }
+        break;
 
-				case 404:
-					notification.error({
-						message: 'Không tìm thấy dữ liệu (040)',
-						description: descriptionError,
-					});
-					break;
+      case 403:
+        notification.error({
+          message: 'Từ chối truy cập (403)',
+          description: 'Bạn không có quyền thực hiện hành động này.',
+        });
+        break;
 
-				case 409:
-					notification.error({
-						message: 'Dữ liệu chưa đúng (904)',
-						description: descriptionError,
-					});
-					break;
+      case 404:
+        notification.error({
+          message: 'Không tìm thấy dữ liệu (404)',
+          description: descriptionError,
+        });
+        break;
 
-				case 500:
-				case 502:
-					notification.error({
-						message: 'Hệ thống đang cập nhật (005)',
-						description: descriptionError,
-					});
-					break;
+      case 500:
+      case 502:
+      case 503:
+        notification.error({
+          message: 'Lỗi máy chủ (500)',
+          description: 'Hệ thống đang gặp sự cố, vui lòng thử lại sau.',
+        });
+        break;
 
-				default:
-					message.error('Hệ thống đang cập nhật. Vui lòng thử lại sau');
-					break;
-			}
-		// Do something with response error
-		return Promise.reject(error);
-	},
+      default:
+        message.error('Có lỗi hệ thống. Vui lòng kiểm tra kết nối mạng.');
+        break;
+    }
+
+    return Promise.reject(error);
+  }
 );
 
 export default axios;

@@ -130,7 +130,7 @@ Tài liệu này đặc tả các endpoint giao tiếp giữa Frontend (Web Port
 ## 3. Phân hệ Transactions (Nghiệp vụ Mượn/Trả)
 
 ### 3.1. Tạo yêu cầu mượn
-- **Endpoint:** `POST /transactions/request`
+- **Endpoint:** `POST /transactions/borrow`
 - **Headers:** `Authorization: Bearer <accessToken>` *(Borrower Role)*
 - **Mô tả:** Người dùng gửi đơn đặt mượn. Backend sử dụng Pessimistic Locking để chống Double-Booking trong DB.
 - **Request Body:**
@@ -152,7 +152,7 @@ Tài liệu này đặc tả các endpoint giao tiếp giữa Frontend (Web Port
 ```
 
 ### 3.2. Phê duyệt hoặc Từ chối yêu cầu
-- **Endpoint:** `PATCH /transactions/:id/review`
+- **Endpoint:** `PUT /transactions/:id/review`
 - **Headers:** `Authorization: Bearer <accessToken>` *(Admin Only)*
 - **Request Body:**
 ```json
@@ -163,8 +163,31 @@ Tài liệu này đặc tả các endpoint giao tiếp giữa Frontend (Web Port
 ```
 - **Response (200 OK):** Chuyển trạng thái transaction thành `approved` hoặc `rejected`. Tự động gọi Job đẩy Push Notification tới thiết bị người mượn qua Firebase.
 
-### 3.3. Check-out: Bàn giao thiết bị qua QR Code
-- **Endpoint:** `POST /transactions/check-out`
+### 3.3. Xác thực mã thiết bị (Verify Item - Manual Entry)
+- **Endpoint:** `POST /transactions/verify-item`
+- **Headers:** `Authorization: Bearer <accessToken>` *(Storekeeper Role)*
+- **Mô tả:** Sử dụng khi thủ kho nhập tay Serial Number hoặc quét mã qua giao diện Web để kiểm tra tính hợp lệ của thiết bị trước khi Check-in/Check-out.
+- **Request Body:**
+```json
+{
+  "serial_number": "MBP-2023-001"
+}
+```
+- **Response (200 OK):**
+```json
+{
+  "status": "success",
+  "data": {
+    "equipment_id": 101,
+    "name": "MacBook Pro M2",
+    "status": "approved",
+    "transaction_id": 5052
+  }
+}
+```
+
+### 3.4. Check-out: Bàn giao thiết bị qua QR Code
+- **Endpoint:** `PUT /transactions/:id/checkout`
 - **Headers:** `Authorization: Bearer <accessToken>` *(Storekeeper Role)*
 - **Mô tả:** Quản lý kho dùng App quét mã QR thiết bị để tìm đơn mượn tương ứng của nó trong ngày hôm nay và hoàn tất quy trình lấy đồ.
 - **Request Body:**
@@ -181,8 +204,8 @@ Tài liệu này đặc tả các endpoint giao tiếp giữa Frontend (Web Port
 }
 ```
 
-### 3.4. Check-in: Nhận lại thiết bị qua QR Code
-- **Endpoint:** `POST /transactions/check-in`
+### 3.5. Check-in: Nhận lại thiết bị qua QR Code
+- **Endpoint:** `PUT /transactions/:id/checkin`
 - **Headers:** `Authorization: Bearer <accessToken>` *(Storekeeper Role)*
 - **Mô tả:** Trả đồ về kho và kiểm tra tình trạng vật lý.
 - **Request Body:**

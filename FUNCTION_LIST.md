@@ -27,7 +27,7 @@ Tài liệu này định nghĩa chi tiết các chức năng của Hệ thống 
 |---|---|---|---|---|
 | W-BOK-01 | Danh sách Đơn mượn | Hiển thị các yêu cầu mượn thiết bị theo trạng thái (Chờ duyệt, Đã duyệt, Đang mượn, Đã trả, Từ chối). | Admin, Storekeeper | Cao |
 | W-BOK-02 | Phê duyệt/Từ chối | Admin xem chi tiết yêu cầu, lịch trống thiết bị, click "Duyệt" hoặc "Từ chối" (bắt buộc nhập lý do nếu từ chối). | Admin | Cao |
-| W-BOK-03 | Giao diện Check-in / Check-out | Giao diện trên máy tính (dự phòng cho app) để thủ kho click xác nhận bàn giao/thu hồi thiết bị thủ công. | Storekeeper | Trung bình |
+| W-BOK-03 | Luồng Check-in / Check-out Đa phương thức | Giao diện trên máy tính hỗ trợ nhập Serial Number thủ công (Manual Entry), upload ảnh QR hoặc theo dõi đồng bộ thời gian thực từ Mobile App (Mobile-to-Web Sync). | Storekeeper | Cao |
 | W-BOK-04 | Ghi nhận Hỏng hóc | Nếu thiết bị lỗi khi trả, quản lý cập nhật trạng thái "Broken" hoặc "Maintenance", ghi chú tình trạng hư hỏng. | Storekeeper | Trung bình |
 
 ### 1.4. Phân hệ Báo cáo & Thống kê (Dashboard & Analytics)
@@ -58,7 +58,7 @@ Tài liệu này định nghĩa chi tiết các chức năng của Hệ thống 
 ### 2.3. Phân hệ Tương tác Tại kho bằng Camera (On-site Operations)
 | ID | Chức năng | Mô tả nghiệp vụ chi tiết | Quyền | Ưu tiên |
 |---|---|---|---|---|
-| M-QR-01 | Quét QR nhận đồ (Check-out) | Storekeeper dùng camera app quét mã QR trên thiết bị để xác nhận giao đồ cho Borrower nhanh chóng. | Storekeeper | Cao |
+| M-QR-01 | Quét QR nhận đồ & Remote Scanner | Storekeeper dùng camera quét QR. Tích hợp Haptic Feedback (rung) khi quét thành công và đồng bộ tín hiệu trực tiếp lên Web Portal (Check-out). | Storekeeper | Cao |
 | M-QR-02 | Quét QR trả đồ (Check-in) | Storekeeper quét QR khi Borrower đem trả. Chọn đánh giá tình trạng vật lý (Tốt/Hư hỏng) và hoàn tất. | Storekeeper | Cao |
 | M-QR-03 | Tra cứu thiết bị qua QR | Quét mã QR dán trên thiết bị bất kỳ trong kho để xem ngay thông tin, thông số cấu hình và lịch sử sửa chữa. | All | Trung bình |
 

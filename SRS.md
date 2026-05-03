@@ -27,7 +27,7 @@ Hệ thống được thiết kế theo mô hình **Client-Server Architecture**
 
 - **Quản lý Kho & Xử lý Trạng thái (Inventory & State Management):** Tự động khấu trừ số lượng tồn kho khả dụng khi đơn mượn được duyệt và cộng dồn lại khi thiết bị được hoàn trả.
 - **Lịch thời gian thực & Chống trùng lặp (Real-time Booking):** Tích hợp thư viện xử lý thời gian (`dayjs`) để hiển thị lịch trống của thiết bị, ngăn chặn tuyệt đối lỗi đặt trùng lịch (double-booking).
-- **Kiểm tra bàn giao bằng Quét mã QR/Barcode (Mobile-first):** Tích hợp camera trên Mobile App để quét mã định danh dán trên thiết bị, giúp quy trình check-in/check-out diễn ra chính xác trong vài giây.
+- **Luồng Check-in / Check-out Đa phương thức (Hybrid Workflow):** Hỗ trợ nhập liệu thủ công (Manual Entry) qua giao diện Web khi thiếu thiết bị quét, hoặc đồng bộ hóa thời gian thực (Mobile-to-Web Sync) khi dùng Mobile App làm Remote Scanner (có phản hồi xúc giác Haptic Feedback).
 - **Báo cáo Hư hỏng & Cảnh báo Tự động (Automated Alerts & Cron jobs):**
   - Tính năng tải ảnh báo cáo tình trạng thiết bị (trước/sau khi mượn).
   - Hệ thống tự động quét dữ liệu định kỳ (Cron jobs) để phát hiện và gửi thông báo nhắc nhở các thiết bị quá hạn hoàn trả.
@@ -286,10 +286,12 @@ erDiagram
         int equipment_id FK
         int borrower_id FK
         int approver_id FK
+        int storekeeper_id FK
         string type "borrow, return"
-        string status "pending, approved, completed"
+        string status "pending, approved, rejected, completed, overdue"
         timestamp due_date
         timestamp actual_check_in
+        timestamp updated_at
     }
     EQUIPMENT_CATEGORIES {
         int id PK
@@ -377,7 +379,7 @@ Dưới đây là cấu trúc chi tiết của các bảng dữ liệu cốt lõ
 | `approver_id` | integer | FK | ID Người duyệt (`users.id`) |
 | `storekeeper_id`| integer | FK | ID Người giao/nhận đồ (`users.id`) |
 | `type` | varchar(50) | | `borrow`, `return` |
-| `status` | varchar(50) | | `pending`, `approved`, `completed`... |
+| `status` | varchar(50) | | `pending`, `approved`, `rejected`, `completed`, `overdue` |
 | `request_date` | timestamp | Default: now() | Ngày tạo yêu cầu |
 | `approval_date` | timestamp | | Ngày duyệt |
 | `due_date` | timestamp | Not Null | Hạn trả dự kiến |
@@ -386,6 +388,9 @@ Dưới đây là cấu trúc chi tiết của các bảng dữ liệu cốt lõ
 | `condition_at_check_out`| text | | Tình trạng lúc giao |
 | `condition_at_check_in` | text | | Tình trạng lúc nhận |
 | `notes` | text | | Ghi chú thêm |
+| `created_by` | integer | | Người tạo đơn |
+| `updated_by` | integer | | Người cập nhật cuối |
+| `updated_at` | timestamp | | Ngày giờ cập nhật cuối |
 
 **7. Bảng `maintenance_history` (Lịch sử bảo trì)**
 | Tên cột | Kiểu dữ liệu | Ràng buộc | Mô tả |
@@ -429,9 +434,12 @@ Dưới đây là cấu trúc chi tiết của các bảng dữ liệu cốt lõ
   - Framework: UmiJS.
   - Quản lý dữ liệu bằng ProTable của Ant Design.
   - Tối ưu hiệu năng bằng tính năng `clientLoader` của UmiJS để fetch trước các cấu hình danh mục.
+  - **State Management & Networking:** Dùng Zustand quản lý trạng thái đồng bộ (`isSyncing`) và Axios với logic Silent Refresh token. 
+  - Giao diện Check-in/Check-out (`HandleTransaction.tsx`) kết hợp ô Input nhập tay, vùng Dragger để tải ảnh QR, và Bảng trạng thái Real-time (sử dụng UmiJS `useRequest` polling để tự động cập nhật từ Mobile App).
 - **Mobile App:** 
   - Tập trung xử lý tính năng quét QR qua Camera (lấy nét nhanh, tối ưu thiếu sáng).
   - Tích hợp thông báo qua FCM Token.
+  - **Remote Scanner:** Chức năng quét mã nhanh, đồng bộ thẳng lên Web Portal kèm Haptic Feedback (rung) để báo hiệu thành công.
   - Hỗ trợ Offline Mode (đối với lịch sử mượn cá nhân).
 
 ---
