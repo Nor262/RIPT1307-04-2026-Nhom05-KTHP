@@ -4,7 +4,7 @@ import { Avatar, Menu, Spin } from 'antd';
 import { type ItemType } from 'antd/lib/menu/hooks/useItems';
 import React from 'react';
 import { useModel } from '@umijs/max';
-import { OIDCBounder } from '../OIDCBounder';
+import { useAuthStore } from '@/stores/useAuthStore';
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.less';
 
@@ -14,8 +14,9 @@ export type GlobalHeaderRightProps = {
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 	const { initialState } = useModel('@@initialState');
+	const logout = useAuthStore((state) => state.logout);
 
-	const loginOut = () => OIDCBounder?.getActions()?.dangXuat();
+	const loginOut = () => logout();
 
 	if (!initialState || !initialState.currentUser)
 		return (

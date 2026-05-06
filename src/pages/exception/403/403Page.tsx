@@ -1,21 +1,14 @@
 import Footer from '@/components/Footer';
-import { OIDCBounder } from '@/components/OIDCBounder';
 import { landingUrl } from '@/services/base/constant';
-import { currentRole } from '@/utils/ip';
 import { GlobalOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Button, Result } from 'antd';
-import { useEffect } from 'react';
-import { history, useModel } from '@umijs/max';
+import React from 'react';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const NotAccessible = () => {
-	const { initialState } = useModel('@@initialState');
+	const logout = useAuthStore((state) => state.logout);
 
-	useEffect(() => {
-		if (currentRole && initialState?.authorizedPermissions?.find((item) => item.rsname === currentRole))
-			history.replace('/dashboard');
-	}, [initialState?.authorizedPermissions]);
-
-	const onLogout = (): void => OIDCBounder?.getActions()?.dangXuat();
+	const onLogout = (): void => logout();
 
 	return (
 		<div

@@ -44,8 +44,7 @@ export const useAuthStore = create<AuthState>()(
           refreshToken: null,
           isAuthenticated: false,
         });
-        // Optional: redirect to login page
-        // window.location.href = '/user/login';
+        window.location.href = '/user/login';
       },
 
       setTokens: (accessToken, refreshToken) => {
