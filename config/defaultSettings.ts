@@ -11,7 +11,7 @@ const Settings: ProLayoutProps & {
 	borderRadiusBase: '2px',
 	layout: 'mix',
 	contentWidth: 'Fluid',
-	fixedHeader: false,
+	fixedHeader: true,
 	fixSiderbar: true,
 	colorWeak: false,
 	title: 'LẬP TRÌNH WEB - RIPT',
@@ -19,7 +19,7 @@ const Settings: ProLayoutProps & {
 	logo: '/logo.png',
 	iconfontUrl: '',
 	headerTheme: 'light',
-	headerHeight: 60,
+	headerHeight: 56,
 	siderWidth: 220,
 };
 

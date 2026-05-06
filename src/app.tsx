@@ -9,6 +9,7 @@ import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
 import { useAuthStore } from './stores/useAuthStore';
+import defaultSettings from '../config/defaultSettings';
 
 
 
@@ -51,7 +52,7 @@ export const request: RequestConfig = {
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 	return {
 		noFound: <NotFoundContent />,
-		rightContentRender: () => <RightContent />,
+		actionsRender: () => <RightContent />,
 		disableContentMargin: false,
 
 		footerRender: () => <Footer />,
@@ -71,17 +72,14 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 		},
 
 		menuItemRender: (item: any, dom: any) => (
-			<a
-				className='not-underline'
+			<div
 				key={item?.path}
-				onClick={(e) => {
-					e.preventDefault();
+				onClick={() => {
 					history.push(item?.path ?? '/');
 				}}
-				style={{ display: 'block' }}
 			>
 				{dom}
-			</a>
+			</div>
 		),
 
 		childrenRender: (dom) => (
@@ -89,7 +87,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 				{dom}
 			</ErrorBoundary>
 		),
-		menuHeaderRender: undefined,
 		...initialState?.settings,
+		...defaultSettings,
 	};
 };

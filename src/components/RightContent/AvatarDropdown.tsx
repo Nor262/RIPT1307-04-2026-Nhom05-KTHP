@@ -35,15 +35,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 			icon: <UserOutlined />,
 			label: fullName,
 		},
-		// {
-		// 	key: 'password',
-		// 	icon: <SwapOutlined />,
-		// 	label: 'Đổi mật khẩu',
-		// 	onClick: () => {
-		// 		const redirect = window.location.href;
-		// 		window.location.href = `${keycloakAuthEndpoint}?client_id=${AppModules[currentRole].clientId}&redirect_uri=${redirect}&response_type=code&scope=openid&kc_action=UPDATE_PASSWORD`;
-		// 	},
-		// },
 		{
 			key: 'office',
 			icon: <FileWordOutlined />,
@@ -66,22 +57,17 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 		},
 	];
 
-	if (menu && !initialState.currentUser.realm_access?.roles?.includes('QUAN_TRI_VIEN')) {
-		// items.splice(1, 0, {
-		//   key: 'center',
-		//   icon: <UserOutlined />,
-		//   label: 'Trang cá nhân',
-		//   onClick: () => history.push('/account/center'),
-		// });
-	}
-
 	return (
 		<>
 			<HeaderDropdown overlay={<Menu className={styles.menu} items={items} />}>
 				<span className={`${styles.action} ${styles.account}`}>
 					<Avatar
 						className={styles.avatar}
-						src={initialState.currentUser?.picture ? <img src={initialState.currentUser?.picture} /> : undefined}
+						src={
+							initialState.currentUser?.picture ? (
+								<img src={initialState.currentUser?.picture} />
+							) : undefined
+						}
 						icon={!initialState.currentUser?.picture ? lastNameChar ?? <UserOutlined /> : undefined}
 						alt='avatar'
 					/>
