@@ -3,13 +3,62 @@ import RightContent from '@/components/RightContent';
 import { notification } from 'antd';
 import 'moment/locale/vi';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { getIntl, getLocale, history } from '@umijs/max';
+import { getIntl, getLocale, history, useLocation } from '@umijs/max';
 import ErrorBoundary from './components/ErrorBoundary';
 import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
 import { useAuthStore } from './stores/useAuthStore';
 import defaultSettings from '../config/defaultSettings';
+import React, { useEffect, useState } from 'react';
+import { Spin } from 'antd';
+
+const ContentWrapper = ({ dom }: { dom: React.ReactNode }) => {
+	const location = useLocation();
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		setLoading(true);
+		const timer = setTimeout(() => {
+			setLoading(false);
+		}, 400); // Slight delay for smooth transition
+		return () => clearTimeout(timer);
+	}, [location.pathname]);
+
+	return (
+		<div style={{ position: 'relative', minHeight: 'calc(100vh - 200px)' }}>
+			{loading && (
+				<div
+					style={{
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						background: 'rgba(255, 255, 255, 0.7)',
+						zIndex: 999,
+						borderRadius: '8px',
+						backdropFilter: 'blur(2px)',
+					}}
+				>
+					<Spin size="large" tip="Đang tải..." />
+				</div>
+			)}
+			<div
+				style={{
+					opacity: loading ? 0.3 : 1,
+					filter: loading ? 'blur(1px)' : 'none',
+					transition: 'all 0.3s ease-in-out',
+				}}
+			>
+				{dom}
+			</div>
+		</div>
+	);
+};
 
 
 
@@ -85,7 +134,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 
 		childrenRender: (dom) => (
 			<ErrorBoundary>
-				{dom}
+				<ContentWrapper dom={dom} />
 			</ErrorBoundary>
 		),
 		...initialState?.settings,
