@@ -72,14 +72,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 		},
 
 		menuItemRender: (item: any, dom: any) => (
-			<div
+			<a
 				key={item?.path}
 				onClick={() => {
 					history.push(item?.path ?? '/');
 				}}
+				style={{ cursor: 'pointer', display: 'block' }}
 			>
 				{dom}
-			</div>
+			</a>
 		),
 
 		childrenRender: (dom) => (
