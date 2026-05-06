@@ -1,9 +1,8 @@
 import { landingUrl } from '@/services/base/constant';
 import { FileWordOutlined, GlobalOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
-import { type ItemType } from 'antd/lib/menu/hooks/useItems';
+import type { MenuProps } from 'antd';
 import React from 'react';
-import { useModel } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.less';
@@ -28,7 +27,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 	const fullName = user.full_name || user.email || 'User';
 	const lastNameChar = fullName.split(' ')?.at(-1)?.[0]?.toUpperCase() || 'U';
 
-	const items: ItemType[] = [
+	const items: MenuProps['items'] = [
 		{
 			key: 'name',
 			icon: <UserOutlined />,
