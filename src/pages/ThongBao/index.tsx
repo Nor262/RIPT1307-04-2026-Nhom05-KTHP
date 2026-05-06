@@ -9,7 +9,7 @@ import { DeleteOutlined, EyeOutlined, LeftOutlined, PlusCircleOutlined, RightOut
 import { Button, DatePicker, Modal, Popconfirm, Segmented, Space, Tabs } from 'antd';
 import moment from 'moment';
 import { useState } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import news from '../../assets/new6.gif';
 import Form from './components/Form';
 import CardFormThongBaoTuyChinh from './ThongBaoTuyChinh/CardForm';

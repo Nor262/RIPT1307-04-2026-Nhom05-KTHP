@@ -2,7 +2,7 @@ import Footer from '@/components/Footer';
 import { landingUrl } from '@/services/base/constant';
 import { Result } from 'antd';
 import { useEffect } from 'react';
-import { history } from 'umi';
+import { history } from '@umijs/max';
 
 const DangCapNhatPage = () => {
 	// Nếu Đang cập nhật thì bỏ cái này đi

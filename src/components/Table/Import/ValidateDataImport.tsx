@@ -1,7 +1,7 @@
 import { ArrowLeftOutlined, CheckCircleOutlined, SaveOutlined } from '@ant-design/icons';
 import { Button, Col, Collapse, Popconfirm, Row, Space, Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import TableStaticData from '../TableStaticData';
 import { type IColumn, type TImportResponse, type TImportRowResponse } from '../typing';
 

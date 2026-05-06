@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Tag, Space, Typography, Card, Statistic, Row, Col } from 'antd';
 import { PlusOutlined, CheckCircleOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormSelect, ProFormDatePicker, ProFormTextArea, ProFormDigit } from '@ant-design/pro-form';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
+import { ModalForm, ProFormText, ProFormSelect, ProFormDatePicker, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
 import { getMaintenance, createMaintenance, completeMaintenance, getEquipment } from '@/services/api';
 
 const { Title } = Typography;

@@ -2,7 +2,7 @@ import rules from '@/utils/rules';
 import { resetFieldsForm } from '@/utils/utils';
 import { Button, Card, Form, Input } from 'antd';
 import { useEffect } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 
 const FormChucVu = (props: any) => {
   const [form] = Form.useForm();

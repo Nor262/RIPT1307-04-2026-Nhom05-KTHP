@@ -1,6 +1,6 @@
 import { HomeOutlined } from '@ant-design/icons';
 import { Button, Result, Spin } from 'antd';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 
 const NotAccessible = () => {
 	const { initialState } = useModel('@@initialState');

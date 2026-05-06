@@ -6,7 +6,7 @@ import { getNameFile } from '@/utils/utils';
 import { CalendarOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Col, Divider, Row } from 'antd';
 import moment from 'moment';
-import { history } from 'umi';
+import { history } from '@umijs/max';
 import './style.less';
 
 const ViewThongBao = (props: { record?: ThongBao.IRecord; afterViewDetail?: () => void; hideCard?: boolean }) => {

@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Tag, Space, Typography, DatePicker, Select } from 'antd';
 import { DownloadOutlined, FileExcelOutlined } from '@ant-design/icons';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
 import { getTransactions } from '@/services/api';
 import * as XLSX from 'xlsx';
 

@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { Tag, Typography, Space, Button, message } from 'antd';
 import { WarningOutlined, BellOutlined } from '@ant-design/icons';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
 import { getOverdueTransactions } from '@/services/api';
 
 const { Text } = Typography;

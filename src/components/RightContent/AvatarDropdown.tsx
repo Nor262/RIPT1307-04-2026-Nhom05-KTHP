@@ -3,7 +3,7 @@ import { FileWordOutlined, GlobalOutlined, LogoutOutlined, UserOutlined } from '
 import { Avatar, Menu, Spin } from 'antd';
 import { type ItemType } from 'antd/lib/menu/hooks/useItems';
 import React from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import { OIDCBounder } from '../OIDCBounder';
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.less';

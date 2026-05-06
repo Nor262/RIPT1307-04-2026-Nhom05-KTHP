@@ -5,7 +5,7 @@ import { Button, Col, Form, InputNumber, Row, Select, Space, message } from 'ant
 import fileDownload from 'js-file-download';
 import { pick } from 'lodash';
 import { useState } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import * as XLSX from 'xlsx';
 
 const ChooseFileImport = (props: { onChange: () => void; onCancel: any; getTemplate: any; fileName?: string }) => {

@@ -26,7 +26,7 @@ import {
   LoginOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
-import { useRequest } from 'umi';
+import { useRequest } from '@umijs/max';
 import { useTransactionStore } from '@/stores/useTransactionStore';
 import { verifyItem, syncTransactionStatus } from '@/services/api';
 import jsQR from 'jsqr';

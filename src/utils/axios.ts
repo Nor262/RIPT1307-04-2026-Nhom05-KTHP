@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { message, notification } from 'antd';
-import { history } from 'umi';
+import { history } from '@umijs/max';
 
 axios.defaults.baseURL = 'http://localhost:3000/v1';
 axios.defaults.headers.post['Content-Type'] = 'application/json';

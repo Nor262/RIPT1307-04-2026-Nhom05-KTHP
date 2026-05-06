@@ -2,7 +2,7 @@ import rules from '@/utils/rules';
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Row, Select, Space } from 'antd';
 import { useEffect } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import { type TImportHeader } from '../typing';
 
 const MatchColumns = (props: { onChange: () => void; onBack: any; importHeaders: TImportHeader[] }) => {

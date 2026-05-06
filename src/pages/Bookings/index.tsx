@@ -6,8 +6,8 @@ import {
   EyeOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
 import { getTransactions, reviewTransaction } from '@/services/api';
 
 const { TextArea } = Input;

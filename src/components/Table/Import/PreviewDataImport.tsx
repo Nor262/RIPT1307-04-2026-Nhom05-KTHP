@@ -3,7 +3,7 @@ import { ArrowLeftOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Row, Space } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import TableStaticData from '../TableStaticData';
 import type { IColumn, TImportHeader } from '../typing';
 

@@ -2,7 +2,7 @@ import { ELoaiPhanHoi } from '@/services/TienIch/PhanHoi/constant';
 import { buildUpLoadFile } from '@/services/uploadFile';
 import rules from '@/utils/rules';
 import { Button, Card, Form, Input } from 'antd';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import FormItemUrlOrUpload from '../Upload/FormItemUrlOrUpload';
 import { useEffect } from 'react';
 import { resetFieldsForm } from '@/utils/utils';

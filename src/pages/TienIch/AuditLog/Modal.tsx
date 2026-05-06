@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import SplitPane from 'react-split-pane';
 import Pane from 'react-split-pane/lib/Pane';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 
 const renderSection = (label: string, data: any) => (
 	<>

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import styles from './NoticeList.less';
 
 export type NoticeIconTabProps = {

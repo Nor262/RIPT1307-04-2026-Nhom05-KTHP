@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRequest } from 'umi';
+import { useRequest } from '@umijs/max';
 import { Row, Col, Card, Statistic, Spin, Badge, List, Typography, Tag, Space } from 'antd';
 import {
   DatabaseOutlined,
@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import ReactApexChart from 'react-apexcharts';
 import { getDashboardStats } from '@/services/api';
-import ProCard from '@ant-design/pro-card';
+import { ProCard } from '@ant-design/pro-components';
 
 const { Text, Title } = Typography;
 

@@ -2,7 +2,7 @@ import { FileExcelOutlined } from '@ant-design/icons';
 import { Button, Col, Empty, Modal, Row } from 'antd';
 import fileDownload from 'js-file-download';
 import { useEffect, useState } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import { type TExportField } from '../typing';
 import CardChooseFields from './CardChooseFields';
 import CardExportFields from './CardExportFields';

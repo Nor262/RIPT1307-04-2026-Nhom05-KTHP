@@ -8,7 +8,7 @@ import {
 import type { Login } from '@/services/base/typing';
 import { UserSwitchOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import './style.less';
 
 const ModuleView = () => {

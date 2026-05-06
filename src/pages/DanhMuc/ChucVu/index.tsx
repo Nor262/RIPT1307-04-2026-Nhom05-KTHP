@@ -3,7 +3,7 @@ import { type IColumn } from '@/components/Table/typing';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Button, Popconfirm, Tooltip } from 'antd';
 import moment from 'moment';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import Form from './components/Form';
 
 const ChucVuPage = () => {

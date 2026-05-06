@@ -2,7 +2,7 @@ import { deleteOneSignal } from '@/services/base/api';
 import { currentRole, oneSignalRole } from '@/utils/ip';
 import { useAuth } from 'react-oidc-context';
 import OneSignal from 'react-onesignal';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 
 export const useAuthActions = () => {
 	const { initialState, setInitialState } = useModel('@@initialState');

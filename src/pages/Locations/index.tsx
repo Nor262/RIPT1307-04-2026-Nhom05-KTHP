@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormSelect } from '@ant-design/pro-form';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
+import { ModalForm, ProFormText, ProFormSelect } from '@ant-design/pro-components';
 import { getLocations, createLocation, updateLocation, deleteLocation, getUsers } from '@/services/api';
 
 export type LocationItem = {

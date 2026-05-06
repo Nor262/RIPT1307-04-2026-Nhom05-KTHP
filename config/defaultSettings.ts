@@ -1,6 +1,6 @@
-import { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { ProLayoutProps } from '@ant-design/pro-components';
 
-const Settings: LayoutSettings & {
+const Settings: ProLayoutProps & {
 	pwa?: boolean;
 	logo?: string;
 	borderRadiusBase: string;

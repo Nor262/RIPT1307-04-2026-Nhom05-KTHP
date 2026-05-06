@@ -7,7 +7,7 @@ import { ImportOutlined } from '@ant-design/icons';
 import { Checkbox, Col, Empty, Row } from 'antd';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import GroupTagUsers from './GroupTagUsers';
 import ModalImport from './ModalImport';
 

@@ -5,7 +5,7 @@ import { currentRole } from '@/utils/ip';
 import { GlobalOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Button, Result } from 'antd';
 import { useEffect } from 'react';
-import { history, useModel } from 'umi';
+import { history, useModel } from '@umijs/max';
 
 const NotAccessible = () => {
 	const { initialState } = useModel('@@initialState');

@@ -9,7 +9,7 @@ import { ConfigProvider, notification } from 'antd';
 import queryString from 'query-string';
 import { useEffect, type FC } from 'react';
 import { AuthProvider, hasAuthParams, useAuth } from 'react-oidc-context';
-import { history, useModel } from 'umi';
+import { history, useModel } from '@umijs/max';
 import LoadingPage from '../Loading';
 import { unAuthPaths, unCheckPermissionPaths } from './constant';
 

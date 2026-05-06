@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined } from '@ant-design/icons';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-form';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
+import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-components';
 import { 
   getEquipment, createEquipment, updateEquipment, deleteEquipment, 
   getCategories, getSuppliers, getLocations 

@@ -10,7 +10,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row, Select, Space } from 'antd';
 import fileDownload from 'js-file-download';
 import { useEffect } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 
 const FormThongBaoTuyChinh = (props: any) => {
 	const { afterAddNew, type } = props;

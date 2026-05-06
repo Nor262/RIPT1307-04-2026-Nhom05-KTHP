@@ -3,7 +3,7 @@ import { HomeOutlined, ReloadOutlined } from '@ant-design/icons';
 import * as Sentry from '@sentry/react';
 import { Button, Result } from 'antd';
 import React from 'react';
-import { history } from 'umi';
+import { history } from '@umijs/max';
 import './style.less';
 
 class ErrorBoundary extends React.Component<MyProps, MyState> {

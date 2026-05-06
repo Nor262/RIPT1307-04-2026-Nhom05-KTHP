@@ -2,19 +2,15 @@ import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
 import { notification } from 'antd';
 import 'moment/locale/vi';
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
-import { getIntl, getLocale, history } from 'umi';
-import type { ResponseError } from 'umi-request';
+import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
+import { getIntl, getLocale, history } from '@umijs/max';
 import ErrorBoundary from './components/ErrorBoundary';
 import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
 import { useAuthStore } from './stores/useAuthStore';
 
-/**  loading */
-export const initialStateConfig = {
-	loading: <></>,
-};
+
 
 export async function getInitialState(): Promise<IInitialState> {
 	await useAuthStore.getState().fetchProfile();
@@ -27,31 +23,27 @@ export async function getInitialState(): Promise<IInitialState> {
 }
 
 /**
- * @see https://beta-pro.ant.design/docs/request-cn
+ * @see https://umijs.org/docs/max/request
  */
 export const request: RequestConfig = {
-	errorHandler: (error: ResponseError) => {
-		const { messages } = getIntl(getLocale());
-		const { response } = error;
-
-		if (response && response.status) {
-			const { status, statusText, url } = response;
-			const requestErrorMessage = messages['app.request.error'];
-			const errorMessage = `${requestErrorMessage} ${status}: ${url}`;
-			const errorDescription = messages[`app.request.${status}`] || statusText;
-			notification.error({
-				message: errorMessage,
-				description: errorDescription,
-			});
-		}
-
-		if (!response) {
-			notification.error({
-				description: 'Yêu cầu gặp lỗi',
-				message: 'Bạn hãy thử lại sau',
-			});
-		}
-		throw error;
+	timeout: 10000,
+	errorConfig: {
+		errorHandler: (error: any) => {
+			const { response } = error;
+			if (response && response.status) {
+				const { status, statusText, url } = response;
+				notification.error({
+					message: `Yêu cầu lỗi ${status}: ${url}`,
+					description: statusText,
+				});
+			} else if (!response) {
+				notification.error({
+					description: 'Yêu cầu gặp lỗi, vui lòng thử lại sau',
+					message: 'Lỗi mạng',
+				});
+			}
+			throw error;
+		},
 	},
 };
 

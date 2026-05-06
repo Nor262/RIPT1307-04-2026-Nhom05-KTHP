@@ -1,4 +1,4 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { EModuleKey, EScopeFile, ESettingKey, EStorageFile } from './constant';
 
 declare module Login {

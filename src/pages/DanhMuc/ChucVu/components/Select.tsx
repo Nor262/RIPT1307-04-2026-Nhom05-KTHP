@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Modal, Select } from 'antd';
 import { useEffect } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import FormChucVu from './Form';
 
 /**

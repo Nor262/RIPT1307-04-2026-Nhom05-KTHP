@@ -33,7 +33,7 @@ import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import type { SortEnd, SortableContainerProps } from 'react-sortable-hoc';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import ButtonExtend from './ButtonExtend';
 import ModalExport from './Export';
 import ModalImport from './Import';

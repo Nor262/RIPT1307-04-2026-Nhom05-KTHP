@@ -7,7 +7,7 @@ import { Button, Col, Form, Modal, Row } from 'antd';
 import fileDownload from 'js-file-download';
 import _ from 'lodash';
 import { useEffect } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 
 const ModalImport = (props: {
 	visible: boolean;

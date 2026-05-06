@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined, MailOutlined, IdcardOutlined } from '@ant-design/icons';
-import { history, Link } from 'umi';
+import { history, Link } from '@umijs/max';
 import axios from '@/utils/axios';
 import Footer from '@/components/Footer';
 import styles from '../Login/index.less';

@@ -7,7 +7,7 @@ import type { ThongBao } from '@/services/ThongBao/typing';
 import { currentRole } from '@/utils/ip';
 import { Button } from 'antd';
 import moment from 'moment';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 
 const ConfirmThongBaoTuyChinh = (props: { getData: () => void; type: NotificationType }) => {
 	const { getData, type } = props;

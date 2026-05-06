@@ -1,5 +1,5 @@
 import React from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import AvatarDropdown from './AvatarDropdown';
 import styles from './index.less';
 
