@@ -1,14 +1,13 @@
-import React from 'react';
-import { useModel } from '@umijs/max';
+import { useAuthStore } from '@/stores/useAuthStore';
 import AvatarDropdown from './AvatarDropdown';
 import styles from './index.less';
 
 export type SiderTheme = 'light' | 'dark';
 
 const GlobalHeaderRight: React.FC = () => {
-	const { initialState } = useModel('@@initialState');
+	const user = useAuthStore((state) => state.user);
 
-	if (!initialState || !initialState.currentUser) {
+	if (!user) {
 		return null;
 	}
 

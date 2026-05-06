@@ -13,22 +13,20 @@ export type GlobalHeaderRightProps = {
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-	const { initialState } = useModel('@@initialState');
+	const user = useAuthStore((state) => state.user);
 	const logout = useAuthStore((state) => state.logout);
 
 	const loginOut = () => logout();
 
-	if (!initialState || !initialState.currentUser)
+	if (!user)
 		return (
 			<span className={`${styles.action} ${styles.account}`}>
 				<Spin size='small' style={{ marginLeft: 8, marginRight: 8 }} />
 			</span>
 		);
 
-	const fullName = initialState.currentUser?.family_name
-		? `${initialState.currentUser.family_name} ${initialState.currentUser?.given_name ?? ''}`
-		: initialState.currentUser?.name ?? (initialState.currentUser?.preferred_username || '');
-	const lastNameChar = fullName.split(' ')?.at(-1)?.[0]?.toUpperCase();
+	const fullName = user.full_name || user.email || 'User';
+	const lastNameChar = fullName.split(' ')?.at(-1)?.[0]?.toUpperCase() || 'U';
 
 	const items: ItemType[] = [
 		{
@@ -64,12 +62,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 				<span className={`${styles.action} ${styles.account}`}>
 					<Avatar
 						className={styles.avatar}
-						src={
-							initialState.currentUser?.picture ? (
-								<img src={initialState.currentUser?.picture} />
-							) : undefined
-						}
-						icon={!initialState.currentUser?.picture ? lastNameChar ?? <UserOutlined /> : undefined}
+						icon={lastNameChar ?? <UserOutlined />}
 						alt='avatar'
 					/>
 					<span className={`${styles.name}`}>{fullName}</span>
