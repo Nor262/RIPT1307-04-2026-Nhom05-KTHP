@@ -23,10 +23,10 @@ const Login: React.FC = () => {
 
       if (response?.data?.status === 'success' && response?.data?.data) {
         const { user, accessToken, refreshToken } = response.data.data;
-        
+
         // Gọi action login từ Zustand
         loginAction({ user, accessToken, refreshToken });
-        
+
         message.success('Đăng nhập thành công');
         history.replace('/dashboard');
       }
@@ -82,6 +82,8 @@ const Login: React.FC = () => {
               <Button type="primary" htmlType="submit" block loading={submitting}>
                 Đăng nhập
               </Button>
+            </Form.Item>
+            <Form.Item>
               <div style={{ marginTop: 16, textAlign: 'center' }}>
                 Chưa có tài khoản? <Link to="/user/register">Đăng ký ngay</Link>
               </div>

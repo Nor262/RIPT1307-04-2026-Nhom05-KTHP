@@ -1,12 +1,11 @@
 import { DatePicker } from 'antd';
 import locale from 'antd/es/date-picker/locale/vi_VN';
-import 'antd/es/date-picker/style/index.less';
-import type { PickerProps } from 'antd/lib/date-picker/generatePicker';
-import type { Moment } from 'moment';
-import moment from 'moment';
+import type { PickerProps } from 'antd/es/date-picker/generatePicker';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 const MyDatePicker = (
-  props: Omit<PickerProps<Moment>, 'onChange'> & {
+  props: Omit<PickerProps<Dayjs>, 'onChange'> & {
     /**
      * Format hiển thị, mặc định: DD/MM/YYYY
      */
@@ -32,23 +31,23 @@ const MyDatePicker = (
      * Format lưu lại, mặc định: ISOString
      */
     saveFormat?: string;
-    disabledDate?: (cur: string) => any;
+    disabledDate?: (cur: any) => any;
     onChange?: (arg: string | null) => any;
   },
 ) => {
   const format = props?.format ?? 'DD/MM/YYYY';
   const { saveFormat, pickerStyle, disabledDate, showTime, allowClear, disabled } = props;
 
-  const handleChange = (value: Moment | null) => {
+  const handleChange = (value: Dayjs | null) => {
     if (props.onChange)
       if (value)
         props.onChange(saveFormat ? value?.format(props?.saveFormat) : value.toISOString());
       else props.onChange(null);
   };
 
-  let objMoment: any = undefined;
-  if (props.value && typeof props.value == 'string') objMoment = moment(props.value, saveFormat);
-  else objMoment = props?.value;
+  let objDayjs: any = undefined;
+  if (props.value && typeof props.value == 'string') objDayjs = dayjs(props.value, saveFormat);
+  else objDayjs = props?.value;
 
   return (
     <DatePicker
@@ -57,7 +56,7 @@ const MyDatePicker = (
       format={format}
       picker={pickerStyle}
       locale={locale}
-      value={objMoment}
+      value={objDayjs}
       onChange={handleChange}
       disabledDate={disabledDate}
       showTime={showTime}

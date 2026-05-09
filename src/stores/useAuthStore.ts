@@ -68,7 +68,14 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage', // Tên lưu trong localStorage
-      getStorage: () => localStorage,
+      storage: {
+        getItem: (name) => {
+          const str = localStorage.getItem(name);
+          return str ? JSON.parse(str) : null;
+        },
+        setItem: (name, value) => localStorage.setItem(name, JSON.stringify(value)),
+        removeItem: (name) => localStorage.removeItem(name),
+      },
     }
   )
 );

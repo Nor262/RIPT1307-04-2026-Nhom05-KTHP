@@ -43,9 +43,34 @@ import { findFiltersInColumns, updateSearchStorage } from './function';
 import './style.less';
 import type { IColumn, TDataOption, TFilter, TableBaseProps } from './typing';
 
+interface IModel<T> {
+	visibleForm: boolean;
+	setVisibleForm: (v: boolean) => void;
+	setEdit: (v: boolean) => void;
+	setRecord: (v: Partial<T> | any) => void;
+	setIsView: (v: boolean) => void;
+	selectedIds: string[] | undefined;
+	setSelectedIds: (v: string[] | undefined) => void;
+	page: number;
+	limit: number;
+	total: number;
+	setPage: (v: number) => void;
+	setLimit: (v: number) => void;
+	condition: any;
+	loading: boolean;
+	sort: any;
+	setSort: (v: any) => void;
+	setFilters: (v: TFilter<T>[]) => void;
+	deleteManyModel: (ids: string[], callback?: () => void) => Promise<any>;
+	initFilter: TFilter<T>[];
+	filters: TFilter<T>[];
+	getModel: (params?: any) => Promise<T[]>;
+	[key: string]: any;
+}
+
 const TableBase = (props: TableBaseProps) => {
 	const { modelName, Form, title, dependencies = [], params, buttons, widthDrawer, destroyModal } = props;
-	const model = useModel(modelName);
+	const model = useModel(modelName) as IModel<any>;
 	const {
 		visibleForm,
 		setVisibleForm,

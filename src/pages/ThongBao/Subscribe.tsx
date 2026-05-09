@@ -16,7 +16,7 @@ const SubscribeOneSignal = () => {
 	 */
 	useEffect(() => {
 		if (accessToken)
-			OneSignal.getUserId().then((playerId) => {
+			(OneSignal as any).getUserId().then((playerId: string) => {
 				// Init playerId to Back-end and Close popup window
 				if (playerId)
 					initOneSignal({ playerId }).then(() => {

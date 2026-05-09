@@ -3,7 +3,7 @@ import RightContent from '@/components/RightContent';
 import { notification } from 'antd';
 import 'moment/locale/vi';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { getIntl, getLocale, history, useLocation } from '@umijs/max';
+import { history, useLocation } from '@umijs/max';
 import ErrorBoundary from './components/ErrorBoundary';
 import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
@@ -101,10 +101,18 @@ export const request: RequestConfig = {
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 	return {
 		noFound: <NotFoundContent />,
-		actionsRender: () => <RightContent />,
+		actionsRender: () => (
+			<>
+				<RightContent />
+			</>
+		),
 		disableContentMargin: false,
 
-		footerRender: () => <Footer />,
+		footerRender: () => (
+			<>
+				<Footer />
+			</>
+		),
 
 		onPageChange: () => {
 			const { location } = history;
@@ -134,10 +142,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 
 		childrenRender: (dom) => (
 			<ErrorBoundary>
-				<ContentWrapper dom={dom} />
+				<ContentWrapper dom={dom as any} />
 			</ErrorBoundary>
 		),
 		...initialState?.settings,
 		...defaultSettings,
-	};
+	} as any;
 };
