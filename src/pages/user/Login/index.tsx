@@ -14,10 +14,11 @@ const Login: React.FC = () => {
   const loginAction = useAuthStore((state) => state.login);
 
   const handleSubmit = async (values: any) => {
+    console.log('Login values:', values);
     try {
       setSubmitting(true);
       const response = await axios.post('/auth/login', {
-        email: values.email,
+        identifier: values.identifier || values.email,
         password: values.password,
       });
 
@@ -57,14 +58,13 @@ const Login: React.FC = () => {
             size="large"
           >
             <Form.Item
-              name="email"
+              name="identifier"
               rules={[
-                { required: true, message: 'Vui lòng nhập Email!' },
-                { type: 'email', message: 'Email không hợp lệ!' }
+                { required: true, message: 'Vui lòng nhập Email hoặc Tên đăng nhập!' },
               ]}
             >
               <Input
-                placeholder="Email đăng nhập"
+                placeholder="Email hoặc Tên đăng nhập"
                 prefix={<UserOutlined className={styles.prefixIcon} />}
               />
             </Form.Item>
