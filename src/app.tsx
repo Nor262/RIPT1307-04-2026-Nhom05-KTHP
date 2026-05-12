@@ -67,7 +67,7 @@ export async function getInitialState(): Promise<IInitialState> {
 	const user = useAuthStore.getState().user;
 	
 	return {
-		currentUser: user as any,
+		currentUser: user as IInitialState['currentUser'],
 		permissionLoading: false,
 	};
 }

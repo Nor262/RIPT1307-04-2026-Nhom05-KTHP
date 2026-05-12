@@ -97,6 +97,11 @@ export async function getOverdueTransactions(params?: any) {
   return axios.get('/transactions', { params: { ...params, status: 'overdue' } });
 }
 
+// ==================== My Transactions (Borrower) ====================
+export async function getMyTransactions(params?: any) {
+  return axios.get('/transactions/my', { params });
+}
+
 // ==================== Suppliers ====================
 export async function getSuppliers(params?: any) {
   return axios.get('/suppliers', { params });

@@ -42,7 +42,12 @@ declare module Login {
 
 export interface IInitialState {
 	settings?: Partial<LayoutSettings>;
-	currentUser?: Login.IUser;
+	currentUser?: {
+		id: number;
+		email: string;
+		full_name: string;
+		role: 'admin' | 'storekeeper' | 'borrower';
+	};
 	authorizedPermissions?: Login.IPermission[];
 	permissionLoading?: boolean;
 }

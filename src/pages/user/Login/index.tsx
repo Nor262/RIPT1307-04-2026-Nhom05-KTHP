@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { history, useIntl, Link } from '@umijs/max';
+import { history, useIntl, Link, useModel } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
 import Footer from '@/components/Footer';
@@ -12,6 +12,7 @@ const Login: React.FC = () => {
   const intl = useIntl();
   const [form] = Form.useForm();
   const loginAction = useAuthStore((state) => state.login);
+  const { setInitialState } = useModel('@@initialState');
 
   const handleSubmit = async (values: any) => {
     console.log('Login values:', values);
@@ -25,11 +26,21 @@ const Login: React.FC = () => {
       if (response?.data?.status === 'success' && response?.data?.data) {
         const { user, accessToken, refreshToken } = response.data.data;
 
-        // Gọi action login từ Zustand
+        // 1. Lưu vào Zustand store (persist to localStorage)
         loginAction({ user, accessToken, refreshToken });
 
+        // 2. Cập nhật trực tiếp initialState cho UmiJS access plugin
+        //    Không cần gọi API lại, dùng user data đã có từ login response
+        await setInitialState((prev: any) => ({
+          ...prev,
+          currentUser: user,
+        }));
+
         message.success('Đăng nhập thành công');
-        history.replace('/dashboard');
+
+        // 3. Dùng window.location để force full page reload
+        //    Đảm bảo UmiJS re-evaluate tất cả access rules
+        window.location.href = '/dashboard';
       }
     } catch (error) {
       // Axios interceptor đã handle message lỗi 400/401/500
