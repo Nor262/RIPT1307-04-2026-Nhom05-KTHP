@@ -6,7 +6,8 @@ import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-components';
 import { 
   getEquipment, createEquipment, updateEquipment, deleteEquipment, 
-  getCategories, getSuppliers, getLocations, importBulkEquipment, exportEquipmentExcel
+  getCategories, getSuppliers, getLocations, importBulkEquipment, exportEquipmentExcel,
+  resolveMaintenanceEquipment
 } from '@/services/api';
 
 export type EquipmentItem = {
@@ -124,6 +125,19 @@ const EquipmentList: React.FC = () => {
         >
           <QrcodeOutlined /> QR
         </a>,
+        record.status === 'maintenance' && (
+          <Popconfirm
+            key="resolve"
+            title="Xác nhận thiết bị đã sửa xong và sẵn sàng cho mượn?"
+            onConfirm={async () => {
+              await resolveMaintenanceEquipment(record.id);
+              message.success('Thiết bị đã sẵn sàng');
+              actionRef.current?.reload();
+            }}
+          >
+            <a style={{ color: '#52c41a' }}>Xử lý xong</a>
+          </Popconfirm>
+        ),
         <Popconfirm
           key="delete"
           title="Bạn có chắc chắn muốn xóa?"

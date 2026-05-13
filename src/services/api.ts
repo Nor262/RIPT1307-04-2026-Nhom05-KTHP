@@ -69,6 +69,10 @@ export async function exportEquipmentExcel() {
   return axios.get('/reports/excel', { responseType: 'blob' });
 }
 
+export async function resolveMaintenanceEquipment(id: number) {
+  return axios.patch(`/equipment/${id}/resolve-maintenance`);
+}
+
 // ==================== Transactions ====================
 export async function getTransactions(params?: any) {
   return axios.get('/transactions', { params });
