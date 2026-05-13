@@ -27,6 +27,8 @@ type TransactionItem = {
   actual_check_out?: string;
   actual_check_in?: string;
   notes?: string;
+  rating?: number;
+  feedback?: string;
 };
 
 const statusMap: Record<string, { text: string; color: string }> = {
@@ -245,6 +247,12 @@ const BookingApproval: React.FC = () => {
             {currentRow.actual_check_in && (
               <Descriptions.Item label="Check-in">{new Date(currentRow.actual_check_in).toLocaleString('vi-VN')}</Descriptions.Item>
             )}
+            {currentRow.rating && (
+              <Descriptions.Item label="Đánh giá">
+                <Text type="warning" strong>{currentRow.rating} / 5 ⭐</Text>
+              </Descriptions.Item>
+            )}
+            {currentRow.feedback && <Descriptions.Item label="Phản hồi">{currentRow.feedback}</Descriptions.Item>}
             {currentRow.notes && <Descriptions.Item label="Ghi chú">{currentRow.notes}</Descriptions.Item>}
             {currentRow.approver && <Descriptions.Item label="Người duyệt">{currentRow.approver.full_name}</Descriptions.Item>}
           </Descriptions>
