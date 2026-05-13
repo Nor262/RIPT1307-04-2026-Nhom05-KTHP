@@ -90,7 +90,7 @@ export async function syncTransactionStatus(data: { transaction_ids: number[] })
 
 // ==================== Analytics ====================
 export async function getDashboardStats() {
-  return axios.get('/analytics/dashboard');
+  return axios.get('/reports/dashboard');
 }
 
 export async function getOverdueTransactions(params?: any) {
