@@ -79,6 +79,7 @@ const SupplierList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
+            danger
             key="primary"
             onClick={() => {
               setCurrentRow(undefined);

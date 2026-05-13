@@ -86,10 +86,25 @@ const CategoryManagement: React.FC = () => {
         headerTitle="Quản lý Danh mục thiết bị"
         actionRef={actionRef}
         rowKey="id"
-        search={{ labelWidth: 120 }}
+        search={{
+          labelWidth: 120,
+          optionRender: (searchConfig, formProps, dom) => [
+            // dom[0] là nút Làm lại, dom[1] là nút Tìm kiếm
+            dom[0],
+            <Button
+              key="search"
+              type="primary"
+              danger
+              onClick={() => formProps.form?.submit()}
+            >
+              Tìm kiếm
+            </Button>,
+          ],
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
+            danger
             key="create"
             onClick={() => {
               setCurrentRow(undefined);
@@ -97,7 +112,7 @@ const CategoryManagement: React.FC = () => {
             }}
           >
             <PlusOutlined /> Thêm danh mục
-          </Button>,
+          </Button >,
         ]}
         request={async (params) => {
           const res = await getCategories(params);

@@ -122,10 +122,36 @@ const UserManagement: React.FC = () => {
         headerTitle="Quản lý Người dùng"
         actionRef={actionRef}
         rowKey="id"
-        search={{ labelWidth: 120 }}
+        search={{
+          labelWidth: 120,
+          collapseRender: (collapsed, showCollapseButton) => {
+            if (!showCollapseButton) return null;
+            return (
+              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+                {collapsed ? (
+                  <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
+                ) : (
+                  <>Thu gọn <PlusOutlined style={{ transform: 'rotate(45deg)', fontSize: 12 }} /></>
+                )}
+              </span>
+            );
+          },
+          optionRender: (searchConfig, formProps, dom) => [
+            dom[0],
+            <Button
+              key="search"
+              type="primary"
+              danger
+              onClick={() => formProps.form?.submit()}
+            >
+              Tìm ngay
+            </Button>,
+          ],
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
+            danger
             key="create"
             onClick={() => {
               setCurrentRow(undefined);

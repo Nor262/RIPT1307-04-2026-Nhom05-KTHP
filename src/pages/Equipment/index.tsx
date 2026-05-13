@@ -4,9 +4,9 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-components';
-import { 
-  getEquipment, createEquipment, updateEquipment, deleteEquipment, 
-  getCategories, getSuppliers, getLocations 
+import {
+  getEquipment, createEquipment, updateEquipment, deleteEquipment,
+  getCategories, getSuppliers, getLocations
 } from '@/services/api';
 
 export type EquipmentItem = {
@@ -145,10 +145,38 @@ const EquipmentList: React.FC = () => {
         headerTitle="Danh sách thiết bị"
         actionRef={actionRef}
         rowKey="id"
-        search={{ labelWidth: 120 }}
+        search={{
+          labelWidth: 120,
+          // fix style mở rộng
+          collapseRender: (collapsed, showCollapseButton) => {
+            if (!showCollapseButton) return null;
+            return (
+              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+                {collapsed ? (
+                  <><PlusOutlined style={{ fontSize: 12 }} /> Mở rộng </>
+                ) : (
+                  <> <PlusOutlined style={{ transform: 'rotate(45deg)', fontSize: 12 }} /> Thu gọn</>
+                )}
+              </span>
+            );
+          },
+          optionRender: (searchConfig, formProps, dom) => [
+            // dom[0] là nút Làm lại, dom[1] là nút Tìm kiếm
+            dom[0],
+            <Button
+              key="search"
+              type="primary"
+              danger
+              onClick={() => formProps.form?.submit()}
+            >
+              Tìm ngay
+            </Button>,
+          ],
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
+            danger
             key="primary"
             onClick={() => {
               setCurrentRow(undefined);
@@ -231,9 +259,9 @@ const EquipmentList: React.FC = () => {
         <ProFormTextArea name="current_condition" label="Tình trạng hiện tại" />
         <ProFormText name="image_url" label="Link ảnh thiết bị" />
         <ProFormDatePicker name="purchase_date" label="Ngày mua" />
-        <ProFormTextArea 
-          name="specifications" 
-          label="Thông số kỹ thuật (JSON)" 
+        <ProFormTextArea
+          name="specifications"
+          label="Thông số kỹ thuật (JSON)"
           placeholder='{"key": "value"}'
           transform={(val) => {
             try { return typeof val === 'string' ? JSON.parse(val) : val; } catch { return val; }
