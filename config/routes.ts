@@ -126,6 +126,15 @@ export default [
 		],
 	},
 
+	// HỒ SƠ CÁ NHÂN
+	{
+		path: '/profile',
+		name: 'Hồ sơ cá nhân',
+		icon: 'UserOutlined',
+		component: './Profile',
+		access: 'authenticated',
+	},
+
 	// QUẢN TRỊ HỆ THỐNG — Admin only
 	{
 		path: '/system',
