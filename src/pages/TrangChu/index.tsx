@@ -12,6 +12,7 @@ import {
 import ReactApexChart from 'react-apexcharts';
 import { getDashboardStats } from '@/services/api';
 import { ProCard } from '@ant-design/pro-components';
+
 const { Text, Title } = Typography;
 
 const Dashboard: React.FC = () => {
