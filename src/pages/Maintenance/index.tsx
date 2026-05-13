@@ -96,12 +96,20 @@ const MaintenanceList: React.FC = () => {
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={8}>
           <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Đang bảo trì" value={3} prefix={<ToolOutlined />} valueStyle={{ color: '#faad14' }} />
+            <Statistic title="Đang bảo trì" value={3} prefix={<ToolOutlined />} valueStyle={{
+              backgroundImage: 'url("/background_card3.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
+              backgroundSize: 'contain',
+              borderLeft: '4px solid #faad14'
+            }} />
           </Card>
         </Col>
         <Col span={8}>
           <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Tổng chi phí tháng này" value={1500000} suffix="VNĐ" prefix={<HistoryOutlined />} />
+            <Statistic title="Tổng chi phí tháng này" value={1500000} suffix="VNĐ" prefix={<HistoryOutlined />} valueStyle={{
+              backgroundImage: 'url("/background_card4.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
+              backgroundSize: 'contain',
+              borderLeft: '4px solid #faad14'
+            }} />
           </Card>
         </Col>
       </Row>
@@ -110,10 +118,35 @@ const MaintenanceList: React.FC = () => {
         headerTitle="Nhật ký bảo trì thiết bị"
         actionRef={actionRef}
         rowKey="id"
-        search={{ labelWidth: 120 }}
+        search={{
+          labelWidth: 120, collapseRender: (collapsed, showCollapseButton) => {
+            if (!showCollapseButton) return null;
+            return (
+              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+                {collapsed ? (
+                  <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
+                ) : (
+                  <>Thu gọn <PlusOutlined style={{ transform: 'rotate(45deg)', fontSize: 12 }} /></>
+                )}
+              </span>
+            );
+          },
+          optionRender: (searchConfig, formProps, dom) => [
+            dom[0],
+            <Button
+              key="search"
+              type="primary"
+              danger
+              onClick={() => formProps.form?.submit()}
+            >
+              Tìm ngay
+            </Button>,
+          ],
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
+            danger
             key="primary"
             onClick={() => handleModalVisible(true)}
           >

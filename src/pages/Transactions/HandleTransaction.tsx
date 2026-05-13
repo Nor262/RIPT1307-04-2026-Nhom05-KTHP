@@ -14,6 +14,7 @@ import {
   Alert,
   Radio,
   Divider,
+  ConfigProvider,
 } from 'antd';
 import {
   SearchOutlined,
@@ -161,10 +162,22 @@ const HandleTransaction: React.FC = () => {
             <Title level={4} style={{ margin: 0 }}>
               <SwapOutlined /> Xử lý Bàn giao / Thu hồi thiết bị
             </Title>
-            <Radio.Group value={mode} onChange={(e) => setMode(e.target.value)} buttonStyle="solid">
-              <Radio.Button value="checkout"><LogoutOutlined /> Bàn giao (Check-out)</Radio.Button>
-              <Radio.Button value="checkin"><LoginOutlined /> Thu hồi (Check-in)</Radio.Button>
-            </Radio.Group>
+            <ConfigProvider
+              theme={{
+                components: {
+                  Radio: {
+                    colorPrimary: '#ff4d4f',
+                    colorPrimaryHover: '#ff7875',
+                    colorPrimaryActive: '#d9363e',
+                  },
+                },
+              }}
+            >
+              <Radio.Group value={mode} onChange={(e) => setMode(e.target.value)} buttonStyle="solid">
+                <Radio.Button value="checkout" ><LogoutOutlined /> Bàn giao (Check-out)</Radio.Button>
+                <Radio.Button value="checkin"><LoginOutlined /> Thu hồi (Check-in)</Radio.Button>
+              </Radio.Group>
+            </ConfigProvider>
           </Space>
           <Alert
             message="Chế độ Hybrid — Không cần máy quét chuyên dụng"
@@ -179,15 +192,32 @@ const HandleTransaction: React.FC = () => {
         <Col xs={24} lg={8}>
           <Space direction="vertical" style={{ width: '100%' }} size="large">
             <Card title="1. Nhập mã thủ công (Manual Entry)" size="small">
-              <Input.Search
-                placeholder="Nhập Serial Number / SKU..."
-                allowClear
-                enterButton={<><SearchOutlined /> Xác thực</>}
-                size="large"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onSearch={handleVerify}
-              />
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorPrimary: '#ff4d4f',
+                  },
+                  components: {
+                    Input: {
+                      colorPrimaryHover: '#ff7875',
+                      controlOutline: 'rgba(255, 77, 79, 0.1)',
+                    },
+                    Button: {
+                      colorPrimaryHover: '#ff7875',
+                    }
+                  },
+                }}
+              >
+                <Input.Search
+                  placeholder="Nhập Serial Number / SKU..."
+                  allowClear
+                  enterButton={<><SearchOutlined /> Xác thực</>}
+                  size="large"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onSearch={handleVerify}
+                />
+              </ConfigProvider>
             </Card>
 
             <Card title="2. Tải ảnh QR (File-to-Scan)" size="small">

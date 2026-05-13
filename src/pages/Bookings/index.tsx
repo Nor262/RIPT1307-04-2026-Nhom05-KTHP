@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { PlusOutlined, EditOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import { Button, message, Tag, Modal, Space, Input, Typography, Descriptions, Timeline, Badge } from 'antd';
 import {
   CheckCircleOutlined,
@@ -176,7 +177,32 @@ const BookingApproval: React.FC = () => {
         headerTitle="Danh sách Đơn mượn thiết bị"
         actionRef={actionRef}
         rowKey="id"
-        search={{ labelWidth: 120 }}
+        search={{
+          labelWidth: 120,
+          collapseRender: (collapsed, showCollapseButton) => {
+            if (!showCollapseButton) return null;
+            return (
+              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+                {collapsed ? (
+                  <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
+                ) : (
+                  <>Thu gọn <PlusOutlined style={{ transform: 'rotate(45deg)', fontSize: 12 }} /></>
+                )}
+              </span>
+            );
+          },
+          optionRender: (searchConfig, formProps, dom) => [
+            dom[0],
+            <Button
+              key="search"
+              type="primary"
+              danger
+              onClick={() => formProps.form?.submit()}
+            >
+              Tìm ngay
+            </Button>,
+          ],
+        }}
         request={async (params, sorter) => {
           const res = await getTransactions({ ...params, sorter });
           const data = res.data?.data;

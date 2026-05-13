@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Tag, Space, Typography, DatePicker, Select } from 'antd';
-import { DownloadOutlined, FileExcelOutlined } from '@ant-design/icons';
+import { DownloadOutlined, FileExcelOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { getTransactions } from '@/services/api';
@@ -152,10 +152,35 @@ const ExportReport: React.FC = () => {
         headerTitle="Lịch sử Mượn/Trả & Xuất Báo cáo"
         actionRef={actionRef}
         rowKey="id"
-        search={{ labelWidth: 120 }}
+        search={{
+          labelWidth: 120, collapseRender: (collapsed, showCollapseButton) => {
+            if (!showCollapseButton) return null;
+            return (
+              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+                {collapsed ? (
+                  <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
+                ) : (
+                  <>Thu gọn <PlusOutlined style={{ transform: 'rotate(45deg)', fontSize: 12 }} /></>
+                )}
+              </span>
+            );
+          },
+          optionRender: (searchConfig, formProps, dom) => [
+            dom[0],
+            <Button
+              key="search"
+              type="primary"
+              danger
+              onClick={() => formProps.form?.submit()}
+            >
+              Tìm ngay
+            </Button>,
+          ],
+        }}
         toolBarRender={() => [
           <Button
             key="export"
+            danger
             type="primary"
             icon={<FileExcelOutlined />}
             loading={exporting}
