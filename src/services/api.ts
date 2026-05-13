@@ -59,6 +59,16 @@ export async function deleteEquipment(id: number) {
   return axios.delete(`/equipment/${id}`);
 }
 
+export async function importBulkEquipment(formData: FormData) {
+  return axios.post('/equipment/import', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+}
+
+export async function exportEquipmentExcel() {
+  return axios.get('/reports/excel', { responseType: 'blob' });
+}
+
 // ==================== Transactions ====================
 export async function getTransactions(params?: any) {
   return axios.get('/transactions', { params });

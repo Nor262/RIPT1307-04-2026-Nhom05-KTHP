@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined } from '@ant-design/icons';
+import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image, Upload } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-components';
 import { 
   getEquipment, createEquipment, updateEquipment, deleteEquipment, 
-  getCategories, getSuppliers, getLocations 
+  getCategories, getSuppliers, getLocations, importBulkEquipment, exportEquipmentExcel
 } from '@/services/api';
 
 export type EquipmentItem = {
@@ -139,6 +139,21 @@ const EquipmentList: React.FC = () => {
     },
   ];
 
+  const handleExport = async () => {
+    try {
+      const res = await exportEquipmentExcel();
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'equipment_report.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      message.error('Lỗi khi tải báo cáo Excel');
+    }
+  };
+
   return (
     <div style={{ padding: '24px' }}>
       <ProTable<EquipmentItem>
@@ -147,6 +162,29 @@ const EquipmentList: React.FC = () => {
         rowKey="id"
         search={{ labelWidth: 120 }}
         toolBarRender={() => [
+          <Button key="export" onClick={handleExport} icon={<DownloadOutlined />}>
+            Xuất Excel
+          </Button>,
+          <Upload
+            key="import"
+            showUploadList={false}
+            customRequest={async (options) => {
+              const { file, onSuccess, onError } = options;
+              const formData = new FormData();
+              formData.append('file', file as Blob);
+              try {
+                const res = await importBulkEquipment(formData);
+                message.success(res.data.message || 'Import thành công');
+                onSuccess?.(res.data);
+                actionRef.current?.reload();
+              } catch (error) {
+                message.error('Lỗi khi import file Excel');
+                onError?.(error as any);
+              }
+            }}
+          >
+            <Button icon={<UploadOutlined />}>Nhập Excel</Button>
+          </Upload>,
           <Button
             type="primary"
             key="primary"
