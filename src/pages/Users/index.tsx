@@ -14,6 +14,7 @@ type UserItem = {
   role: 'admin' | 'storekeeper' | 'borrower';
   is_active: boolean;
   created_at: string;
+  penalty_points: number;
 };
 
 const roleMap = {
@@ -84,6 +85,16 @@ const UserManagement: React.FC = () => {
       dataIndex: 'created_at',
       valueType: 'dateTime',
       hideInSearch: true,
+    },
+    {
+      title: 'Điểm phạt',
+      dataIndex: 'penalty_points',
+      hideInSearch: true,
+      render: (_, record) => (
+        <span style={{ color: record.penalty_points > 0 ? 'red' : 'inherit', fontWeight: record.penalty_points > 0 ? 'bold' : 'normal' }}>
+          {record.penalty_points || 0}
+        </span>
+      ),
     },
     {
       title: 'Thao tác',
