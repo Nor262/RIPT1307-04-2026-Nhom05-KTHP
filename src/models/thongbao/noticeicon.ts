@@ -1,7 +1,7 @@
 import { getThongBao, readNotification } from '@/services/ThongBao';
 import { type ThongBao } from '@/services/ThongBao/typing';
 import { message } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -21,11 +21,20 @@ export default () => {
 				condition: undefined,
 				sort: { createdAt: -1 },
 			});
-			setDanhSach(response?.data?.data?.result ?? []);
-			setUnread(response?.data?.data?.unread ?? 0);
-			setTotal(response?.data?.data?.total ?? 0);
+			// console.log("Full Response:", response);
 
-			return response?.data?.data?.result;
+
+			const rawData = response?.data?.data?.data;
+
+			// console.log("Raw Data tầng 3:", rawData);
+
+			const list = rawData ?? [];
+
+			setDanhSach(rawData);
+			setUnread(rawData?.unread ?? 0);
+			setTotal(rawData?.total ?? 0);
+
+			return list;
 		} catch (er) {
 			return Promise.reject(er);
 		} finally {
@@ -47,6 +56,7 @@ export default () => {
 			setLoading(false);
 		}
 	};
+
 
 	return {
 		unread,

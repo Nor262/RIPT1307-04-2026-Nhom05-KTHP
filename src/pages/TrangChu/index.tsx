@@ -12,7 +12,6 @@ import {
 import ReactApexChart from 'react-apexcharts';
 import { getDashboardStats } from '@/services/api';
 import { ProCard } from '@ant-design/pro-components';
-
 const { Text, Title } = Typography;
 
 const Dashboard: React.FC = () => {
@@ -103,7 +102,7 @@ const Dashboard: React.FC = () => {
       {/* Stats Cards */}
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard ghost style={{ backgroundColor: '#e6f7ff', border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Tổng thiết bị"
               value={summary.total_equipment || 0}
@@ -112,7 +111,7 @@ const Dashboard: React.FC = () => {
           </ProCard>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard ghost style={{ backgroundColor: '#f6ffed', border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Sẵn sàng"
               value={summary.available_count || 0}
@@ -122,7 +121,7 @@ const Dashboard: React.FC = () => {
           </ProCard>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard ghost style={{ backgroundColor: '#fff7e6', border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Đang cho mượn"
               value={summary.in_use_count || 0}
@@ -131,7 +130,7 @@ const Dashboard: React.FC = () => {
           </ProCard>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard ghost style={{ backgroundColor: '#fff1f0', border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Đang bảo trì"
               value={summary.maintenance_count || 0}
@@ -145,7 +144,11 @@ const Dashboard: React.FC = () => {
       {/* Alert Cards */}
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} sm={12}>
-          <Card size="small" style={{ borderLeft: '4px solid #faad14' }}>
+          <Card size="small" style={{
+            backgroundImage: 'url("/background_card1.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
+            backgroundSize: 'contain',
+            borderLeft: '4px solid #faad14'
+          }}>
             <Space>
               <ClockCircleOutlined style={{ fontSize: 24, color: '#faad14' }} />
               <div>
@@ -158,7 +161,11 @@ const Dashboard: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12}>
-          <Card size="small" style={{ borderLeft: '4px solid #ff4d4f' }}>
+          <Card size="small" style={{
+            backgroundImage: 'url("/background_card2.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
+            backgroundSize: 'contain',
+            borderLeft: '4px solid #faad14'
+          }}>
             <Space>
               <ExclamationCircleOutlined style={{ fontSize: 24, color: '#ff4d4f' }} />
               <div>
@@ -175,7 +182,11 @@ const Dashboard: React.FC = () => {
       {/* Charts */}
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={10}>
-          <Card title="Trạng thái thiết bị" bordered={false}>
+          <Card title="Trạng thái thiết bị" bordered={false} style={{
+            backgroundImage: 'url("/assignment_background.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
+            backgroundSize: 'contain',
+            borderLeft: '4px solid #faad14'
+          }}>
             <ReactApexChart options={pieOptions} series={pieSeries} type="pie" height={320} />
           </Card>
         </Col>
