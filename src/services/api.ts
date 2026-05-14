@@ -1,5 +1,18 @@
 import axios from '@/utils/axios';
 
+// ==================== Authentication ====================
+export async function login(data: any) {
+  return axios.post('/auth/login', data);
+}
+
+export async function getProfile() {
+  return axios.get('/auth/profile');
+}
+
+export async function logout() {
+  return axios.post('/auth/logout');
+}
+
 // ==================== Users ====================
 export async function getUsers(params?: any) {
   return axios.get('/users', { params });

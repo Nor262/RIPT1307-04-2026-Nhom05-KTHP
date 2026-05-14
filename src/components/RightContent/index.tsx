@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/stores/useAuthStore';
 import AvatarDropdown from './AvatarDropdown';
 import styles from './index.less';
+import NoticeIconView from './NoticeIcon';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -15,7 +16,7 @@ const GlobalHeaderRight: React.FC = () => {
 		<div className={styles.right}>
 			{/* <ModuleSwitch /> */}
 
-			{/* <NoticeIconView /> */}
+			<NoticeIconView />
 
 			{/* <Tooltip title='Giới thiệu chung' placement='bottom'>
 				<a onClick={() => history.push('/gioi-thieu')}>
