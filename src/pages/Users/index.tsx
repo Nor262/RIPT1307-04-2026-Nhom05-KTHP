@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Tag, Modal, Space, Switch, Popconfirm } from 'antd';
+import { Button, message, Tag, Modal, Space, Switch, Popconfirm, Tooltip } from 'antd';
 import { PlusOutlined, EditOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -16,10 +16,10 @@ type UserItem = {
   created_at: string;
 };
 
-const roleMap = {
-  admin: { text: 'Quản trị viên', color: 'red' },
-  storekeeper: { text: 'Quản lý kho', color: 'blue' },
-  borrower: { text: 'Người mượn', color: 'green' },
+const roleMap: Record<string, { text: string; color: string; bg: string; border: string }> = {
+  admin: { text: 'Quản trị viên', color: '#dc2626', bg: '#fee2e2', border: '#fecaca' },
+  storekeeper: { text: 'Quản lý kho', color: '#2563eb', bg: '#dbeafe', border: '#bfdbfe' },
+  borrower: { text: 'Người mượn', color: '#059669', bg: '#d1fae5', border: '#a7f3d0' },
 };
 
 const UserManagement: React.FC = () => {
@@ -59,11 +59,23 @@ const UserManagement: React.FC = () => {
         storekeeper: { text: 'Quản lý kho' },
         borrower: { text: 'Người mượn' },
       },
-      render: (_, record) => (
-        <Tag color={roleMap[record.role]?.color || 'default'}>
-          {roleMap[record.role]?.text || record.role}
-        </Tag>
-      ),
+      render: (_, record) => {
+        const role = roleMap[record.role] || { text: record.role, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
+        return (
+          <span style={{ 
+            padding: '4px 12px', 
+            borderRadius: '999px', 
+            backgroundColor: role.bg, 
+            color: role.color, 
+            border: `1px solid ${role.border}`,
+            fontWeight: 500,
+            fontSize: '13px',
+            whiteSpace: 'nowrap'
+          }}>
+            {role.text}
+          </span>
+        );
+      },
     },
     {
       title: 'Trạng thái',
@@ -73,11 +85,25 @@ const UserManagement: React.FC = () => {
         true: { text: 'Hoạt động', status: 'Success' },
         false: { text: 'Đã khóa', status: 'Error' },
       },
-      render: (_, record) => (
-        <Tag color={record.is_active ? 'success' : 'error'}>
-          {record.is_active ? 'Hoạt động' : 'Đã khóa'}
-        </Tag>
-      ),
+      render: (_, record) => {
+        const color = record.is_active ? '#059669' : '#dc2626';
+        const bg = record.is_active ? '#d1fae5' : '#fee2e2';
+        const border = record.is_active ? '#a7f3d0' : '#fecaca';
+        return (
+          <span style={{ 
+            padding: '4px 12px', 
+            borderRadius: '999px', 
+            backgroundColor: bg, 
+            color: color, 
+            border: `1px solid ${border}`,
+            fontWeight: 500,
+            fontSize: '13px',
+            whiteSpace: 'nowrap'
+          }}>
+            {record.is_active ? 'Hoạt động' : 'Đã khóa'}
+          </span>
+        );
+      },
     },
     {
       title: 'Ngày tạo',
@@ -89,30 +115,39 @@ const UserManagement: React.FC = () => {
       title: 'Thao tác',
       valueType: 'option',
       width: 200,
-      render: (_, record) => [
-        <a
-          key="edit"
-          onClick={() => {
-            setCurrentRow(record);
-            setModalVisible(true);
-          }}
-        >
-          <EditOutlined /> Sửa
-        </a>,
-        <Popconfirm
-          key="toggle"
-          title={record.is_active ? 'Khóa tài khoản này?' : 'Kích hoạt lại tài khoản?'}
-          onConfirm={async () => {
-            await toggleUserStatus(record.id, !record.is_active);
-            message.success(record.is_active ? 'Đã khóa tài khoản' : 'Đã kích hoạt tài khoản');
-            actionRef.current?.reload();
-          }}
-        >
-          <a style={{ color: record.is_active ? '#ff4d4f' : '#52c41a' }}>
-            {record.is_active ? <><LockOutlined /> Khóa</> : <><UnlockOutlined /> Mở khóa</>}
-          </a>
-        </Popconfirm>,
-      ],
+      render: (_, record) => (
+        <Space size="middle">
+          <Tooltip title="Chỉnh sửa">
+            <Button
+              type="text"
+              shape="circle"
+              icon={<EditOutlined style={{ color: '#1677ff' }} />}
+              onClick={() => {
+                setCurrentRow(record);
+                setModalVisible(true);
+              }}
+              style={{ background: '#f0f5ff' }}
+            />
+          </Tooltip>
+          <Popconfirm
+            title={record.is_active ? 'Khóa tài khoản này?' : 'Kích hoạt lại tài khoản?'}
+            onConfirm={async () => {
+              await toggleUserStatus(record.id, !record.is_active);
+              message.success(record.is_active ? 'Đã khóa tài khoản' : 'Đã kích hoạt tài khoản');
+              actionRef.current?.reload();
+            }}
+          >
+            <Tooltip title={record.is_active ? 'Khóa' : 'Mở khóa'}>
+              <Button 
+                type="text" 
+                shape="circle" 
+                icon={record.is_active ? <LockOutlined style={{ color: '#ef4444' }} /> : <UnlockOutlined style={{ color: '#10b981' }} />} 
+                style={{ background: record.is_active ? '#fef2f2' : '#ecfdf5' }} 
+              />
+            </Tooltip>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 

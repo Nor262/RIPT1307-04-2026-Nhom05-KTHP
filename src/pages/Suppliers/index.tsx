@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Tag, Space } from 'antd';
+import { Button, message, Popconfirm, Tag, Space, Tooltip } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -44,28 +44,34 @@ const SupplierList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 150,
-      render: (_, record) => [
-        <a
-          key="edit"
-          onClick={() => {
-            setCurrentRow(record);
-            handleModalVisible(true);
-          }}
-        >
-          <EditOutlined /> Sửa
-        </a>,
-        <Popconfirm
-          key="delete"
-          title="Xóa nhà cung cấp này?"
-          onConfirm={async () => {
-            await deleteSupplier(record.id);
-            message.success('Đã xóa');
-            actionRef.current?.reload();
-          }}
-        >
-          <a style={{ color: '#ff4d4f' }}><DeleteOutlined /> Xóa</a>
-        </Popconfirm>,
-      ],
+      render: (_, record) => (
+        <Space size="middle">
+          <Tooltip title="Chỉnh sửa">
+            <Button
+              type="text"
+              shape="circle"
+              icon={<EditOutlined style={{ color: '#1677ff' }} />}
+              onClick={() => {
+                setCurrentRow(record);
+                handleModalVisible(true);
+              }}
+              style={{ background: '#f0f5ff' }}
+            />
+          </Tooltip>
+          <Popconfirm
+            title="Xóa nhà cung cấp này?"
+            onConfirm={async () => {
+              await deleteSupplier(record.id);
+              message.success('Đã xóa');
+              actionRef.current?.reload();
+            }}
+          >
+            <Tooltip title="Xóa">
+              <Button type="text" danger shape="circle" icon={<DeleteOutlined />} style={{ background: '#fef2f2' }} />
+            </Tooltip>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 

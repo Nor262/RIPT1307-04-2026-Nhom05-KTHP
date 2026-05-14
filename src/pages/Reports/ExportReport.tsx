@@ -31,6 +31,15 @@ const statusLabels: Record<string, string> = {
   overdue: 'Quá hạn',
 };
 
+const statusMap: Record<string, { text: string; color: string; bg: string; border: string }> = {
+  pending: { text: 'Chờ duyệt', color: '#d97706', bg: '#fef3c7', border: '#fde68a' },
+  approved: { text: 'Đã duyệt', color: '#2563eb', bg: '#dbeafe', border: '#bfdbfe' },
+  rejected: { text: 'Từ chối', color: '#dc2626', bg: '#fee2e2', border: '#fecaca' },
+  checked_out: { text: 'Đang mượn', color: '#0891b2', bg: '#cffafe', border: '#a5f3fc' },
+  completed: { text: 'Đã trả', color: '#059669', bg: '#d1fae5', border: '#a7f3d0' },
+  overdue: { text: 'Quá hạn', color: '#c026d3', bg: '#fae8ff', border: '#f5d0fe' },
+};
+
 const ExportReport: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [exporting, setExporting] = useState(false);
@@ -116,9 +125,23 @@ const ExportReport: React.FC = () => {
       valueEnum: Object.fromEntries(
         Object.entries(statusLabels).map(([k, v]) => [k, { text: v }])
       ),
-      render: (_, record) => (
-        <Tag>{statusLabels[record.status] || record.status}</Tag>
-      ),
+      render: (_, record) => {
+        const s = statusMap[record.status] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
+        return (
+          <span style={{ 
+            padding: '4px 12px', 
+            borderRadius: '999px', 
+            backgroundColor: s.bg, 
+            color: s.color, 
+            border: `1px solid ${s.border}`,
+            fontWeight: 500,
+            fontSize: '13px',
+            whiteSpace: 'nowrap'
+          }}>
+            {s.text}
+          </span>
+        );
+      },
     },
     {
       title: 'Ngày gửi đơn',
@@ -185,6 +208,7 @@ const ExportReport: React.FC = () => {
             icon={<FileExcelOutlined />}
             loading={exporting}
             onClick={handleExport}
+            style={{ backgroundColor: '#10b981', borderColor: '#10b981', borderRadius: '8px', fontWeight: 500, boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
           >
             Xuất Excel
           </Button>,
