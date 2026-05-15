@@ -13,12 +13,12 @@ export async function readNotification(payload: { type: 'ONE' | 'ALL'; notificat
 		if (!notificationId) {
 			return;
 		}
-		const response = axios.get(`/notifications/${notificationId}/read`);
+		const response = axios.patch(`/notifications/${notificationId}/read`);
 		// console.log("Dữ liệu từ API trả về:", (await response).data?.data?.message);
-		return axios.get(`/notifications/${notificationId}/read`);
+		return axios.patch(`/notifications/${notificationId}/read`);
 	}
 	if (type === 'ALL') {
-		return axios.get(`/notifications/read-all`);
+		return axios.patch(`/notifications/read-all`);
 	}
 }
 
