@@ -46,11 +46,13 @@ export default () => {
 		setLoading(true);
 		try {
 			const response = await readNotification({ type, notificationId });
-			getThongBaoModel();
-			if (type === 'ALL') message.success('Đã đọc tất cả thông báo');
 
-			return response?.data?.data;
+			await getThongBaoModel(); // Load lại danh sách sau khi đọc
+
+			if (type === 'ALL') message.success('Đã đọc tất cả thông báo');
+			return response;
 		} catch (er) {
+			console.error("Lỗi khi đọc thông báo:", er);
 			return Promise.reject(er);
 		} finally {
 			setLoading(false);

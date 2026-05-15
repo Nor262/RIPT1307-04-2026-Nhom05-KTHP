@@ -12,6 +12,7 @@ export type NoticeIconTabProps = {
 	showClear?: boolean;
 	showViewMore?: boolean;
 	style?: React.CSSProperties;
+	message: string;
 	title: string;
 	tabKey: string;
 	onClick?: (item: ThongBao.IRecord) => void;
@@ -22,6 +23,8 @@ export type NoticeIconTabProps = {
 	list: ThongBao.IRecord[];
 	onViewMore?: () => void;
 };
+
+
 
 const NoticeList: React.FC<NoticeIconTabProps> = ({
 	list = [],
@@ -45,10 +48,18 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
 		);
 	}
 
+	//add state quan li message
 	const onItemClick = (item: ThongBao.IRecord) => {
-		if (!item.read) readNotificationModel('ONE', item?._id);
+		if (item.id) {
+			readNotificationModel('ONE', item.id);
+		} else {
+			console.error("Không tìm thấy ID trong item này!");
+		}
+
 		onClick?.(item);
+		const result = item.message;
 	};
+
 
 	return (
 		<div>
@@ -85,7 +96,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
 							const leftIcon = item.imageUrl ? <Avatar className={styles.avatar} src={item.imageUrl} /> : null;
 
 							return (
-								<List.Item className={itemCls} key={item._id} onClick={() => onItemClick(item)}>
+								<List.Item className={itemCls} key={item.id} onClick={() => onItemClick(item)}>
 									<List.Item.Meta
 										className={styles.meta}
 										avatar={leftIcon}
@@ -97,7 +108,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
 										}
 										description={
 											<>
-												<div className={styles.description}>{item.description}</div>
+												<div className={styles.description}>{item.message}</div>
 												<div className={styles.datetime}>{moment(item.createdAt).fromNow()}</div>
 											</>
 										}

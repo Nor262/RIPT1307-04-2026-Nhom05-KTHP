@@ -4,7 +4,7 @@ import { type EReceiverType } from './constant';
 
 declare module ThongBao {
 	export interface IRecord {
-		_id: string;
+		id: string;
 		title: string;
 		senderName: string;
 		sender?: string;
@@ -15,7 +15,7 @@ declare module ThongBao {
 		idTagEmail?: string;
 
 		tagEmail: {
-			_id: '65582e549dcae9f3309e415e';
+			id: '65582e549dcae9f3309e415e';
 			ten: 'Thông báo trúng tuyển';
 			moTa: 'Đây là thông báo trúng tuyển';
 			__v: 0;

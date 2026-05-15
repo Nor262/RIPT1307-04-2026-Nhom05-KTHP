@@ -3,27 +3,40 @@ import { ipNotif } from '@/utils/ip';
 import { buildFormData } from '@/utils/utils';
 
 export async function postReceiver(payload: any, params: { page: number; limit: number }) {
-	return axios.post(`/notification/receiver/page`, payload, { params });
+	return axios.post(`/notifications/receiver/page`, payload, { params });
 }
 
 export async function readNotification(payload: { type: 'ONE' | 'ALL'; notificationId?: any }) {
-	return axios.post(`/notification/read`, payload);
+	const { type, notificationId } = payload;
+
+	if (type === 'ONE') {
+		if (!notificationId) {
+			return;
+		}
+		const response = axios.get(`/notifications/${notificationId}/read`);
+		// console.log("Dữ liệu từ API trả về:", (await response).data?.data?.message);
+		return axios.get(`/notifications/${notificationId}/read`);
+	}
+	if (type === 'ALL') {
+		return axios.get(`/notifications/read-all`);
+	}
 }
+
 export async function thongKeNotification() {
-	return axios.get(`/notification/thong-ke`);
+	return axios.get(`/notifications/thong-ke`);
 }
 export async function deleteThongBao(id: string) {
-	return axios.delete(`/notification/${id}`);
+	return axios.delete(`/notifications/${id}`);
 }
 export async function thongKeNotificationNguoiNhan(id: string) {
-	return axios.get(`/notification/${id}/receiver/thong-ke`);
+	return axios.get(`/notifications/${id}/receiver/thong-ke`);
 }
 export async function importNguoiNhanThongBao(payload: any, role: any) {
 	const formData = buildFormData(payload);
-	return axios.post(`/notification/receiver/many/import/${role}`, formData);
+	return axios.post(`/notifications/receiver/many/import/${role}`, formData);
 }
 export async function dowLoadBieuMauNguoiNhan() {
-	return axios.get(`/notification/import/template/xlsx`, { responseType: 'arraybuffer' });
+	return axios.get(`/notifications/import/template/xlsx`, { responseType: 'arraybuffer' });
 }
 
 export async function guiThongBaoDanhSach(payload: {
