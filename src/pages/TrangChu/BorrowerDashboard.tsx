@@ -46,7 +46,7 @@ const BorrowerDashboard: React.FC = () => {
         return extractArray(res);
       } catch { return []; }
     },
-    { pollingInterval: 20000 }
+    {}
   );
 
   const allItems = Array.isArray(transactions) ? transactions : [];

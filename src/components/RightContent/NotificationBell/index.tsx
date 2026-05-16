@@ -34,7 +34,7 @@ const NotificationBell: React.FC = () => {
         return res.data?.data || { count: 0 };
       } catch { return { count: 0 }; }
     },
-    { pollingInterval: 15000 }
+    {}
   );
 
   const unreadCount = unreadData?.count || 0;
@@ -47,7 +47,7 @@ const NotificationBell: React.FC = () => {
         return res.data?.data || [];
       } catch { return []; }
     },
-    { pollingInterval: 30000 }
+    {}
   );
 
   const handleMarkAllRead = async () => {

@@ -46,7 +46,7 @@ const StorekeeperDashboard: React.FC = () => {
         return extractArray(res);
       } catch { return []; }
     },
-    { pollingInterval: 10000 }
+    {}
   );
 
   // Fetch active loans (checked out)
@@ -57,7 +57,7 @@ const StorekeeperDashboard: React.FC = () => {
         return extractArray(res);
       } catch { return []; }
     },
-    { pollingInterval: 10000 }
+    {}
   );
 
   // Fetch overdue
@@ -68,7 +68,7 @@ const StorekeeperDashboard: React.FC = () => {
         return extractArray(res);
       } catch { return []; }
     },
-    { pollingInterval: 10000 }
+    {}
   );
 
   // Fetch equipment needing maintenance

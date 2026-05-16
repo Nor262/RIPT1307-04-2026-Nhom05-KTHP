@@ -16,7 +16,6 @@ import { ProCard } from '@ant-design/pro-components';
 const { Text, Title } = Typography;
 
 const AdminDashboard: React.FC = () => {
-  // Polling data mỗi 5 giây
   const { data: stats, loading } = useRequest(
     async () => {
       try {
@@ -34,10 +33,6 @@ const AdminDashboard: React.FC = () => {
           charts: { top_borrowed: [], borrow_frequency_by_month: [] },
         };
       }
-    },
-    {
-      pollingInterval: 5000,
-      pollingWhenHidden: false,
     }
   );
 

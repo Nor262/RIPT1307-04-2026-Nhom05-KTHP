@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image, Upload } from 'antd';
+import { Button, message, Popconfirm, Tag, Modal, Descriptions, Image, Upload } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -315,7 +315,7 @@ const EquipmentList: React.FC = () => {
           name="specifications"
           label="Thông số kỹ thuật (JSON)"
           placeholder='{"key": "value"}'
-          transform={(val) => {
+          transform={(val: any) => {
             try { return typeof val === 'string' ? JSON.parse(val) : val; } catch { return val; }
           }}
         />
