@@ -145,7 +145,7 @@ const Login: React.FC = () => {
             </Form.Item>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-              <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#c00c0c', fontWeight: 600 }}>Quên mật khẩu?</a>
+              <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#cc0404ba', fontWeight: 300 }}>Quên mật khẩu?</a>
             </div>
 
             <Form.Item style={{ marginBottom: 8 }}>
@@ -165,13 +165,6 @@ const Login: React.FC = () => {
           </Form>
 
           <Modal
-            title={
-              <div style={{ textAlign: 'center', width: '100%', borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>
-                  Khôi phục mật khẩu
-                </span>
-              </div>
-            }
             open={forgotPasswordVisible}
             onCancel={() => {
               setForgotPasswordVisible(false);
@@ -184,9 +177,14 @@ const Login: React.FC = () => {
             destroyOnClose
             centered
             width={400}
-            bodyStyle={{ padding: '16px 12px 8px 12px' }}
+            bodyStyle={{ padding: '20px 20px 12px 20px' }}
           >
             <div>
+              <div style={{ textAlign: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: 12, marginBottom: 20 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>
+                  Quên mật khẩu
+                </span>
+              </div>
               {forgotStep === 1 ? (
                 <div>
                   <div style={{ marginBottom: 18 }}>
