@@ -153,8 +153,8 @@ const StorekeeperDashboard: React.FC = () => {
             <Statistic
               title="Quá hạn trả"
               value={safeOverdue.length}
-              prefix={<ClockCircleOutlined style={{ color: '#ff4d4f' }} />}
-              valueStyle={{ color: safeOverdue.length > 0 ? '#ff4d4f' : undefined }}
+              prefix={<ClockCircleOutlined style={{ color: '#c00c0c' }} />}
+              valueStyle={{ color: safeOverdue.length > 0 ? '#c00c0c' : undefined }}
             />
           </Card>
         </Col>
@@ -222,7 +222,7 @@ const StorekeeperDashboard: React.FC = () => {
           <Card
             title={
               <Space>
-                <ClockCircleOutlined style={{ color: '#ff4d4f' }} />
+                <ClockCircleOutlined style={{ color: '#c00c0c' }} />
                 <span>Thiết bị quá hạn</span>
                 {safeOverdue.length > 0 && <Tag color="red">{safeOverdue.length}</Tag>}
               </Space>

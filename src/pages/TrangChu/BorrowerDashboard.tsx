@@ -45,10 +45,10 @@ const { Text, Title } = Typography;
 const statusConfig: Record<string, { text: string; color: string; icon: React.ReactNode }> = {
   pending: { text: 'Chờ duyệt', color: '#faad14', icon: <ClockCircleOutlined /> },
   approved: { text: 'Đã duyệt', color: '#c00c0c', icon: <CheckCircleOutlined /> },
-  rejected: { text: 'Từ chối', color: '#ff4d4f', icon: <ExclamationCircleOutlined /> },
+  rejected: { text: 'Từ chối', color: '#c00c0c', icon: <ExclamationCircleOutlined /> },
   checked_out: { text: 'Đang mượn', color: '#13c2c2', icon: <SwapOutlined /> },
   completed: { text: 'Đã trả', color: '#52c41a', icon: <CheckCircleOutlined /> },
-  overdue: { text: 'Quá hạn', color: '#ff4d4f', icon: <ExclamationCircleOutlined /> },
+  overdue: { text: 'Quá hạn', color: '#c00c0c', icon: <ExclamationCircleOutlined /> },
 };
 
 /** Safely extract array from API response */
@@ -298,14 +298,14 @@ const BorrowerDashboard: React.FC = () => {
         <Col xs={12} sm={6}>
           <Card
             bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
-            style={{ borderRadius: 12, borderLeft: `4px solid #ff4d4f` }}
+            style={{ borderRadius: 12, borderLeft: `4px solid #c00c0c` }}
           >
-            <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#ff4d4f15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#ff4d4f' }}>
+            <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#ff4d4f15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#c00c0c' }}>
               <ExclamationCircleOutlined />
             </div>
             <div>
               <Text type="secondary" style={{ fontSize: 12 }}>Quá hạn</Text>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#ff4d4f', lineHeight: 1.2 }}>{overdueCount}</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: '#c00c0c', lineHeight: 1.2 }}>{overdueCount}</div>
             </div>
           </Card>
         </Col>

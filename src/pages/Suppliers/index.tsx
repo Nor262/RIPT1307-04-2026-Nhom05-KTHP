@@ -63,7 +63,7 @@ const SupplierList: React.FC = () => {
             actionRef.current?.reload();
           }}
         >
-          <a style={{ color: '#ff4d4f' }}><DeleteOutlined /> Xóa</a>
+          <a style={{ color: '#c00c0c' }}><DeleteOutlined /> Xóa</a>
         </Popconfirm>,
       ],
     },
@@ -79,8 +79,8 @@ const SupplierList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="primary"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => {
               setCurrentRow(undefined);
               handleModalVisible(true);

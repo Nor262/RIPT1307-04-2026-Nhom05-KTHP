@@ -153,13 +153,13 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12}>
-          <Card size="small" style={{ borderLeft: '4px solid #ff4d4f' }}>
+          <Card size="small" style={{ borderLeft: '4px solid #c00c0c' }}>
             <Space>
-              <ExclamationCircleOutlined style={{ fontSize: 24, color: '#ff4d4f' }} />
+              <ExclamationCircleOutlined style={{ fontSize: 24, color: '#c00c0c' }} />
               <div>
                 <Text type="secondary">Quá hạn trả</Text>
-                <Title level={3} style={{ margin: 0, color: '#ff4d4f' }}>
-                  <Badge count={alerts.overdue_transactions || 0} overflowCount={99} showZero style={{ backgroundColor: '#ff4d4f' }} />
+                <Title level={3} style={{ margin: 0, color: '#c00c0c' }}>
+                  <Badge count={alerts.overdue_transactions || 0} overflowCount={99} showZero style={{ backgroundColor: '#c00c0c' }} />
                 </Title>
               </div>
             </Space>
