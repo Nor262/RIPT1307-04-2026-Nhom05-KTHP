@@ -98,8 +98,8 @@ const NotificationBell: React.FC = () => {
               style={{
                 padding: '12px 16px',
                 cursor: 'pointer',
-                background: item.is_read ? 'transparent' : '#f0f7ff',
-                borderLeft: item.is_read ? '3px solid transparent' : '3px solid #1890ff',
+                background: item.is_read ? 'transparent' : '#fff5f5',
+                borderLeft: item.is_read ? '3px solid transparent' : '3px solid #c00c0c',
                 transition: 'background 0.2s',
               }}
               onClick={() => {

@@ -44,7 +44,7 @@ const { Text, Title } = Typography;
 
 const statusConfig: Record<string, { text: string; color: string; icon: React.ReactNode }> = {
   pending: { text: 'Chờ duyệt', color: '#faad14', icon: <ClockCircleOutlined /> },
-  approved: { text: 'Đã duyệt', color: '#1890ff', icon: <CheckCircleOutlined /> },
+  approved: { text: 'Đã duyệt', color: '#c00c0c', icon: <CheckCircleOutlined /> },
   rejected: { text: 'Từ chối', color: '#ff4d4f', icon: <ExclamationCircleOutlined /> },
   checked_out: { text: 'Đang mượn', color: '#13c2c2', icon: <SwapOutlined /> },
   completed: { text: 'Đã trả', color: '#52c41a', icon: <CheckCircleOutlined /> },
@@ -235,11 +235,10 @@ const BorrowerDashboard: React.FC = () => {
 
   return (
     <div style={{ padding: '24px', maxWidth: 960, margin: '0 auto' }}>
-      {/* Welcome */}
       <Card
         style={{
           marginBottom: 20,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)',
           border: 'none',
           borderRadius: 14,
         }}
@@ -285,14 +284,14 @@ const BorrowerDashboard: React.FC = () => {
         <Col xs={12} sm={6}>
           <Card
             bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
-            style={{ borderRadius: 12, borderLeft: `4px solid #1890ff` }}
+            style={{ borderRadius: 12, borderLeft: `4px solid #c00c0c` }}
           >
-            <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#1890ff15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#1890ff' }}>
+            <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#c00c0c15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#c00c0c' }}>
               <SwapOutlined />
             </div>
             <div>
               <Text type="secondary" style={{ fontSize: 12 }}>Đang mượn</Text>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#1890ff', lineHeight: 1.2 }}>{activeCount}</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: '#c00c0c', lineHeight: 1.2 }}>{activeCount}</div>
             </div>
           </Card>
         </Col>
@@ -330,10 +329,10 @@ const BorrowerDashboard: React.FC = () => {
       <Card
         title={
           <span style={{ fontSize: 15 }}>
-            <SwapOutlined style={{ color: '#1890ff', marginRight: 8 }} />
+            <SwapOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
             Đơn mượn hiện tại
             {currentItems.length > 0 && (
-              <Tag color="blue" style={{ marginLeft: 8 }}>{currentItems.length}</Tag>
+              <Tag color="error" style={{ marginLeft: 8 }}>{currentItems.length}</Tag>
             )}
           </span>
         }
@@ -496,7 +495,7 @@ const BorrowerDashboard: React.FC = () => {
       <Modal
         title={
           <span style={{ fontWeight: 600 }}>
-            <ScanOutlined style={{ color: '#1890ff', marginRight: 8 }} />
+            <ScanOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
             Xác nhận Nhận thiết bị (Check-out)
           </span>
         }
@@ -590,7 +589,7 @@ const BorrowerDashboard: React.FC = () => {
       <Modal
         title={
           <span style={{ fontWeight: 600 }}>
-            <CalendarOutlined style={{ color: '#1890ff', marginRight: 8 }} />
+            <CalendarOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
             Gia hạn mượn thiết bị (BOK-07)
           </span>
         }
