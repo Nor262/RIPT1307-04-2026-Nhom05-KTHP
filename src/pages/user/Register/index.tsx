@@ -33,12 +33,10 @@ const Register: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.top}>
-          <div className={styles.header}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <img alt="logo" className={styles.logo} src="/logo-full.svg" style={{ height: 44 }} />
-              <span className={styles.title}>Đăng ký</span>
-            </div>
+          <div className={styles.logoContainer}>
+            <img alt="logo" className={styles.logo} src="/logo-full.svg" />
           </div>
+          <h1 className={styles.title}>Đăng ký tài khoản</h1>
           <div className={styles.desc}>Tạo tài khoản mới để sử dụng hệ thống</div>
         </div>
 
@@ -127,7 +125,7 @@ const Register: React.FC = () => {
                 htmlType="submit"
                 block
                 loading={submitting}
-                style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none' }}
+                style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
               >
                 Đăng ký ngay
               </Button>
