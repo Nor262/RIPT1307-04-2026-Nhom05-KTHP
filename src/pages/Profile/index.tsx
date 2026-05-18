@@ -5,6 +5,8 @@ import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
 import axios from '@/utils/axios';
 
+import { useAuthStore } from '@/stores/useAuthStore';
+
 const ProfilePage: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [loading, setLoading] = useState(false);
@@ -14,8 +16,14 @@ const ProfilePage: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.patch('/auth/profile', values);
-      message.success('Cập nhật hồ sơ thành công');
-      setInitialState((s: any) => ({ ...s, currentUser: response.data }));
+      const updatedUser = response.data?.data;
+      if (updatedUser) {
+        message.success('Cập nhật hồ sơ thành công');
+        setInitialState((s: any) => ({ ...s, currentUser: updatedUser }));
+        useAuthStore.setState({ user: updatedUser });
+      } else {
+        message.error('Không tìm thấy dữ liệu người dùng mới');
+      }
     } catch (error) {
       message.error('Có lỗi xảy ra');
     }
@@ -41,14 +49,48 @@ const ProfilePage: React.FC = () => {
 
   const uploadProps = {
     name: 'file',
-    action: '/api/users/avatar',
+    action: `${axios.defaults.baseURL}/users/avatar`,
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${useAuthStore.getState().accessToken}`,
     },
     onChange(info: any) {
       if (info.file.status === 'done') {
-        message.success(`Ảnh đã được tải lên thành công`);
-        setInitialState((s: any) => ({ ...s, currentUser: info.file.response.user }));
+        const res = info.file.response;
+        let updatedUser = null;
+        
+        if (res) {
+          // 1. Cấu trúc chuẩn NestJS: { status: 'success', data: { user: ... } }
+          if (res.data?.user) {
+            updatedUser = res.data.user;
+          }
+          // 2. Cấu trúc NestJS bọc trực tiếp user: { status: 'success', data: { id, role, ... } }
+          else if (res.data?.id && res.data?.role) {
+            updatedUser = res.data;
+          }
+          // 3. Cấu trúc thô không bọc: { user: ... }
+          else if (res.user) {
+            updatedUser = res.user;
+          }
+          // 4. Đối tượng user thô trực tiếp: { id, role, ... }
+          else if (res.id && res.role) {
+            updatedUser = res;
+          }
+          // 5. Cấu trúc lồng ghép đặc biệt: { data: { data: { user: ... } } }
+          else if (res.data?.data?.user) {
+            updatedUser = res.data.data.user;
+          }
+          else if (res.data?.data?.id && res.data?.data?.role) {
+            updatedUser = res.data.data;
+          }
+        }
+
+        if (updatedUser) {
+          message.success(`Ảnh đã được tải lên thành công`);
+          setInitialState((s: any) => ({ ...s, currentUser: updatedUser }));
+          useAuthStore.setState({ user: updatedUser });
+        } else {
+          message.error(`Tải lên thành công nhưng không thể cập nhật thông tin người dùng. Phản hồi: ${JSON.stringify(res)}`);
+        }
       } else if (info.file.status === 'error') {
         message.error(`Lỗi tải ảnh lên.`);
       }
