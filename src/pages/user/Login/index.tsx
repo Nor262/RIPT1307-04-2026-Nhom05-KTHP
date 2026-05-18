@@ -210,7 +210,7 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleSendOtp}
-                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)', border: 'none' }}
+                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none' }}
                   >
                     Gửi mã xác nhận
                   </Button>
@@ -250,7 +250,7 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleResetPassword}
-                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)', border: 'none', marginBottom: 12 }}
+                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', marginBottom: 12 }}
                   >
                     Đặt lại mật khẩu
                   </Button>
@@ -258,7 +258,7 @@ const Login: React.FC = () => {
                     type="link"
                     block
                     onClick={() => setForgotStep(1)}
-                    style={{ fontSize: '14px', color: '#64748b', fontWeight: 500 }}
+                    style={{ fontSize: '14px', color: '#c00c0c', fontWeight: 600 }}
                   >
                     Quay lại nhập Email
                   </Button>
