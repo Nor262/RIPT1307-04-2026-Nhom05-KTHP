@@ -107,6 +107,11 @@ export async function checkinTransaction(id: number, data: any) {
   return axios.put(`/transactions/${id}/checkin`, data);
 }
 
+export async function findByEquipment(equipmentId: number) {
+  return axios.get(`/transactions/equipment/${equipmentId}`);
+}
+
+
 export async function verifyItem(data: { serial_number: string }) {
   return axios.post('/transactions/verify-item', data);
 }
