@@ -1,0 +1,53 @@
+.otpWrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 360px;
+  margin: 20px auto;
+}
+
+.otpBox {
+  width: 48px;
+  height: 54px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: #1a1a1a;
+  background-color: #fafafa;
+  transition: all 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    border-color: #40a9ff;
+    background-color: #ffffff;
+  }
+
+  &:focus {
+    border-color: #1890ff;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.15), 0 4px 12px rgba(24, 144, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  &.filled {
+    border-color: #1890ff;
+    background-color: #e6f7ff;
+    color: #1890ff;
+  }
+}
+
+/* Responsive adjustment */
+@media (max-width: 480px) {
+  .otpBox {
+    width: 40px;
+    height: 48px;
+    font-size: 20px;
+    border-radius: 8px;
+  }
+  .otpWrapper {
+    gap: 8px;
+  }
+}
