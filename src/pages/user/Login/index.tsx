@@ -132,6 +132,7 @@ const Login: React.FC = () => {
               <Input
                 placeholder="Email hoặc Tên đăng nhập"
                 prefix={<UserOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
               />
             </Form.Item>
             <Form.Item
@@ -141,6 +142,7 @@ const Login: React.FC = () => {
               <Input.Password
                 placeholder="Mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
               />
             </Form.Item>
 
