@@ -164,8 +164,8 @@ const Login: React.FC = () => {
 
           <Modal
             title={
-              <div style={{ textAlign: 'center', width: '100%', borderBottom: '1px solid #f1f5f9', paddingBottom: 16 }}>
-                <span style={{ fontSize: 19, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>
+              <div style={{ textAlign: 'center', width: '100%', borderBottom: '1px solid #f1f5f9', paddingBottom: 10 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>
                   Khôi phục mật khẩu
                 </span>
               </div>
@@ -181,17 +181,17 @@ const Login: React.FC = () => {
             footer={null}
             destroyOnClose
             centered
-            width={420}
-            bodyStyle={{ padding: '24px 8px 12px 8px' }}
+            width={400}
+            bodyStyle={{ padding: '12px 8px 4px 8px' }}
           >
             <div>
               {forgotStep === 1 ? (
                 <div>
-                  <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.6', marginBottom: 24, textAlign: 'center' }}>
+                  <p style={{ color: '#64748b', fontSize: '13.5px', lineHeight: '1.5', marginBottom: 12, textAlign: 'center' }}>
                     Vui lòng nhập địa chỉ email của bạn. Chúng tôi sẽ gửi mã OTP xác minh gồm 6 số để bạn thiết lập lại mật khẩu.
                   </p>
-                  <div style={{ marginBottom: 24 }}>
-                    <span style={{ display: 'block', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 8 }}>
+                  <div style={{ marginBottom: 14 }}>
+                    <span style={{ display: 'block', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 4 }}>
                       Email tài khoản
                     </span>
                     <Input
@@ -200,7 +200,7 @@ const Login: React.FC = () => {
                       prefix={<UserOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      style={{ borderRadius: 8, height: 46 }}
+                      style={{ borderRadius: 8, height: 40 }}
                       autoComplete="off"
                     />
                   </div>
@@ -210,18 +210,18 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleSendOtp}
-                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none' }}
+                    style={{ borderRadius: 8, height: 40, fontSize: '14px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none' }}
                   >
                     Gửi mã xác nhận
                   </Button>
                 </div>
               ) : (
                 <div>
-                  <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.6', marginBottom: 20, textAlign: 'center' }}>
+                  <p style={{ color: '#64748b', fontSize: '13.5px', lineHeight: '1.5', marginBottom: 12, textAlign: 'center' }}>
                     Mã xác nhận đã được gửi về <strong style={{ color: '#0f172a' }}>{forgotEmail}</strong>. Vui lòng nhập mã OTP để tiếp tục.
                   </p>
-                  <div style={{ marginBottom: 24, textAlign: 'center' }}>
-                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 8 }}>
+                  <div style={{ marginBottom: 14, textAlign: 'center' }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 4 }}>
                       Mã xác nhận (OTP)
                     </span>
                     <OtpInput
@@ -230,8 +230,8 @@ const Login: React.FC = () => {
                       onChange={setForgotOtp}
                     />
                   </div>
-                  <div style={{ marginBottom: 28 }}>
-                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 8 }}>
+                  <div style={{ marginBottom: 14 }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 4 }}>
                       Mật khẩu mới
                     </span>
                     <Input.Password
@@ -240,7 +240,7 @@ const Login: React.FC = () => {
                       prefix={<LockOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
                       value={forgotPassword}
                       onChange={(e) => setForgotPassword(e.target.value)}
-                      style={{ borderRadius: 8, height: 46 }}
+                      style={{ borderRadius: 8, height: 40 }}
                       autoComplete="new-password"
                     />
                   </div>
@@ -250,7 +250,7 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleResetPassword}
-                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', marginBottom: 12 }}
+                    style={{ borderRadius: 8, height: 40, fontSize: '14px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', marginBottom: 10 }}
                   >
                     Đặt lại mật khẩu
                   </Button>
@@ -258,7 +258,7 @@ const Login: React.FC = () => {
                     type="link"
                     block
                     onClick={() => setForgotStep(1)}
-                    style={{ fontSize: '14px', color: '#c00c0c', fontWeight: 600 }}
+                    style={{ fontSize: '13px', color: '#c00c0c', fontWeight: 600, marginTop: 4 }}
                   >
                     Quay lại nhập Email
                   </Button>
