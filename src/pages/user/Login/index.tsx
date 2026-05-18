@@ -144,8 +144,7 @@ const Login: React.FC = () => {
               />
             </Form.Item>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-              <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
               <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#c00c0c', fontWeight: 600 }}>Quên mật khẩu?</a>
             </div>
 
@@ -159,6 +158,9 @@ const Login: React.FC = () => {
               >
                 Đăng nhập
               </Button>
+              <div style={{ marginTop: 20, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
+                Chưa có tài khoản? <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
+              </div>
             </Form.Item>
           </Form>
 
@@ -187,9 +189,6 @@ const Login: React.FC = () => {
             <div>
               {forgotStep === 1 ? (
                 <div>
-                  <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.6', marginBottom: 20, textAlign: 'center' }}>
-                    Vui lòng nhập địa chỉ email của bạn. Chúng tôi sẽ gửi mã OTP xác minh gồm 6 số để bạn thiết lập lại mật khẩu.
-                  </p>
                   <div style={{ marginBottom: 18 }}>
                     <span style={{ display: 'block', fontWeight: 600, fontSize: '13.5px', color: '#475569', marginBottom: 6 }}>
                       Email tài khoản
