@@ -33,6 +33,16 @@ export default [
 		access: 'authenticated',
 	},
 
+	// ĐẶT MƯỢN THIẾT BỊ — Borrower only
+	{
+		path: '/catalog',
+		name: 'Đặt mượn Thiết bị',
+		icon: 'AppstoreOutlined',
+		component: './Catalog',
+		access: 'isBorrower',
+	},
+
+
 	// QUẢN LÝ TÀI SẢN — Admin + Storekeeper
 	{
 		path: '/asset',
