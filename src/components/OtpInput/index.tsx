@@ -93,6 +93,8 @@ const OtpInput: React.FC<OtpInputProps> = ({
           pattern="[0-9]*"
           maxLength={1}
           value={digit}
+          autoComplete="one-time-code"
+          data-lpignore="true"
           onChange={(e) => handleTextChange(e.target.value, idx)}
           onKeyDown={(e) => handleKeyDown(e, idx)}
           onPaste={handlePaste}

@@ -1,40 +1,57 @@
 .otpWrapper {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  max-width: 360px;
-  margin: 20px auto;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin: 24px auto;
 }
 
 .otpBox {
   width: 48px;
-  height: 54px;
-  border: 1.5px solid #d9d9d9;
-  border-radius: 12px;
-  font-size: 24px;
-  font-weight: 700;
+  height: 52px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 22px;
+  font-weight: 600;
   text-align: center;
-  color: #1a1a1a;
-  background-color: #fafafa;
-  transition: all 0.25s cubic-bezier(0.215, 0.61, 0.355, 1);
+  color: #1e293b;
+  background-color: #f8fafc;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+  /* Overrides default browser autofill background */
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover, 
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #f8fafc inset !important;
+    box-shadow: 0 0 0 1000px #f8fafc inset !important;
+    -webkit-text-fill-color: #1e293b !important;
+    border-color: #e2e8f0 !important;
+  }
 
   &:hover {
-    border-color: #40a9ff;
+    border-color: #cbd5e1;
     background-color: #ffffff;
   }
 
   &:focus {
     border-color: #1890ff;
     background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.15), 0 4px 12px rgba(24, 144, 255, 0.08);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.12), 0 4px 10px rgba(24, 144, 255, 0.05);
+    transform: translateY(-1px);
+    
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+      box-shadow: 0 0 0 1000px #ffffff inset !important;
+    }
   }
 
   &.filled {
     border-color: #1890ff;
-    background-color: #e6f7ff;
+    background-color: rgba(24, 144, 255, 0.04);
     color: #1890ff;
   }
 }
@@ -43,8 +60,8 @@
 @media (max-width: 480px) {
   .otpBox {
     width: 40px;
-    height: 48px;
-    font-size: 20px;
+    height: 46px;
+    font-size: 18px;
     border-radius: 8px;
   }
   .otpWrapper {

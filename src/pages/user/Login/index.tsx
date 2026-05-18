@@ -157,7 +157,13 @@ const Login: React.FC = () => {
           </Form>
 
           <Modal
-            title={<span style={{ fontSize: 18, fontWeight: 600 }}>Khôi phục mật khẩu</span>}
+            title={
+              <div style={{ textAlign: 'center', width: '100%', borderBottom: '1px solid #f1f5f9', paddingBottom: 16 }}>
+                <span style={{ fontSize: 19, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>
+                  Khôi phục mật khẩu
+                </span>
+              </div>
+            }
             open={forgotPasswordVisible}
             onCancel={() => {
               setForgotPasswordVisible(false);
@@ -169,19 +175,27 @@ const Login: React.FC = () => {
             footer={null}
             destroyOnClose
             centered
-            width={400}
+            width={420}
+            bodyStyle={{ padding: '24px 8px 12px 8px' }}
           >
-            <div style={{ padding: '12px 0 0 0' }}>
+            <div>
               {forgotStep === 1 ? (
                 <div>
-                  <p style={{ color: '#666', marginBottom: 20 }}>Nhập địa chỉ email tài khoản của bạn để nhận mã OTP xác minh.</p>
-                  <div style={{ marginBottom: 20 }}>
+                  <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.6', marginBottom: 24, textAlign: 'center' }}>
+                    Vui lòng nhập địa chỉ email của bạn. Chúng tôi sẽ gửi mã OTP xác minh gồm 6 số để bạn thiết lập lại mật khẩu.
+                  </p>
+                  <div style={{ marginBottom: 24 }}>
+                    <span style={{ display: 'block', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 8 }}>
+                      Email tài khoản
+                    </span>
                     <Input
                       size="large"
-                      placeholder="name@example.com"
-                      prefix={<UserOutlined style={{ color: '#ccc' }} />}
+                      placeholder="username@student.ptit.edu.vn"
+                      prefix={<UserOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
+                      style={{ borderRadius: 8, height: 46 }}
+                      autoComplete="off"
                     />
                   </div>
                   <Button
@@ -190,17 +204,18 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleSendOtp}
+                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)', border: 'none' }}
                   >
                     Gửi mã xác nhận
                   </Button>
                 </div>
               ) : (
                 <div>
-                  <p style={{ color: '#666', marginBottom: 15 }}>
-                    Mã OTP đã được gửi về <strong>{forgotEmail}</strong>. Nhập mã OTP và mật khẩu mới để đặt lại.
+                  <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.6', marginBottom: 20, textAlign: 'center' }}>
+                    Mã xác nhận đã được gửi về <strong style={{ color: '#0f172a' }}>{forgotEmail}</strong>. Vui lòng nhập mã OTP để tiếp tục.
                   </p>
-                  <div style={{ marginBottom: 20, textAlign: 'center' }}>
-                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, marginBottom: 8, color: '#444' }}>
+                  <div style={{ marginBottom: 24, textAlign: 'center' }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 8 }}>
                       Mã xác nhận (OTP)
                     </span>
                     <OtpInput
@@ -209,16 +224,18 @@ const Login: React.FC = () => {
                       onChange={setForgotOtp}
                     />
                   </div>
-                  <div style={{ marginBottom: 24 }}>
-                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, marginBottom: 8, color: '#444' }}>
+                  <div style={{ marginBottom: 28 }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13px', color: '#475569', marginBottom: 8 }}>
                       Mật khẩu mới
                     </span>
                     <Input.Password
                       size="large"
-                      placeholder="Nhập mật khẩu mới"
-                      prefix={<LockOutlined style={{ color: '#ccc' }} />}
+                      placeholder="••••••••"
+                      prefix={<LockOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
                       value={forgotPassword}
                       onChange={(e) => setForgotPassword(e.target.value)}
+                      style={{ borderRadius: 8, height: 46 }}
+                      autoComplete="new-password"
                     />
                   </div>
                   <Button
@@ -227,14 +244,15 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleResetPassword}
+                    style={{ borderRadius: 8, height: 46, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)', border: 'none', marginBottom: 12 }}
                   >
                     Đặt lại mật khẩu
                   </Button>
                   <Button
-                    type="text"
+                    type="link"
                     block
-                    style={{ marginTop: 8 }}
                     onClick={() => setForgotStep(1)}
+                    style={{ fontSize: '14px', color: '#64748b', fontWeight: 500 }}
                   >
                     Quay lại nhập Email
                   </Button>
