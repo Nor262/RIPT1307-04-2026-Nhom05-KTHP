@@ -115,6 +115,15 @@ export async function syncTransactionStatus(data: { transaction_ids: number[] })
   return axios.post('/transactions/sync-status', data);
 }
 
+export async function extendBooking(id: number, data: { new_due_date: string }) {
+  return axios.patch(`/transactions/${id}/extend`, data);
+}
+
+export async function rateTransaction(id: number, data: { rating: number; feedback?: string }) {
+  return axios.patch(`/transactions/${id}/rate`, data);
+}
+
+
 // ==================== Analytics ====================
 export async function getDashboardStats() {
   return axios.get('/reports/dashboard');
