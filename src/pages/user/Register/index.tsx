@@ -46,6 +46,7 @@ const Register: React.FC = () => {
             onFinish={handleSubmit}
             layout="vertical"
             size="large"
+            autoComplete="off"
           >
              <Form.Item
               name="full_name"
@@ -55,6 +56,7 @@ const Register: React.FC = () => {
                 placeholder="Họ và tên"
                 prefix={<IdcardOutlined className={styles.prefixIcon} />}
                 style={{ borderRadius: 8, height: 46 }}
+                autoComplete="off"
               />
             </Form.Item>
 
@@ -66,6 +68,7 @@ const Register: React.FC = () => {
                 placeholder="Tên đăng nhập"
                 prefix={<UserOutlined className={styles.prefixIcon} />}
                 style={{ borderRadius: 8, height: 46 }}
+                autoComplete="off"
               />
             </Form.Item>
 
@@ -80,6 +83,7 @@ const Register: React.FC = () => {
                 placeholder="Email"
                 prefix={<MailOutlined className={styles.prefixIcon} />}
                 style={{ borderRadius: 8, height: 46 }}
+                autoComplete="off"
               />
             </Form.Item>
 
@@ -94,6 +98,7 @@ const Register: React.FC = () => {
                 placeholder="Mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
                 style={{ borderRadius: 8, height: 46 }}
+                autoComplete="new-password"
               />
             </Form.Item>
 
@@ -116,6 +121,7 @@ const Register: React.FC = () => {
                 placeholder="Xác nhận mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
                 style={{ borderRadius: 8, height: 46 }}
+                autoComplete="new-password"
               />
             </Form.Item>
 
