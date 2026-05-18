@@ -1,3 +1,4 @@
+import { history } from 'umi';
 import { landingUrl } from '@/services/base/constant';
 import { FileWordOutlined, GlobalOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
@@ -32,6 +33,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 			key: 'name',
 			icon: <UserOutlined />,
 			label: fullName,
+			onClick: () => history.push('/profile'),
 		},
 		{
 			key: 'office',
