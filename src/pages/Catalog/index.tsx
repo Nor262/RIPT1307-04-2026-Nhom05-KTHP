@@ -16,14 +16,12 @@ import {
   message,
   Empty,
   Spin,
-  Badge,
 } from 'antd';
 import {
   SearchOutlined,
   AppstoreOutlined,
   CalendarOutlined,
   InfoCircleOutlined,
-  CheckCircleOutlined,
   FormOutlined,
 } from '@ant-design/icons';
 import {
@@ -34,8 +32,8 @@ import {
 } from '@/services/api';
 import dayjs from 'dayjs';
 
-const { Search } = Input;
 const { RangePicker } = DatePicker;
+
 
 type EquipmentItem = {
   id: number;
@@ -92,7 +90,7 @@ const Catalog: React.FC = () => {
   });
 
   // Fetch Booking Schedule for selected equipment
-  const { data: schedule = [], loading: loadingSchedule, refresh: refreshSchedule } = useRequest(
+  const { data: schedule = [], loading: loadingSchedule } = useRequest(
     async () => {
       if (!selectedItem) return [];
       try {
