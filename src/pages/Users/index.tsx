@@ -122,7 +122,7 @@ const UserManagement: React.FC = () => {
             actionRef.current?.reload();
           }}
         >
-          <a style={{ color: record.is_active ? '#ff4d4f' : '#52c41a' }}>
+          <a style={{ color: record.is_active ? '#c00c0c' : '#52c41a' }}>
             {record.is_active ? <><LockOutlined /> Khóa</> : <><UnlockOutlined /> Mở khóa</>}
           </a>
         </Popconfirm>,
@@ -199,7 +199,7 @@ const UserManagement: React.FC = () => {
           const res = await getUsers(params);
           const data = res.data?.data;
           const list = data?.items || data?.result || data || [];
-          
+
           const filteredList = list.filter((item: UserItem) => {
             if (params.full_name && !item.full_name?.toLowerCase().includes(params.full_name.toLowerCase())) {
               return false;
@@ -221,7 +221,7 @@ const UserManagement: React.FC = () => {
             }
             return true;
           });
-          
+
           return {
             data: filteredList,
             success: true,

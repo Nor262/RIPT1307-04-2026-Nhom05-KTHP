@@ -75,7 +75,7 @@ const CategoryManagement: React.FC = () => {
             actionRef.current?.reload();
           }}
         >
-          <a style={{ color: '#ff4d4f' }}>
+          <a style={{ color: '#c00c0c' }}>
             <DeleteOutlined /> Xóa
           </a>
         </Popconfirm>,
@@ -140,14 +140,14 @@ const CategoryManagement: React.FC = () => {
           const res = await getCategories(params);
           const data = res.data?.data;
           const list = Array.isArray(data) ? data : (data?.items || data?.result || []);
-          
+
           const filteredList = list.filter((item: CategoryItem) => {
             if (params.name && !item.name?.toLowerCase().includes(params.name.toLowerCase())) {
               return false;
             }
             return true;
           });
-          
+
           return {
             data: filteredList,
             success: true,

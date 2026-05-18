@@ -158,7 +158,7 @@ const BookingApproval: React.FC = () => {
             </a>,
             <a
               key="reject"
-              style={{ color: '#ff4d4f' }}
+              style={{ color: '#c00c0c' }}
               onClick={() => {
                 setCurrentRow(record);
                 setRejectReason('');
@@ -230,7 +230,7 @@ const BookingApproval: React.FC = () => {
           const res = await getTransactions({ ...params, sorter });
           const data = res.data?.data;
           const list = data?.items || data?.result || data || [];
-          
+
           const filteredList = list.filter((item: TransactionItem) => {
             if (params.equipment) {
               const itemEquipName = item.equipment?.name?.toLowerCase();
@@ -251,7 +251,7 @@ const BookingApproval: React.FC = () => {
             }
             return true;
           });
-          
+
           return {
             data: filteredList,
             success: true,

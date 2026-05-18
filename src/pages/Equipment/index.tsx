@@ -5,8 +5,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-components';
-import { 
-  getEquipment, createEquipment, updateEquipment, deleteEquipment, 
+import {
+  getEquipment, createEquipment, updateEquipment, deleteEquipment,
   getCategories, getSuppliers, getLocations, importBulkEquipment, exportEquipmentExcel,
   resolveMaintenanceEquipment
 } from '@/services/api';
@@ -150,7 +150,7 @@ const EquipmentList: React.FC = () => {
             actionRef.current?.reload();
           }}
         >
-          <a style={{ color: '#ff4d4f' }}><DeleteOutlined /> Xóa</a>
+          <a style={{ color: '#c00c0c' }}><DeleteOutlined /> Xóa</a>
         </Popconfirm>,
       ],
     },
@@ -264,7 +264,7 @@ const EquipmentList: React.FC = () => {
           const res = await getEquipment(params);
           const data = res.data?.data;
           const list = data?.items || data?.result || data || [];
-          
+
           const filteredList = list.filter((item: EquipmentItem) => {
             if (params.name && !item.name.toLowerCase().includes(params.name.toLowerCase())) {
               return false;
@@ -284,7 +284,7 @@ const EquipmentList: React.FC = () => {
             }
             return true;
           });
-          
+
           return {
             data: filteredList,
             success: true,
@@ -419,7 +419,7 @@ const EquipmentList: React.FC = () => {
                         ? JSON.parse(currentRow.specifications)
                         : currentRow.specifications;
                     } catch (e) {
-                      return <span style={{ color: '#ff4d4f' }}>Lỗi định dạng thông số</span>;
+                      return <span style={{ color: '#c00c0c' }}>Lỗi định dạng thông số</span>;
                     }
                     if (!specs || Object.keys(specs).length === 0) {
                       return <span>Không có thông số kỹ thuật</span>;
