@@ -145,12 +145,18 @@ const Login: React.FC = () => {
             </Form.Item>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-              <Link to="/user/register">Đăng ký tài khoản</Link>
-              <a onClick={() => setForgotPasswordVisible(true)}>Quên mật khẩu?</a>
+              <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
+              <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#c00c0c', fontWeight: 600 }}>Quên mật khẩu?</a>
             </div>
 
             <Form.Item style={{ marginBottom: 8 }}>
-              <Button type="primary" htmlType="submit" block loading={submitting}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                loading={submitting}
+                style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none' }}
+              >
                 Đăng nhập
               </Button>
             </Form.Item>

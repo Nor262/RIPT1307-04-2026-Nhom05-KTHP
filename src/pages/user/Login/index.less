@@ -196,3 +196,25 @@
 		margin-bottom: 80px;
 	}
 }
+
+:global {
+  /* Override standard ant input hover and focus with PTIT Red */
+  .ant-input-affix-wrapper:hover,
+  .ant-input-affix-wrapper:focus,
+  .ant-input-affix-wrapper-focused,
+  .ant-input:hover,
+  .ant-input:focus {
+    border-color: #c00c0c !important;
+    box-shadow: 0 0 0 2px rgba(192, 12, 12, 0.1) !important;
+  }
+  
+  /* Disable Chrome Autofill styling across all inputs */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #1e293b !important;
+  }
+}
