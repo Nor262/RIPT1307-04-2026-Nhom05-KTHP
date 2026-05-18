@@ -56,8 +56,10 @@ axios.interceptors.response.use(
         break;
 
       case 401:
-        if (originalRequest.url === '/auth/login') {
-          notification.error({ message: 'Đăng nhập thất bại', description: 'Email hoặc mật khẩu không đúng' });
+        if (originalRequest.url === '/auth/login' || originalRequest.url === '/auth/refresh') {
+          if (originalRequest.url === '/auth/login') {
+            notification.error({ message: 'Đăng nhập thất bại', description: 'Email hoặc mật khẩu không đúng' });
+          }
           break;
         }
 
