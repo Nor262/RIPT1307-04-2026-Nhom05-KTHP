@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Modal } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { history, useIntl, Link, useModel } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
 import Footer from '@/components/Footer';
+import OtpInput from '@/components/OtpInput';
 import styles from './index.less';
 
 const Login: React.FC = () => {
@@ -13,6 +14,60 @@ const Login: React.FC = () => {
   const [form] = Form.useForm();
   const loginAction = useAuthStore((state) => state.login);
   const { setInitialState } = useModel('@@initialState');
+
+  // Forgot password modal state
+  const [forgotPasswordVisible, setForgotPasswordVisible] = useState(false);
+  const [forgotStep, setForgotStep] = useState<1 | 2>(1);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [forgotPassword, setForgotPassword] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+
+  const handleSendOtp = async () => {
+    if (!forgotEmail.trim()) {
+      message.error('Vui lòng nhập Email!');
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      await axios.post('/auth/forgot-password', { email: forgotEmail });
+      message.success('Mã OTP đã được gửi về Email của bạn!');
+      setForgotStep(2);
+    } catch (err) {
+      // Axios interceptor handles showing standard error notification
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!forgotOtp.trim() || forgotOtp.length < 6) {
+      message.error('Vui lòng nhập đủ mã OTP 6 số!');
+      return;
+    }
+    if (!forgotPassword.trim()) {
+      message.error('Vui lòng nhập mật khẩu mới!');
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      await axios.post('/auth/reset-password', {
+        email: forgotEmail,
+        otp: forgotOtp,
+        new_password: forgotPassword,
+      });
+      message.success('Đặt lại mật khẩu thành công! Hãy đăng nhập lại.');
+      setForgotPasswordVisible(false);
+      setForgotStep(1);
+      setForgotEmail('');
+      setForgotOtp('');
+      setForgotPassword('');
+    } catch (err) {
+      // Handled by Axios interceptor
+    } finally {
+      setForgotLoading(false);
+    }
+  };
 
   const handleSubmit = async (values: any) => {
     console.log('Login values:', values);
@@ -89,17 +144,104 @@ const Login: React.FC = () => {
               />
             </Form.Item>
 
-            <Form.Item>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <Link to="/user/register">Đăng ký tài khoản</Link>
+              <a onClick={() => setForgotPasswordVisible(true)}>Quên mật khẩu?</a>
+            </div>
+
+            <Form.Item style={{ marginBottom: 8 }}>
               <Button type="primary" htmlType="submit" block loading={submitting}>
                 Đăng nhập
               </Button>
             </Form.Item>
-            <Form.Item>
-              <div style={{ marginTop: 16, textAlign: 'center' }}>
-                Chưa có tài khoản? <Link to="/user/register">Đăng ký ngay</Link>
-              </div>
-            </Form.Item>
           </Form>
+
+          <Modal
+            title={<span style={{ fontSize: 18, fontWeight: 600 }}>Khôi phục mật khẩu</span>}
+            open={forgotPasswordVisible}
+            onCancel={() => {
+              setForgotPasswordVisible(false);
+              setForgotStep(1);
+              setForgotEmail('');
+              setForgotOtp('');
+              setForgotPassword('');
+            }}
+            footer={null}
+            destroyOnClose
+            centered
+            width={400}
+          >
+            <div style={{ padding: '12px 0 0 0' }}>
+              {forgotStep === 1 ? (
+                <div>
+                  <p style={{ color: '#666', marginBottom: 20 }}>Nhập địa chỉ email tài khoản của bạn để nhận mã OTP xác minh.</p>
+                  <div style={{ marginBottom: 20 }}>
+                    <Input
+                      size="large"
+                      placeholder="name@example.com"
+                      prefix={<UserOutlined style={{ color: '#ccc' }} />}
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    loading={forgotLoading}
+                    onClick={handleSendOtp}
+                  >
+                    Gửi mã xác nhận
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ color: '#666', marginBottom: 15 }}>
+                    Mã OTP đã được gửi về <strong>{forgotEmail}</strong>. Nhập mã OTP và mật khẩu mới để đặt lại.
+                  </p>
+                  <div style={{ marginBottom: 20, textAlign: 'center' }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, marginBottom: 8, color: '#444' }}>
+                      Mã xác nhận (OTP)
+                    </span>
+                    <OtpInput
+                      length={6}
+                      value={forgotOtp}
+                      onChange={setForgotOtp}
+                    />
+                  </div>
+                  <div style={{ marginBottom: 24 }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, marginBottom: 8, color: '#444' }}>
+                      Mật khẩu mới
+                    </span>
+                    <Input.Password
+                      size="large"
+                      placeholder="Nhập mật khẩu mới"
+                      prefix={<LockOutlined style={{ color: '#ccc' }} />}
+                      value={forgotPassword}
+                      onChange={(e) => setForgotPassword(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    loading={forgotLoading}
+                    onClick={handleResetPassword}
+                  >
+                    Đặt lại mật khẩu
+                  </Button>
+                  <Button
+                    type="text"
+                    block
+                    style={{ marginTop: 8 }}
+                    onClick={() => setForgotStep(1)}
+                  >
+                    Quay lại nhập Email
+                  </Button>
+                </div>
+              )}
+            </div>
+          </Modal>
         </div>
       </div>
       <div className="login-footer">
