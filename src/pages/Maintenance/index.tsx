@@ -25,6 +25,8 @@ const MaintenanceList: React.FC = () => {
   const formRef = useRef<FormInstance>();
   const searchTimeoutRef = useRef<any>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [pendingCount, setPendingCount] = useState<number>(0);
+  const [totalCost, setTotalCost] = useState<number>(0);
 
   const columns: ProColumns<MaintenanceItem>[] = [
     {
@@ -54,43 +56,13 @@ const MaintenanceList: React.FC = () => {
     {
       title: 'Chi phí',
       dataIndex: 'cost',
-      valueType: 'money',
-      render: (val) => `${Number(val).toLocaleString()} VNĐ`,
+      hideInSearch: true,
+      render: (_, record) => `${Number(record.cost || 0).toLocaleString('vi-VN')} VNĐ`,
     },
     {
       title: 'Hẹn ngày tới',
       dataIndex: 'next_maintenance_date',
       valueType: 'date',
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      valueEnum: {
-        pending: { text: 'Đang bảo trì', status: 'Processing' },
-        completed: { text: 'Đã hoàn thành', status: 'Success' },
-      },
-    },
-    {
-      title: 'Thao tác',
-      dataIndex: 'option',
-      valueType: 'option',
-      width: 150,
-      render: (_, record) => [
-        record.status === 'pending' && (
-          <a
-            key="complete"
-            onClick={async () => {
-              if (record.equipment?.id) {
-                await completeMaintenance(record.equipment.id);
-                message.success('Đã hoàn tất bảo trì, thiết bị đã sẵn sàng');
-                actionRef.current?.reload();
-              }
-            }}
-          >
-            <CheckCircleOutlined /> Hoàn tất
-          </a>
-        ),
-      ],
     },
   ];
 
@@ -99,7 +71,7 @@ const MaintenanceList: React.FC = () => {
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={8}>
           <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Đang bảo trì" value={3} prefix={<ToolOutlined />} valueStyle={{
+            <Statistic title="Đang bảo trì" value={pendingCount} prefix={<ToolOutlined />} valueStyle={{
               backgroundImage: 'url("/background_card3.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
               backgroundSize: 'contain',
               borderLeft: '4px solid #faad14'
@@ -108,7 +80,7 @@ const MaintenanceList: React.FC = () => {
         </Col>
         <Col span={8}>
           <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Tổng chi phí tháng này" value={1500000} suffix="VNĐ" prefix={<HistoryOutlined />} valueStyle={{
+            <Statistic title="Tổng chi phí" value={totalCost.toLocaleString('vi-VN')} suffix="VNĐ" prefix={<HistoryOutlined />} valueStyle={{
               backgroundImage: 'url("/background_card4.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
               backgroundSize: 'contain',
               borderLeft: '4px solid #faad14'
@@ -181,6 +153,12 @@ const MaintenanceList: React.FC = () => {
           const data = res.data?.data || [];
           const list = Array.isArray(data) ? data : (data?.items || data?.result || []);
           
+          // Tính thống kê từ toàn bộ dữ liệu
+          const pending = list.filter((item: MaintenanceItem) => item.status === 'pending').length;
+          const cost = list.reduce((sum: number, item: MaintenanceItem) => sum + Number(item.cost || 0), 0);
+          setPendingCount(pending);
+          setTotalCost(cost);
+          
           const filteredList = list.filter((item: MaintenanceItem) => {
             if (params.performed_by && !item.performed_by?.toLowerCase().includes(params.performed_by.toLowerCase())) {
               return false;
@@ -236,7 +214,7 @@ const MaintenanceList: React.FC = () => {
         <ProFormDatePicker name="maintenance_date" label="Ngày thực hiện" rules={[{ required: true }]} />
         <ProFormText name="performed_by" label="Người thực hiện" rules={[{ required: true }]} />
         <ProFormTextArea name="details" label="Nội dung bảo trì" rules={[{ required: true }]} />
-        <ProFormDigit name="cost" label="Chi phí (VNĐ)" min={0} fieldProps={{ precision: 0 }} />
+        <ProFormDigit name="cost" label="Chi phí (VNĐ)" min={0} fieldProps={{ precision: 0 }} rules={[{ required: true, message: 'Vui lòng nhập chi phí' }]} />
         <ProFormDatePicker name="next_maintenance_date" label="Ngày bảo trì định kỳ tiếp theo" />
       </ModalForm>
     </div>
