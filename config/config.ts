@@ -7,7 +7,15 @@ export default defineConfig({
 	antd: {
 		// antd 5 theme config
 		// https://ant.design/docs/react/customize-theme
-		configProvider: {},
+		configProvider: {
+			theme: {
+				token: {
+					colorPrimary: '#c00c0c',
+					colorLink: '#c00c0c',
+					borderRadius: 6,
+				},
+			},
+		},
 	},
 	access: {},
 	model: {},
