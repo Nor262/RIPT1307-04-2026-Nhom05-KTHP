@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Popconfirm } from 'antd';
+import type { FormInstance } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -16,6 +17,8 @@ type CategoryItem = {
 
 const CategoryManagement: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
+  const searchTimeoutRef = useRef<any>();
   const [currentRow, setCurrentRow] = useState<CategoryItem | undefined>();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -85,17 +88,36 @@ const CategoryManagement: React.FC = () => {
       <ProTable<CategoryItem>
         headerTitle="Quản lý Danh mục thiết bị"
         actionRef={actionRef}
+        formRef={formRef}
+        form={{
+          onValuesChange: () => {
+            if (searchTimeoutRef.current) {
+              clearTimeout(searchTimeoutRef.current);
+            }
+            searchTimeoutRef.current = setTimeout(() => {
+              formRef.current?.submit();
+            }, 100);
+          },
+        }}
         rowKey="id"
         search={{
           labelWidth: 120,
           optionRender: (searchConfig, formProps, dom) => [
-            // dom[0] là nút Làm lại, dom[1] là nút Tìm kiếm
-            dom[0],
+            <Button
+              key="reset"
+              onClick={() => {
+                formProps.form?.resetFields();
+                formProps.form?.submit();
+              }}
+              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+            >
+              Làm lại
+            </Button>,
             <Button
               key="search"
               type="primary"
-              danger
               onClick={() => formProps.form?.submit()}
+              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
             >
               Tìm kiếm
             </Button>,
@@ -104,8 +126,8 @@ const CategoryManagement: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="create"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => {
               setCurrentRow(undefined);
               setModalVisible(true);
@@ -117,10 +139,19 @@ const CategoryManagement: React.FC = () => {
         request={async (params) => {
           const res = await getCategories(params);
           const data = res.data?.data;
+          const list = Array.isArray(data) ? data : (data?.items || data?.result || []);
+          
+          const filteredList = list.filter((item: CategoryItem) => {
+            if (params.name && !item.name?.toLowerCase().includes(params.name.toLowerCase())) {
+              return false;
+            }
+            return true;
+          });
+          
           return {
-            data: Array.isArray(data) ? data : (data?.items || data?.result || []),
+            data: filteredList,
             success: true,
-            total: data?.meta?.totalItems || data?.total || (Array.isArray(data) ? data.length : 0),
+            total: filteredList.length,
           };
         }}
         columns={columns}

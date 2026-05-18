@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Tag, Space, Typography, Card, Statistic, Row, Col } from 'antd';
+import type { FormInstance } from 'antd';
 import { PlusOutlined, CheckCircleOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -21,6 +22,8 @@ export type MaintenanceItem = {
 
 const MaintenanceList: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
+  const searchTimeoutRef = useRef<any>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
 
   const columns: ProColumns<MaintenanceItem>[] = [
@@ -117,12 +120,23 @@ const MaintenanceList: React.FC = () => {
       <ProTable<MaintenanceItem>
         headerTitle="Nhật ký bảo trì thiết bị"
         actionRef={actionRef}
+        formRef={formRef}
+        form={{
+          onValuesChange: () => {
+            if (searchTimeoutRef.current) {
+              clearTimeout(searchTimeoutRef.current);
+            }
+            searchTimeoutRef.current = setTimeout(() => {
+              formRef.current?.submit();
+            }, 100);
+          },
+        }}
         rowKey="id"
         search={{
           labelWidth: 120, collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -132,12 +146,21 @@ const MaintenanceList: React.FC = () => {
             );
           },
           optionRender: (searchConfig, formProps, dom) => [
-            dom[0],
+            <Button
+              key="reset"
+              onClick={() => {
+                formProps.form?.resetFields();
+                formProps.form?.submit();
+              }}
+              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+            >
+              Làm lại
+            </Button>,
             <Button
               key="search"
               type="primary"
-              danger
               onClick={() => formProps.form?.submit()}
+              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -146,8 +169,8 @@ const MaintenanceList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="primary"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => handleModalVisible(true)}
           >
             <PlusOutlined /> Tạo bản ghi mới
@@ -155,9 +178,33 @@ const MaintenanceList: React.FC = () => {
         ]}
         request={async (params) => {
           const res = await getMaintenance(params);
+          const data = res.data?.data || [];
+          const list = Array.isArray(data) ? data : (data?.items || data?.result || []);
+          
+          const filteredList = list.filter((item: MaintenanceItem) => {
+            if (params.performed_by && !item.performed_by?.toLowerCase().includes(params.performed_by.toLowerCase())) {
+              return false;
+            }
+            if (params.status && item.status !== params.status) {
+              return false;
+            }
+            if (params.maintenance_date && item.maintenance_date && !item.maintenance_date.startsWith(params.maintenance_date)) {
+              return false;
+            }
+            if (params.equipment) {
+              const itemEquipName = item.equipment?.name?.toLowerCase();
+              const paramEquip = typeof params.equipment === 'object' ? params.equipment.name : params.equipment;
+              if (paramEquip && !itemEquipName?.includes(paramEquip.toLowerCase())) {
+                return false;
+              }
+            }
+            return true;
+          });
+          
           return {
-            data: res.data?.data || [],
+            data: filteredList,
             success: true,
+            total: filteredList.length,
           };
         }}
         columns={columns}

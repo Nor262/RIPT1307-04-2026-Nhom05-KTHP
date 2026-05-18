@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Popconfirm, Tag, Modal, Descriptions, Image, Upload } from 'antd';
+import type { FormInstance } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -36,6 +37,8 @@ const statusMap: Record<string, { text: string; color: string }> = {
 
 const EquipmentList: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
+  const searchTimeoutRef = useRef<any>();
   const [currentRow, setCurrentRow] = useState<EquipmentItem | undefined>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false);
@@ -173,6 +176,17 @@ const EquipmentList: React.FC = () => {
       <ProTable<EquipmentItem>
         headerTitle="Danh sách thiết bị"
         actionRef={actionRef}
+        formRef={formRef}
+        form={{
+          onValuesChange: () => {
+            if (searchTimeoutRef.current) {
+              clearTimeout(searchTimeoutRef.current);
+            }
+            searchTimeoutRef.current = setTimeout(() => {
+              formRef.current?.submit();
+            }, 100);
+          },
+        }}
         rowKey="id"
         search={{
           labelWidth: 120,
@@ -180,7 +194,7 @@ const EquipmentList: React.FC = () => {
           collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
                 {collapsed ? (
                   <><PlusOutlined style={{ fontSize: 12 }} /> Mở rộng </>
                 ) : (
@@ -190,13 +204,21 @@ const EquipmentList: React.FC = () => {
             );
           },
           optionRender: (searchConfig, formProps, dom) => [
-            // dom[0] là nút Làm lại, dom[1] là nút Tìm kiếm
-            dom[0],
+            <Button
+              key="reset"
+              onClick={() => {
+                formProps.form?.resetFields();
+                formProps.form?.submit();
+              }}
+              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+            >
+              Làm lại
+            </Button>,
             <Button
               key="search"
               type="primary"
-              danger
               onClick={() => formProps.form?.submit()}
+              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -228,8 +250,8 @@ const EquipmentList: React.FC = () => {
           </Upload>,
           <Button
             type="primary"
-            danger
             key="primary"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => {
               setCurrentRow(undefined);
               handleModalVisible(true);
@@ -241,10 +263,32 @@ const EquipmentList: React.FC = () => {
         request={async (params) => {
           const res = await getEquipment(params);
           const data = res.data?.data;
+          const list = data?.items || data?.result || data || [];
+          
+          const filteredList = list.filter((item: EquipmentItem) => {
+            if (params.name && !item.name.toLowerCase().includes(params.name.toLowerCase())) {
+              return false;
+            }
+            if (params.serial_number && !item.serial_number.toLowerCase().includes(params.serial_number.toLowerCase())) {
+              return false;
+            }
+            if (params.status && item.status !== params.status) {
+              return false;
+            }
+            if (params.category) {
+              const itemCatName = item.category?.name?.toLowerCase();
+              const paramCat = typeof params.category === 'object' ? params.category.name : params.category;
+              if (paramCat && !itemCatName?.includes(paramCat.toLowerCase())) {
+                return false;
+              }
+            }
+            return true;
+          });
+          
           return {
-            data: data?.items || data?.result || data || [],
+            data: filteredList,
             success: true,
-            total: data?.meta?.totalItems || data?.total || 0,
+            total: filteredList.length,
           };
         }}
         columns={columns}
@@ -367,7 +411,27 @@ const EquipmentList: React.FC = () => {
             <Descriptions.Item label="Ngày mua">{currentRow.purchase_date ? new Date(currentRow.purchase_date).toLocaleDateString('vi-VN') : '—'}</Descriptions.Item>
             {currentRow.specifications && (
               <Descriptions.Item label="Thông số kỹ thuật">
-                <pre style={{ margin: 0, fontSize: 12 }}>{JSON.stringify(currentRow.specifications, null, 2)}</pre>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                  {(() => {
+                    let specs: Record<string, any> = {};
+                    try {
+                      specs = typeof currentRow.specifications === 'string'
+                        ? JSON.parse(currentRow.specifications)
+                        : currentRow.specifications;
+                    } catch (e) {
+                      return <span style={{ color: '#ff4d4f' }}>Lỗi định dạng thông số</span>;
+                    }
+                    if (!specs || Object.keys(specs).length === 0) {
+                      return <span>Không có thông số kỹ thuật</span>;
+                    }
+                    return Object.entries(specs).map(([key, val]) => (
+                      <div key={key} style={{ display: 'flex', borderBottom: '1px solid #f0f0f0', paddingBottom: '4px' }}>
+                        <span style={{ fontWeight: 600, width: '150px', color: '#555', flexShrink: 0 }}>{key}:</span>
+                        <span style={{ color: '#222', wordBreak: 'break-all' }}>{String(val)}</span>
+                      </div>
+                    ));
+                  })()}
+                </div>
               </Descriptions.Item>
             )}
             {currentRow.image_url && (

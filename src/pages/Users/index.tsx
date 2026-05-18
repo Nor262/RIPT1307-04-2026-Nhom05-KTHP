@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, message, Tag, Modal, Space, Switch, Popconfirm } from 'antd';
+import type { FormInstance } from 'antd';
 import { PlusOutlined, EditOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -25,6 +26,8 @@ const roleMap = {
 
 const UserManagement: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
+  const searchTimeoutRef = useRef<any>();
   const [currentRow, setCurrentRow] = useState<UserItem | undefined>();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -132,13 +135,24 @@ const UserManagement: React.FC = () => {
       <ProTable<UserItem>
         headerTitle="Quản lý Người dùng"
         actionRef={actionRef}
+        formRef={formRef}
+        form={{
+          onValuesChange: () => {
+            if (searchTimeoutRef.current) {
+              clearTimeout(searchTimeoutRef.current);
+            }
+            searchTimeoutRef.current = setTimeout(() => {
+              formRef.current?.submit();
+            }, 100);
+          },
+        }}
         rowKey="id"
         search={{
           labelWidth: 120,
           collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -148,12 +162,21 @@ const UserManagement: React.FC = () => {
             );
           },
           optionRender: (searchConfig, formProps, dom) => [
-            dom[0],
+            <Button
+              key="reset"
+              onClick={() => {
+                formProps.form?.resetFields();
+                formProps.form?.submit();
+              }}
+              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+            >
+              Làm lại
+            </Button>,
             <Button
               key="search"
               type="primary"
-              danger
               onClick={() => formProps.form?.submit()}
+              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -162,8 +185,8 @@ const UserManagement: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="create"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => {
               setCurrentRow(undefined);
               setModalVisible(true);
@@ -175,10 +198,34 @@ const UserManagement: React.FC = () => {
         request={async (params) => {
           const res = await getUsers(params);
           const data = res.data?.data;
+          const list = data?.items || data?.result || data || [];
+          
+          const filteredList = list.filter((item: UserItem) => {
+            if (params.full_name && !item.full_name?.toLowerCase().includes(params.full_name.toLowerCase())) {
+              return false;
+            }
+            if (params.username && !item.username?.toLowerCase().includes(params.username.toLowerCase())) {
+              return false;
+            }
+            if (params.email && !item.email?.toLowerCase().includes(params.email.toLowerCase())) {
+              return false;
+            }
+            if (params.role && item.role !== params.role) {
+              return false;
+            }
+            if (params.is_active !== undefined) {
+              const isActiveStr = String(item.is_active);
+              if (isActiveStr !== String(params.is_active)) {
+                return false;
+              }
+            }
+            return true;
+          });
+          
           return {
-            data: data?.items || data?.result || data || [],
+            data: filteredList,
             success: true,
-            total: data?.meta?.totalItems || data?.total || 0,
+            total: filteredList.length,
           };
         }}
         columns={columns}

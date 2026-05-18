@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { PlusOutlined, EditOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import { Button, message, Tag, Modal, Space, Input, Typography, Descriptions, Timeline, Badge } from 'antd';
+import type { FormInstance } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -43,6 +44,8 @@ const statusMap: Record<string, { text: string; color: string }> = {
 
 const BookingApproval: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
+  const searchTimeoutRef = useRef<any>();
   const [detailVisible, setDetailVisible] = useState(false);
   const [rejectVisible, setRejectVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState<TransactionItem | undefined>();
@@ -176,13 +179,24 @@ const BookingApproval: React.FC = () => {
       <ProTable<TransactionItem>
         headerTitle="Danh sách Đơn mượn thiết bị"
         actionRef={actionRef}
+        formRef={formRef}
+        form={{
+          onValuesChange: () => {
+            if (searchTimeoutRef.current) {
+              clearTimeout(searchTimeoutRef.current);
+            }
+            searchTimeoutRef.current = setTimeout(() => {
+              formRef.current?.submit();
+            }, 100);
+          },
+        }}
         rowKey="id"
         search={{
           labelWidth: 120,
           collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -192,12 +206,21 @@ const BookingApproval: React.FC = () => {
             );
           },
           optionRender: (searchConfig, formProps, dom) => [
-            dom[0],
+            <Button
+              key="reset"
+              onClick={() => {
+                formProps.form?.resetFields();
+                formProps.form?.submit();
+              }}
+              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+            >
+              Làm lại
+            </Button>,
             <Button
               key="search"
               type="primary"
-              danger
               onClick={() => formProps.form?.submit()}
+              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -206,10 +229,33 @@ const BookingApproval: React.FC = () => {
         request={async (params, sorter) => {
           const res = await getTransactions({ ...params, sorter });
           const data = res.data?.data;
+          const list = data?.items || data?.result || data || [];
+          
+          const filteredList = list.filter((item: TransactionItem) => {
+            if (params.equipment) {
+              const itemEquipName = item.equipment?.name?.toLowerCase();
+              const paramEquip = typeof params.equipment === 'object' ? params.equipment.name : params.equipment;
+              if (paramEquip && !itemEquipName?.includes(paramEquip.toLowerCase())) {
+                return false;
+              }
+            }
+            if (params.borrower) {
+              const itemBorrName = item.borrower?.full_name?.toLowerCase();
+              const paramBorr = typeof params.borrower === 'object' ? params.borrower.full_name : params.borrower;
+              if (paramBorr && !itemBorrName?.includes(paramBorr.toLowerCase())) {
+                return false;
+              }
+            }
+            if (params.status && item.status !== params.status) {
+              return false;
+            }
+            return true;
+          });
+          
           return {
-            data: data?.items || data?.result || data || [],
+            data: filteredList,
             success: true,
-            total: data?.meta?.totalItems || data?.total || 0,
+            total: filteredList.length,
           };
         }}
         columns={columns}
