@@ -4,6 +4,7 @@ import routes from './routes';
 
 export default defineConfig({
 	hash: true,
+	esbuildMinifyIIFE: true,
 	antd: {
 		// antd 5 theme config
 		// https://ant.design/docs/react/customize-theme
