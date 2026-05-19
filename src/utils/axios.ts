@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { message, notification } from 'antd';
 import { history } from '@umijs/max';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 axios.defaults.baseURL = 'http://localhost:3000/v1';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -27,16 +28,9 @@ axios.interceptors.request.use(
     const isPublic = publicPaths.some(path => config.url?.includes(path));
     
     if (!isPublic) {
-      const storageStr = localStorage.getItem('auth-storage');
-      if (storageStr) {
-        try {
-          const { state } = JSON.parse(storageStr);
-          if (state?.accessToken && config.headers) {
-            config.headers.Authorization = `Bearer ${state.accessToken}`;
-          }
-        } catch (e) {
-          console.error('Error parsing auth storage', e);
-        }
+      const accessToken = useAuthStore.getState().accessToken;
+      if (accessToken && config.headers) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
     }
     return config;
@@ -61,19 +55,18 @@ axios.interceptors.response.use(
         break;
 
       case 401:
-        if (originalRequest.url === '/auth/login') {
+        if (originalRequest.url?.includes('/auth/login')) {
           notification.error({ message: 'Đăng nhập thất bại', description: 'Email hoặc mật khẩu không đúng' });
           break;
         }
 
-        // Refresh token cũng thất bại → logout ngay
-        if (originalRequest.url === '/auth/refresh') {
-          localStorage.removeItem('auth-storage');
+        // Refresh token cũng thất bại hoặc token/refresh hết hạn → logout ngay
+        if (originalRequest.url?.includes('/auth/refresh')) {
+          useAuthStore.getState().logout();
           notification.error({
             message: 'Phiên đăng nhập đã hết hạn',
             description: 'Vui lòng đăng nhập lại.',
           });
-          history.replace('/user/login');
           break;
         }
 
@@ -93,34 +86,24 @@ axios.interceptors.response.use(
           originalRequest._retry = true;
           isRefreshing = true;
 
-          const storageStr = localStorage.getItem('auth-storage');
-          let refreshToken = null;
-          if (storageStr) {
-            try {
-              const { state } = JSON.parse(storageStr);
-              refreshToken = state?.refreshToken;
-            } catch (e) {}
-          }
+          const refreshToken = useAuthStore.getState().refreshToken;
 
           if (!refreshToken) {
             isRefreshing = false;
-            localStorage.removeItem('auth-storage');
-            history.replace('/user/login');
+            useAuthStore.getState().logout();
             return Promise.reject(error);
           }
 
           try {
             const rs = await axios.post('/auth/refresh', { refreshToken });
-            const newAccessToken = rs.data?.data?.accessToken;
-            const newRefreshToken = rs.data?.data?.refreshToken;
+            const newAccessToken = rs.data?.data?.accessToken || rs.data?.accessToken;
+            const newRefreshToken = rs.data?.data?.refreshToken || rs.data?.refreshToken;
             
             if (newAccessToken) {
-              if (storageStr) {
-                const parsed = JSON.parse(storageStr);
-                parsed.state.accessToken = newAccessToken;
-                if (newRefreshToken) parsed.state.refreshToken = newRefreshToken;
-                localStorage.setItem('auth-storage', JSON.stringify(parsed));
-              }
+              useAuthStore.setState({
+                accessToken: newAccessToken,
+                ...(newRefreshToken && { refreshToken: newRefreshToken }),
+              });
               
               axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
               originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -129,12 +112,11 @@ axios.interceptors.response.use(
             }
           } catch (refreshError) {
             processQueue(refreshError, null);
-            localStorage.removeItem('auth-storage');
+            useAuthStore.getState().logout();
             notification.error({
               message: 'Phiên đăng nhập đã hết hạn',
               description: 'Vui lòng đăng nhập lại.',
             });
-            history.replace('/user/login');
             return Promise.reject(refreshError);
           } finally {
             isRefreshing = false;
