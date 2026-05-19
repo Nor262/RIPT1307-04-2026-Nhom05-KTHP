@@ -107,6 +107,11 @@ export async function checkinTransaction(id: number, data: any) {
   return axios.put(`/transactions/${id}/checkin`, data);
 }
 
+export async function findByEquipment(equipmentId: number) {
+  return axios.get(`/transactions/equipment/${equipmentId}`);
+}
+
+
 export async function verifyItem(data: { serial_number: string }) {
   return axios.post('/transactions/verify-item', data);
 }
@@ -114,6 +119,15 @@ export async function verifyItem(data: { serial_number: string }) {
 export async function syncTransactionStatus(data: { transaction_ids: number[] }) {
   return axios.post('/transactions/sync-status', data);
 }
+
+export async function extendBooking(id: number, data: { new_due_date: string }) {
+  return axios.patch(`/transactions/${id}/extend`, data);
+}
+
+export async function rateTransaction(id: number, data: { rating: number; feedback?: string }) {
+  return axios.patch(`/transactions/${id}/rate`, data);
+}
+
 
 // ==================== Analytics ====================
 export async function getDashboardStats() {

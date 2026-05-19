@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { message, notification } from 'antd';
-import { history } from '@umijs/max';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 axios.defaults.baseURL = 'http://localhost:3000/v1';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -22,16 +22,14 @@ const processQueue = (error: any, token: string | null = null) => {
 // Request Interceptor
 axios.interceptors.request.use(
   (config) => {
-    // Đọc token trực tiếp từ localStorage của Zustand persist
-    const storageStr = localStorage.getItem('auth-storage');
-    if (storageStr) {
-      try {
-        const { state } = JSON.parse(storageStr);
-        if (state?.accessToken && config.headers) {
-          config.headers.Authorization = `Bearer ${state.accessToken}`;
-        }
-      } catch (e) {
-        console.error('Error parsing auth storage', e);
+    // Không gắn token cho các endpoint auth công khai
+    const publicPaths = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/forgot-password', '/auth/reset-password'];
+    const isPublic = publicPaths.some(path => config.url?.includes(path));
+    
+    if (!isPublic) {
+      const accessToken = useAuthStore.getState().accessToken;
+      if (accessToken && config.headers) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
     }
     return config;
@@ -56,8 +54,18 @@ axios.interceptors.response.use(
         break;
 
       case 401:
-        if (originalRequest.url === '/auth/login') {
+        if (originalRequest.url?.includes('/auth/login')) {
           notification.error({ message: 'Đăng nhập thất bại', description: 'Email hoặc mật khẩu không đúng' });
+          break;
+        }
+
+        // Refresh token cũng thất bại hoặc token/refresh hết hạn → logout ngay
+        if (originalRequest.url?.includes('/auth/refresh')) {
+          useAuthStore.getState().logout();
+          notification.error({
+            message: 'Phiên đăng nhập đã hết hạn',
+            description: 'Vui lòng đăng nhập lại.',
+          });
           break;
         }
 
@@ -77,38 +85,24 @@ axios.interceptors.response.use(
           originalRequest._retry = true;
           isRefreshing = true;
 
-          const storageStr = localStorage.getItem('auth-storage');
-          let refreshToken = null;
-          if (storageStr) {
-            try {
-              const { state } = JSON.parse(storageStr);
-              refreshToken = state?.refreshToken;
-            } catch (e) {}
-          }
+          const refreshToken = useAuthStore.getState().refreshToken;
 
           if (!refreshToken) {
-            // Không có refresh token -> Logout luôn
             isRefreshing = false;
-            // Clear zustand persist
-            localStorage.removeItem('auth-storage');
-            history.replace('/user/login');
+            useAuthStore.getState().logout();
             return Promise.reject(error);
           }
 
           try {
-            // Gọi api refresh (Giả định endpoint là POST /auth/refresh)
             const rs = await axios.post('/auth/refresh', { refreshToken });
-            const newAccessToken = rs.data?.data?.accessToken;
-            const newRefreshToken = rs.data?.data?.refreshToken;
+            const newAccessToken = rs.data?.data?.accessToken || rs.data?.accessToken;
+            const newRefreshToken = rs.data?.data?.refreshToken || rs.data?.refreshToken;
             
             if (newAccessToken) {
-              // Cập nhật lại zustand storage thủ công
-              if (storageStr) {
-                const parsed = JSON.parse(storageStr);
-                parsed.state.accessToken = newAccessToken;
-                if (newRefreshToken) parsed.state.refreshToken = newRefreshToken;
-                localStorage.setItem('auth-storage', JSON.stringify(parsed));
-              }
+              useAuthStore.setState({
+                accessToken: newAccessToken,
+                ...(newRefreshToken && { refreshToken: newRefreshToken }),
+              });
               
               axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
               originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -117,13 +111,11 @@ axios.interceptors.response.use(
             }
           } catch (refreshError) {
             processQueue(refreshError, null);
-            // Refresh token hết hạn hoặc lỗi -> Xóa token và bắt đăng nhập lại
-            localStorage.removeItem('auth-storage');
+            useAuthStore.getState().logout();
             notification.error({
               message: 'Phiên đăng nhập đã hết hạn',
               description: 'Vui lòng đăng nhập lại.',
             });
-            history.replace('/user/login');
             return Promise.reject(refreshError);
           } finally {
             isRefreshing = false;

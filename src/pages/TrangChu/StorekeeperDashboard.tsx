@@ -99,7 +99,7 @@ const StorekeeperDashboard: React.FC = () => {
       <Card
         style={{
           marginBottom: 20,
-          background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+          background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)',
           border: 'none',
           borderRadius: 12,
         }}
@@ -133,8 +133,8 @@ const StorekeeperDashboard: React.FC = () => {
             <Statistic
               title="Chờ bàn giao"
               value={safeHandovers.length}
-              prefix={<InboxOutlined style={{ color: '#1890ff' }} />}
-              valueStyle={{ color: '#1890ff' }}
+              prefix={<InboxOutlined style={{ color: '#c00c0c' }} />}
+              valueStyle={{ color: '#c00c0c' }}
             />
           </Card>
         </Col>
@@ -153,8 +153,8 @@ const StorekeeperDashboard: React.FC = () => {
             <Statistic
               title="Quá hạn trả"
               value={safeOverdue.length}
-              prefix={<ClockCircleOutlined style={{ color: '#ff4d4f' }} />}
-              valueStyle={{ color: safeOverdue.length > 0 ? '#ff4d4f' : undefined }}
+              prefix={<ClockCircleOutlined style={{ color: '#c00c0c' }} />}
+              valueStyle={{ color: safeOverdue.length > 0 ? '#c00c0c' : undefined }}
             />
           </Card>
         </Col>
@@ -177,9 +177,9 @@ const StorekeeperDashboard: React.FC = () => {
           <Card
             title={
               <Space>
-                <InboxOutlined style={{ color: '#1890ff' }} />
+                <InboxOutlined style={{ color: '#c00c0c' }} />
                 <span>Đơn chờ bàn giao</span>
-                <Tag color="blue">{safeHandovers.length}</Tag>
+                <Tag color="error">{safeHandovers.length}</Tag>
               </Space>
             }
             extra={
@@ -222,7 +222,7 @@ const StorekeeperDashboard: React.FC = () => {
           <Card
             title={
               <Space>
-                <ClockCircleOutlined style={{ color: '#ff4d4f' }} />
+                <ClockCircleOutlined style={{ color: '#c00c0c' }} />
                 <span>Thiết bị quá hạn</span>
                 {safeOverdue.length > 0 && <Tag color="red">{safeOverdue.length}</Tag>}
               </Space>
@@ -271,7 +271,7 @@ const StorekeeperDashboard: React.FC = () => {
             style={{ textAlign: 'center', cursor: 'pointer', borderRadius: 10 }}
             onClick={() => history.push('/booking/handle')}
           >
-            <ScanOutlined style={{ fontSize: 32, color: '#1890ff', marginBottom: 8 }} />
+            <ScanOutlined style={{ fontSize: 32, color: '#c00c0c', marginBottom: 8 }} />
             <div><Text strong>Bàn giao / Thu hồi</Text></div>
             <Text type="secondary" style={{ fontSize: 12 }}>Check-in / Check-out thiết bị</Text>
           </Card>

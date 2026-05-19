@@ -166,7 +166,7 @@ const HandleTransaction: React.FC = () => {
               theme={{
                 components: {
                   Radio: {
-                    colorPrimary: '#ff4d4f',
+                    colorPrimary: '#c00c0c',
                     colorPrimaryHover: '#ff7875',
                     colorPrimaryActive: '#d9363e',
                   },
@@ -195,7 +195,7 @@ const HandleTransaction: React.FC = () => {
               <ConfigProvider
                 theme={{
                   token: {
-                    colorPrimary: '#ff4d4f',
+                    colorPrimary: '#c00c0c',
                   },
                   components: {
                     Input: {

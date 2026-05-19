@@ -1,18 +1,72 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Modal } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { history, useIntl, Link, useModel } from '@umijs/max';
+import { Link, useModel } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
 import Footer from '@/components/Footer';
+import OtpInput from '@/components/OtpInput';
 import styles from './index.less';
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const intl = useIntl();
   const [form] = Form.useForm();
   const loginAction = useAuthStore((state) => state.login);
   const { setInitialState } = useModel('@@initialState');
+
+  // Forgot password modal state
+  const [forgotPasswordVisible, setForgotPasswordVisible] = useState(false);
+  const [forgotStep, setForgotStep] = useState<1 | 2>(1);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [forgotPassword, setForgotPassword] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+
+  const handleSendOtp = async () => {
+    if (!forgotEmail.trim()) {
+      message.error('Vui lòng nhập Email!');
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      await axios.post('/auth/forgot-password', { email: forgotEmail });
+      message.success('Mã OTP đã được gửi về Email của bạn!');
+      setForgotStep(2);
+    } catch (err) {
+      // Axios interceptor handles showing standard error notification
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!forgotOtp.trim() || forgotOtp.length < 6) {
+      message.error('Vui lòng nhập đủ mã OTP 6 số!');
+      return;
+    }
+    if (!forgotPassword.trim()) {
+      message.error('Vui lòng nhập mật khẩu mới!');
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      await axios.post('/auth/reset-password', {
+        email: forgotEmail,
+        otp: forgotOtp,
+        new_password: forgotPassword,
+      });
+      message.success('Đặt lại mật khẩu thành công! Hãy đăng nhập lại.');
+      setForgotPasswordVisible(false);
+      setForgotStep(1);
+      setForgotEmail('');
+      setForgotOtp('');
+      setForgotPassword('');
+    } catch (err) {
+      // Handled by Axios interceptor
+    } finally {
+      setForgotLoading(false);
+    }
+  };
 
   const handleSubmit = async (values: any) => {
     console.log('Login values:', values);
@@ -52,12 +106,10 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.top}>
-          <div className={styles.header}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <img alt="logo" className={styles.logo} src="/logo-full.svg" style={{ height: 44 }} />
-              <span className={styles.title}>Quản lý Thiết bị</span>
-            </div>
+          <div className={styles.logoContainer}>
+            <img alt="logo" className={styles.logo} src="/logo-full.svg" />
           </div>
+          <h1 className={styles.title}>Quản lý Thiết bị</h1>
           <div className={styles.desc}>Hệ thống Quản lý Mượn/Trả Thiết bị</div>
         </div>
 
@@ -77,6 +129,7 @@ const Login: React.FC = () => {
               <Input
                 placeholder="Email hoặc Tên đăng nhập"
                 prefix={<UserOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
               />
             </Form.Item>
             <Form.Item
@@ -86,20 +139,129 @@ const Login: React.FC = () => {
               <Input.Password
                 placeholder="Mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
               />
             </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block loading={submitting}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+              <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#cc0404ba', fontWeight: 300 }}>Quên mật khẩu?</a>
+            </div>
+
+            <Form.Item style={{ marginBottom: 8 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                loading={submitting}
+                style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+              >
                 Đăng nhập
               </Button>
-            </Form.Item>
-            <Form.Item>
-              <div style={{ marginTop: 16, textAlign: 'center' }}>
-                Chưa có tài khoản? <Link to="/user/register">Đăng ký ngay</Link>
+              <div style={{ marginTop: 20, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
+                Chưa có tài khoản? <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
               </div>
             </Form.Item>
           </Form>
+
+          <Modal
+            open={forgotPasswordVisible}
+            onCancel={() => {
+              setForgotPasswordVisible(false);
+              setForgotStep(1);
+              setForgotEmail('');
+              setForgotOtp('');
+              setForgotPassword('');
+            }}
+            footer={null}
+            destroyOnClose
+            centered
+            width={400}
+            bodyStyle={{ padding: '20px 20px 12px 20px' }}
+          >
+            <div>
+              <div style={{ textAlign: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: 12, marginBottom: 20 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>
+                  Quên mật khẩu
+                </span>
+              </div>
+              {forgotStep === 1 ? (
+                <div>
+                  <div style={{ marginBottom: 18 }}>
+                    <span style={{ display: 'block', fontWeight: 600, fontSize: '13.5px', color: '#475569', marginBottom: 6 }}>
+                      Email tài khoản
+                    </span>
+                    <Input
+                      size="large"
+                      placeholder="username@student.ptit.edu.vn"
+                      prefix={<UserOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      style={{ borderRadius: 8, height: 44 }}
+                      autoComplete="off"
+                    />
+                  </div>
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    loading={forgotLoading}
+                    onClick={handleSendOtp}
+                    style={{ borderRadius: 8, height: 44, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+                  >
+                    Gửi mã xác nhận
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.6', marginBottom: 20, textAlign: 'center' }}>
+                    Mã xác nhận đã được gửi về <strong style={{ color: '#0f172a' }}>{forgotEmail}</strong>. Vui lòng nhập mã OTP để tiếp tục.
+                  </p>
+                  <div style={{ marginBottom: 18, textAlign: 'center' }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13.5px', color: '#475569', marginBottom: 6 }}>
+                      Mã xác nhận (OTP)
+                    </span>
+                    <OtpInput
+                      length={6}
+                      value={forgotOtp}
+                      onChange={setForgotOtp}
+                    />
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13.5px', color: '#475569', marginBottom: 6 }}>
+                      Mật khẩu mới
+                    </span>
+                    <Input.Password
+                      size="large"
+                      placeholder="••••••••"
+                      prefix={<LockOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
+                      value={forgotPassword}
+                      onChange={(e) => setForgotPassword(e.target.value)}
+                      style={{ borderRadius: 8, height: 44 }}
+                      autoComplete="new-password"
+                    />
+                  </div>
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    loading={forgotLoading}
+                    onClick={handleResetPassword}
+                    style={{ borderRadius: 8, height: 44, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', marginBottom: 10, boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+                  >
+                    Đặt lại mật khẩu
+                  </Button>
+                  <Button
+                    type="link"
+                    block
+                    onClick={() => setForgotStep(1)}
+                    style={{ fontSize: '13.5px', color: '#c00c0c', fontWeight: 600, marginTop: 4 }}
+                  >
+                    Quay lại nhập Email
+                  </Button>
+                </div>
+              )}
+            </div>
+          </Modal>
         </div>
       </div>
       <div className="login-footer">

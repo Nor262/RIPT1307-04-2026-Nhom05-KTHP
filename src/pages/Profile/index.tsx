@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-components';
-import { Card, Form, Input, Button, Upload, message, Switch, Tabs, Row, Col, Avatar } from 'antd';
+import { Card, Form, Input, Button, Upload, message, Switch, Tabs, Row, Col, Avatar, Spin } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
 import axios from '@/utils/axios';
 
+import { useAuthStore } from '@/stores/useAuthStore';
+
 const ProfilePage: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const user = initialState?.currentUser;
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(user?.avatar_url);
 
   const handleUpdateProfile = async (values: any) => {
     setLoading(true);
     try {
       const response = await axios.patch('/auth/profile', values);
-      message.success('Cập nhật hồ sơ thành công');
-      setInitialState((s: any) => ({ ...s, currentUser: response.data }));
+      const updatedUser = response.data?.data;
+      if (updatedUser) {
+        message.success('Cập nhật hồ sơ thành công');
+        setInitialState((s: any) => ({ ...s, currentUser: updatedUser }));
+        useAuthStore.setState({ user: updatedUser });
+      } else {
+        message.error('Không tìm thấy dữ liệu người dùng mới');
+      }
     } catch (error) {
       message.error('Có lỗi xảy ra');
     }
@@ -24,7 +34,8 @@ const ProfilePage: React.FC = () => {
 
   const handleChangePassword = async (values: any) => {
     if (values.new_password !== values.confirm_password) {
-      return message.error('Mật khẩu xác nhận không khớp');
+      message.error('Mật khẩu xác nhận không khớp');
+      return;
     }
     setLoading(true);
     try {
@@ -41,16 +52,39 @@ const ProfilePage: React.FC = () => {
 
   const uploadProps = {
     name: 'file',
-    action: '/api/users/avatar',
+    action: `${axios.defaults.baseURL}/users/avatar`,
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${useAuthStore.getState().accessToken}`,
     },
     onChange(info: any) {
+      if (info.file.status === 'uploading') {
+        setUploading(true);
+      }
       if (info.file.status === 'done') {
-        message.success(`Ảnh đã được tải lên thành công`);
-        setInitialState((s: any) => ({ ...s, currentUser: info.file.response.user }));
+        setUploading(false);
+        const res = info.file.response;
+        // Backend trả: { status: 'success', data: { message, avatar_url, user } }
+        const newAvatarUrl = res?.data?.avatar_url || res?.data?.user?.avatar_url || res?.avatar_url;
+        const updatedUser = res?.data?.user || res?.data;
+
+        if (newAvatarUrl) {
+          // Thêm timestamp để bust cache trình duyệt
+          const cacheBustedUrl = `${newAvatarUrl}?t=${Date.now()}`;
+          setAvatarUrl(cacheBustedUrl);
+          
+          // Cập nhật cả 2 store để header avatar cũng đổi
+          const currentUser = useAuthStore.getState().user;
+          const merged = { ...currentUser, ...updatedUser, avatar_url: cacheBustedUrl };
+          setInitialState((s: any) => ({ ...s, currentUser: merged }));
+          useAuthStore.setState({ user: merged });
+          
+          message.success('Ảnh đại diện đã được cập nhật');
+        } else {
+          message.warning('Tải lên thành công nhưng không nhận được URL ảnh mới');
+        }
       } else if (info.file.status === 'error') {
-        message.error(`Lỗi tải ảnh lên.`);
+        setUploading(false);
+        message.error('Lỗi tải ảnh lên.');
       }
     },
   };
@@ -61,11 +95,13 @@ const ProfilePage: React.FC = () => {
         <Col span={8}>
           <Card>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <Avatar size={120} src={user?.avatar_url} icon={<UserOutlined />} />
+              <Spin spinning={uploading}>
+                <Avatar size={120} src={avatarUrl || user?.avatar_url} icon={<UserOutlined />} />
+              </Spin>
               <h2 style={{ marginTop: 16 }}>{user?.full_name}</h2>
               <p>{user?.email}</p>
-              <Upload {...uploadProps} showUploadList={false}>
-                <Button icon={<UploadOutlined />}>Đổi ảnh đại diện</Button>
+              <Upload {...uploadProps} showUploadList={false} disabled={uploading}>
+                <Button icon={<UploadOutlined />} loading={uploading} disabled={uploading}>Đổi ảnh đại diện</Button>
               </Upload>
             </div>
           </Card>

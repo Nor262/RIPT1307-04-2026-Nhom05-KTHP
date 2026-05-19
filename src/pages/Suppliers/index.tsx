@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Tag, Space } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -63,7 +63,7 @@ const SupplierList: React.FC = () => {
             actionRef.current?.reload();
           }}
         >
-          <a style={{ color: '#ff4d4f' }}><DeleteOutlined /> Xóa</a>
+          <a style={{ color: '#c00c0c' }}><DeleteOutlined /> Xóa</a>
         </Popconfirm>,
       ],
     },
@@ -79,8 +79,8 @@ const SupplierList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="primary"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => {
               setCurrentRow(undefined);
               handleModalVisible(true);

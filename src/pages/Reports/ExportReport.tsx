@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Tag, Space, Typography, DatePicker, Select } from 'antd';
-import { DownloadOutlined, FileExcelOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, message, Tag, Space, Typography } from 'antd';
+import type { FormInstance } from 'antd';
+import { FileExcelOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { getTransactions } from '@/services/api';
 import * as XLSX from 'xlsx';
 
-const { RangePicker } = DatePicker;
+
 const { Text } = Typography;
 
 type TransactionExportItem = {
@@ -33,6 +34,8 @@ const statusLabels: Record<string, string> = {
 
 const ExportReport: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
+  const searchTimeoutRef = useRef<any>();
   const [exporting, setExporting] = useState(false);
 
   const handleExport = async () => {
@@ -151,12 +154,23 @@ const ExportReport: React.FC = () => {
       <ProTable<TransactionExportItem>
         headerTitle="Lịch sử Mượn/Trả & Xuất Báo cáo"
         actionRef={actionRef}
+        formRef={formRef}
+        form={{
+          onValuesChange: () => {
+            if (searchTimeoutRef.current) {
+              clearTimeout(searchTimeoutRef.current);
+            }
+            searchTimeoutRef.current = setTimeout(() => {
+              formRef.current?.submit();
+            }, 100);
+          },
+        }}
         rowKey="id"
         search={{
           labelWidth: 120, collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -166,12 +180,21 @@ const ExportReport: React.FC = () => {
             );
           },
           optionRender: (searchConfig, formProps, dom) => [
-            dom[0],
+            <Button
+              key="reset"
+              onClick={() => {
+                formProps.form?.resetFields();
+                formProps.form?.submit();
+              }}
+              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+            >
+              Làm lại
+            </Button>,
             <Button
               key="search"
               type="primary"
-              danger
               onClick={() => formProps.form?.submit()}
+              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -180,8 +203,8 @@ const ExportReport: React.FC = () => {
         toolBarRender={() => [
           <Button
             key="export"
-            danger
             type="primary"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             icon={<FileExcelOutlined />}
             loading={exporting}
             onClick={handleExport}
@@ -192,10 +215,33 @@ const ExportReport: React.FC = () => {
         request={async (params) => {
           const res = await getTransactions(params);
           const data = res.data?.data;
+          const list = data?.items || data?.result || data || [];
+          
+          const filteredList = list.filter((item: TransactionExportItem) => {
+            if (params.equipment) {
+              const itemEquipName = item.equipment?.name?.toLowerCase();
+              const paramEquip = typeof params.equipment === 'object' ? params.equipment.name : params.equipment;
+              if (paramEquip && !itemEquipName?.includes(paramEquip.toLowerCase())) {
+                return false;
+              }
+            }
+            if (params.borrower) {
+              const itemBorrName = item.borrower?.full_name?.toLowerCase();
+              const paramBorr = typeof params.borrower === 'object' ? params.borrower.full_name : params.borrower;
+              if (paramBorr && !itemBorrName?.includes(paramBorr.toLowerCase())) {
+                return false;
+              }
+            }
+            if (params.status && item.status !== params.status) {
+              return false;
+            }
+            return true;
+          });
+          
           return {
-            data: data?.items || data?.result || data || [],
+            data: filteredList,
             success: true,
-            total: data?.meta?.totalItems || data?.total || 0,
+            total: filteredList.length,
           };
         }}
         columns={columns}

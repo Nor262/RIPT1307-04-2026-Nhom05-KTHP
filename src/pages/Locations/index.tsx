@@ -22,7 +22,6 @@ const LocationList: React.FC = () => {
     {
       title: 'Tên vị trí kho',
       dataIndex: 'name',
-      rules: [{ required: true }],
     },
     {
       title: 'Địa chỉ',
@@ -58,7 +57,7 @@ const LocationList: React.FC = () => {
             actionRef.current?.reload();
           }}
         >
-          <a style={{ color: '#ff4d4f' }}><DeleteOutlined /> Xóa</a>
+          <a style={{ color: '#c00c0c' }}><DeleteOutlined /> Xóa</a>
         </Popconfirm>,
       ],
     },
@@ -74,8 +73,8 @@ const LocationList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="primary"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => {
               setCurrentRow(undefined);
               handleModalVisible(true);

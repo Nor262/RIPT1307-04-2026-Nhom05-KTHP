@@ -108,7 +108,7 @@ const OverdueReport: React.FC = () => {
       <ProTable<OverdueItem>
         headerTitle={
           <Space>
-            <WarningOutlined style={{ color: '#ff4d4f', fontSize: 20 }} />
+            <WarningOutlined style={{ color: '#c00c0c', fontSize: 20 }} />
             <span>Báo cáo Thiết bị quá hạn</span>
           </Space>
         }

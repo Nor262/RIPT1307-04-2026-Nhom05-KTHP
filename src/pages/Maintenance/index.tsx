@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Tag, Space, Typography, Card, Statistic, Row, Col } from 'antd';
-import { PlusOutlined, CheckCircleOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
+import { Button, message, Space, Card, Statistic, Row, Col } from 'antd';
+import type { FormInstance } from 'antd';
+import { PlusOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormDatePicker, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
-import { getMaintenance, createMaintenance, completeMaintenance, getEquipment } from '@/services/api';
+import { getMaintenance, createMaintenance, getEquipment } from '@/services/api';
 
-const { Title } = Typography;
+
 
 export type MaintenanceItem = {
   id: number;
@@ -21,7 +22,11 @@ export type MaintenanceItem = {
 
 const MaintenanceList: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const formRef = useRef<FormInstance>();
+  const searchTimeoutRef = useRef<any>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [pendingCount, setPendingCount] = useState<number>(0);
+  const [totalCost, setTotalCost] = useState<number>(0);
 
   const columns: ProColumns<MaintenanceItem>[] = [
     {
@@ -51,43 +56,13 @@ const MaintenanceList: React.FC = () => {
     {
       title: 'Chi phí',
       dataIndex: 'cost',
-      valueType: 'money',
-      render: (val) => `${Number(val).toLocaleString()} VNĐ`,
+      hideInSearch: true,
+      render: (_, record) => `${Number(record.cost || 0).toLocaleString('vi-VN')} VNĐ`,
     },
     {
       title: 'Hẹn ngày tới',
       dataIndex: 'next_maintenance_date',
       valueType: 'date',
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      valueEnum: {
-        pending: { text: 'Đang bảo trì', status: 'Processing' },
-        completed: { text: 'Đã hoàn thành', status: 'Success' },
-      },
-    },
-    {
-      title: 'Thao tác',
-      dataIndex: 'option',
-      valueType: 'option',
-      width: 150,
-      render: (_, record) => [
-        record.status === 'pending' && (
-          <a
-            key="complete"
-            onClick={async () => {
-              if (record.equipment?.id) {
-                await completeMaintenance(record.equipment.id);
-                message.success('Đã hoàn tất bảo trì, thiết bị đã sẵn sàng');
-                actionRef.current?.reload();
-              }
-            }}
-          >
-            <CheckCircleOutlined /> Hoàn tất
-          </a>
-        ),
-      ],
     },
   ];
 
@@ -96,7 +71,7 @@ const MaintenanceList: React.FC = () => {
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={8}>
           <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Đang bảo trì" value={3} prefix={<ToolOutlined />} valueStyle={{
+            <Statistic title="Đang bảo trì" value={pendingCount} prefix={<ToolOutlined />} valueStyle={{
               backgroundImage: 'url("/background_card3.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
               backgroundSize: 'contain',
               borderLeft: '4px solid #faad14'
@@ -105,7 +80,7 @@ const MaintenanceList: React.FC = () => {
         </Col>
         <Col span={8}>
           <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Tổng chi phí tháng này" value={1500000} suffix="VNĐ" prefix={<HistoryOutlined />} valueStyle={{
+            <Statistic title="Tổng chi phí" value={totalCost.toLocaleString('vi-VN')} suffix="VNĐ" prefix={<HistoryOutlined />} valueStyle={{
               backgroundImage: 'url("/background_card4.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
               backgroundSize: 'contain',
               borderLeft: '4px solid #faad14'
@@ -117,12 +92,23 @@ const MaintenanceList: React.FC = () => {
       <ProTable<MaintenanceItem>
         headerTitle="Nhật ký bảo trì thiết bị"
         actionRef={actionRef}
+        formRef={formRef}
+        form={{
+          onValuesChange: () => {
+            if (searchTimeoutRef.current) {
+              clearTimeout(searchTimeoutRef.current);
+            }
+            searchTimeoutRef.current = setTimeout(() => {
+              formRef.current?.submit();
+            }, 100);
+          },
+        }}
         rowKey="id"
         search={{
           labelWidth: 120, collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#ff4d4f', cursor: 'pointer' }}>
+              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -132,12 +118,21 @@ const MaintenanceList: React.FC = () => {
             );
           },
           optionRender: (searchConfig, formProps, dom) => [
-            dom[0],
+            <Button
+              key="reset"
+              onClick={() => {
+                formProps.form?.resetFields();
+                formProps.form?.submit();
+              }}
+              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+            >
+              Làm lại
+            </Button>,
             <Button
               key="search"
               type="primary"
-              danger
               onClick={() => formProps.form?.submit()}
+              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -146,8 +141,8 @@ const MaintenanceList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="primary"
+            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => handleModalVisible(true)}
           >
             <PlusOutlined /> Tạo bản ghi mới
@@ -155,9 +150,45 @@ const MaintenanceList: React.FC = () => {
         ]}
         request={async (params) => {
           const res = await getMaintenance(params);
+          const data = res.data?.data || [];
+          const list = Array.isArray(data) ? data : (data?.items || data?.result || []);
+          
+          // Tính thống kê từ toàn bộ dữ liệu
+          const pending = list.filter((item: MaintenanceItem) => item.status === 'pending').length;
+          const cost = list.reduce((sum: number, item: MaintenanceItem) => sum + Number(item.cost || 0), 0);
+          setPendingCount(pending);
+          setTotalCost(cost);
+          
+          const filteredList = list.filter((item: MaintenanceItem) => {
+            if (params.performed_by && !item.performed_by?.toLowerCase().includes(params.performed_by.toLowerCase())) {
+              return false;
+            }
+            if (params.status && item.status !== params.status) {
+              return false;
+            }
+            if (params.maintenance_date && item.maintenance_date && !item.maintenance_date.startsWith(params.maintenance_date)) {
+              return false;
+            }
+            const searchEquip = 
+              typeof params.equipment === 'string' ? params.equipment :
+              (params.equipment as any)?.name || 
+              (params as any)['equipment.name'] || 
+              (params as any)['equipment,name'] ||
+              '';
+
+            if (searchEquip) {
+              const itemEquipName = item.equipment?.name?.toLowerCase();
+              if (!itemEquipName?.includes(searchEquip.toLowerCase())) {
+                return false;
+              }
+            }
+            return true;
+          });
+          
           return {
-            data: res.data?.data || [],
+            data: filteredList,
             success: true,
+            total: filteredList.length,
           };
         }}
         columns={columns}
@@ -189,7 +220,7 @@ const MaintenanceList: React.FC = () => {
         <ProFormDatePicker name="maintenance_date" label="Ngày thực hiện" rules={[{ required: true }]} />
         <ProFormText name="performed_by" label="Người thực hiện" rules={[{ required: true }]} />
         <ProFormTextArea name="details" label="Nội dung bảo trì" rules={[{ required: true }]} />
-        <ProFormDigit name="cost" label="Chi phí (VNĐ)" min={0} fieldProps={{ precision: 0 }} />
+        <ProFormDigit name="cost" label="Chi phí (VNĐ)" min={0} fieldProps={{ precision: 0 }} rules={[{ required: true, message: 'Vui lòng nhập chi phí' }]} />
         <ProFormDatePicker name="next_maintenance_date" label="Ngày bảo trì định kỳ tiếp theo" />
       </ModalForm>
     </div>

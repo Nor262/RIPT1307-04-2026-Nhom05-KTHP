@@ -33,12 +33,10 @@ const Register: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.top}>
-          <div className={styles.header}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <img alt="logo" className={styles.logo} src="/logo-full.svg" style={{ height: 44 }} />
-              <span className={styles.title}>Đăng ký</span>
-            </div>
+          <div className={styles.logoContainer}>
+            <img alt="logo" className={styles.logo} src="/logo-full.svg" />
           </div>
+          <h1 className={styles.title}>Đăng ký tài khoản</h1>
           <div className={styles.desc}>Tạo tài khoản mới để sử dụng hệ thống</div>
         </div>
 
@@ -48,14 +46,17 @@ const Register: React.FC = () => {
             onFinish={handleSubmit}
             layout="vertical"
             size="large"
+            autoComplete="off"
           >
-            <Form.Item
+             <Form.Item
               name="full_name"
               rules={[{ required: true, message: 'Vui lòng nhập Họ và tên!' }]}
             >
               <Input
                 placeholder="Họ và tên"
                 prefix={<IdcardOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
+                autoComplete="off"
               />
             </Form.Item>
 
@@ -66,6 +67,8 @@ const Register: React.FC = () => {
               <Input
                 placeholder="Tên đăng nhập"
                 prefix={<UserOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
+                autoComplete="off"
               />
             </Form.Item>
 
@@ -79,6 +82,8 @@ const Register: React.FC = () => {
               <Input
                 placeholder="Email"
                 prefix={<MailOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
+                autoComplete="off"
               />
             </Form.Item>
 
@@ -92,6 +97,8 @@ const Register: React.FC = () => {
               <Input.Password
                 placeholder="Mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
+                autoComplete="new-password"
               />
             </Form.Item>
 
@@ -113,15 +120,23 @@ const Register: React.FC = () => {
               <Input.Password
                 placeholder="Xác nhận mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
+                style={{ borderRadius: 8, height: 46 }}
+                autoComplete="new-password"
               />
             </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block loading={submitting}>
+            <Form.Item style={{ marginBottom: 8 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                loading={submitting}
+                style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+              >
                 Đăng ký ngay
               </Button>
-              <div style={{ marginTop: 16, textAlign: 'center' }}>
-                Đã có tài khoản? <Link to="/user/login">Đăng nhập ngay</Link>
+              <div style={{ marginTop: 16, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
+                Đã có tài khoản? <Link to="/user/login" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng nhập ngay</Link>
               </div>
             </Form.Item>
           </Form>
