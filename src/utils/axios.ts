@@ -22,16 +22,21 @@ const processQueue = (error: any, token: string | null = null) => {
 // Request Interceptor
 axios.interceptors.request.use(
   (config) => {
-    // Đọc token trực tiếp từ localStorage của Zustand persist
-    const storageStr = localStorage.getItem('auth-storage');
-    if (storageStr) {
-      try {
-        const { state } = JSON.parse(storageStr);
-        if (state?.accessToken && config.headers) {
-          config.headers.Authorization = `Bearer ${state.accessToken}`;
+    // Không gắn token cho các endpoint auth công khai
+    const publicPaths = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/forgot-password', '/auth/reset-password'];
+    const isPublic = publicPaths.some(path => config.url?.includes(path));
+    
+    if (!isPublic) {
+      const storageStr = localStorage.getItem('auth-storage');
+      if (storageStr) {
+        try {
+          const { state } = JSON.parse(storageStr);
+          if (state?.accessToken && config.headers) {
+            config.headers.Authorization = `Bearer ${state.accessToken}`;
+          }
+        } catch (e) {
+          console.error('Error parsing auth storage', e);
         }
-      } catch (e) {
-        console.error('Error parsing auth storage', e);
       }
     }
     return config;
@@ -56,10 +61,19 @@ axios.interceptors.response.use(
         break;
 
       case 401:
-        if (originalRequest.url === '/auth/login' || originalRequest.url === '/auth/refresh') {
-          if (originalRequest.url === '/auth/login') {
-            notification.error({ message: 'Đăng nhập thất bại', description: 'Email hoặc mật khẩu không đúng' });
-          }
+        if (originalRequest.url === '/auth/login') {
+          notification.error({ message: 'Đăng nhập thất bại', description: 'Email hoặc mật khẩu không đúng' });
+          break;
+        }
+
+        // Refresh token cũng thất bại → logout ngay
+        if (originalRequest.url === '/auth/refresh') {
+          localStorage.removeItem('auth-storage');
+          notification.error({
+            message: 'Phiên đăng nhập đã hết hạn',
+            description: 'Vui lòng đăng nhập lại.',
+          });
+          history.replace('/user/login');
           break;
         }
 
@@ -89,22 +103,18 @@ axios.interceptors.response.use(
           }
 
           if (!refreshToken) {
-            // Không có refresh token -> Logout luôn
             isRefreshing = false;
-            // Clear zustand persist
             localStorage.removeItem('auth-storage');
             history.replace('/user/login');
             return Promise.reject(error);
           }
 
           try {
-            // Gọi api refresh (Giả định endpoint là POST /auth/refresh)
             const rs = await axios.post('/auth/refresh', { refreshToken });
             const newAccessToken = rs.data?.data?.accessToken;
             const newRefreshToken = rs.data?.data?.refreshToken;
             
             if (newAccessToken) {
-              // Cập nhật lại zustand storage thủ công
               if (storageStr) {
                 const parsed = JSON.parse(storageStr);
                 parsed.state.accessToken = newAccessToken;
@@ -119,7 +129,6 @@ axios.interceptors.response.use(
             }
           } catch (refreshError) {
             processQueue(refreshError, null);
-            // Refresh token hết hạn hoặc lỗi -> Xóa token và bắt đăng nhập lại
             localStorage.removeItem('auth-storage');
             notification.error({
               message: 'Phiên đăng nhập đã hết hạn',
