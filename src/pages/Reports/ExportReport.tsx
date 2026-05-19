@@ -228,7 +228,6 @@ const ExportReport: React.FC = () => {
             key="export"
             danger
             type="primary"
-            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             icon={<FileExcelOutlined />}
             loading={exporting}
             onClick={handleExport}

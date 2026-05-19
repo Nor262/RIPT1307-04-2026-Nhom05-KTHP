@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, message, Modal } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Link, useModel } from '@umijs/max';
+import { Link, useModel, history } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
