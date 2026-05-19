@@ -50,6 +50,7 @@ const BookingApproval: React.FC = () => {
   const [rejectVisible, setRejectVisible] = useState(false);
   const [currentRow, setCurrentRow] = useState<TransactionItem | undefined>();
   const [rejectReason, setRejectReason] = useState('');
+  const [activeTab, setActiveTab] = useState<string>('all');
 
   const handleApprove = async (record: TransactionItem) => {
     Modal.confirm({
@@ -181,7 +182,10 @@ const BookingApproval: React.FC = () => {
         actionRef={actionRef}
         formRef={formRef}
         form={{
-          onValuesChange: () => {
+          onValuesChange: (changedValues) => {
+            if (changedValues.status !== undefined) {
+              setActiveTab(changedValues.status || 'all');
+            }
             if (searchTimeoutRef.current) {
               clearTimeout(searchTimeoutRef.current);
             }
@@ -210,6 +214,7 @@ const BookingApproval: React.FC = () => {
               key="reset"
               onClick={() => {
                 formProps.form?.resetFields();
+                setActiveTab('all');
                 formProps.form?.submit();
               }}
               style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
@@ -232,23 +237,41 @@ const BookingApproval: React.FC = () => {
           const list = data?.items || data?.result || data || [];
 
           const filteredList = list.filter((item: TransactionItem) => {
-            if (params.equipment) {
+            // Extract search terms safely from all possible naming conventions
+            const searchEquip = 
+              typeof params.equipment === 'string' ? params.equipment :
+              (params.equipment as any)?.name || 
+              (params as any)['equipment.name'] || 
+              (params as any)['equipment,name'] ||
+              '';
+
+            const searchBorrower = 
+              typeof params.borrower === 'string' ? params.borrower :
+              (params.borrower as any)?.full_name || 
+              (params as any)['borrower.full_name'] || 
+              (params as any)['borrower,full_name'] ||
+              '';
+
+            if (searchEquip) {
               const itemEquipName = item.equipment?.name?.toLowerCase();
-              const paramEquip = typeof params.equipment === 'object' ? params.equipment.name : params.equipment;
-              if (paramEquip && !itemEquipName?.includes(paramEquip.toLowerCase())) {
+              if (!itemEquipName?.includes(searchEquip.toLowerCase())) {
                 return false;
               }
             }
-            if (params.borrower) {
+
+            if (searchBorrower) {
               const itemBorrName = item.borrower?.full_name?.toLowerCase();
-              const paramBorr = typeof params.borrower === 'object' ? params.borrower.full_name : params.borrower;
-              if (paramBorr && !itemBorrName?.includes(paramBorr.toLowerCase())) {
+              if (!itemBorrName?.includes(searchBorrower.toLowerCase())) {
                 return false;
               }
             }
-            if (params.status && item.status !== params.status) {
+
+            // Status filter logic (use activeTab first, fallback to form field status)
+            const statusFilter = activeTab !== 'all' ? activeTab : params.status;
+            if (statusFilter && statusFilter !== 'all' && item.status !== statusFilter) {
               return false;
             }
+
             return true;
           });
 
@@ -262,6 +285,7 @@ const BookingApproval: React.FC = () => {
         toolbar={{
           menu: {
             type: 'tab',
+            activeKey: activeTab,
             items: [
               { key: 'all', label: 'Tất cả' },
               { key: 'pending', label: <Badge count="!" size="small" offset={[8, 0]}>Chờ duyệt</Badge> },
@@ -271,13 +295,9 @@ const BookingApproval: React.FC = () => {
               { key: 'overdue', label: <Text type="danger">Quá hạn</Text> },
             ],
             onChange: (key) => {
-              if (key === 'all') {
-                actionRef.current?.setPageInfo?.({ current: 1 });
-                actionRef.current?.reload();
-              } else {
-                // Filter by status tab
-                actionRef.current?.reload();
-              }
+              setActiveTab(key as string);
+              formRef.current?.setFieldsValue({ status: key === 'all' ? undefined : key });
+              actionRef.current?.reload();
             },
           },
         }}

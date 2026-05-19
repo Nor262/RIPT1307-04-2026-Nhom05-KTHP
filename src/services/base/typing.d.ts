@@ -47,6 +47,7 @@ export interface IInitialState {
 		email: string;
 		full_name: string;
 		role: 'admin' | 'storekeeper' | 'borrower';
+		avatar_url?: string;
 	};
 	authorizedPermissions?: Login.IPermission[];
 	permissionLoading?: boolean;

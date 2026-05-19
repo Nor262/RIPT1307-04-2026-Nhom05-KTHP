@@ -275,10 +275,16 @@ const EquipmentList: React.FC = () => {
             if (params.status && item.status !== params.status) {
               return false;
             }
-            if (params.category) {
+            const searchCat = 
+              typeof params.category === 'string' ? params.category :
+              (params.category as any)?.name || 
+              (params as any)['category.name'] || 
+              (params as any)['category,name'] ||
+              '';
+
+            if (searchCat) {
               const itemCatName = item.category?.name?.toLowerCase();
-              const paramCat = typeof params.category === 'object' ? params.category.name : params.category;
-              if (paramCat && !itemCatName?.includes(paramCat.toLowerCase())) {
+              if (!itemCatName?.includes(searchCat.toLowerCase())) {
                 return false;
               }
             }

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { message, notification } from 'antd';
-import { history } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 axios.defaults.baseURL = 'http://localhost:3000/v1';

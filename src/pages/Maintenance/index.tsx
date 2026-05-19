@@ -169,10 +169,16 @@ const MaintenanceList: React.FC = () => {
             if (params.maintenance_date && item.maintenance_date && !item.maintenance_date.startsWith(params.maintenance_date)) {
               return false;
             }
-            if (params.equipment) {
+            const searchEquip = 
+              typeof params.equipment === 'string' ? params.equipment :
+              (params.equipment as any)?.name || 
+              (params as any)['equipment.name'] || 
+              (params as any)['equipment,name'] ||
+              '';
+
+            if (searchEquip) {
               const itemEquipName = item.equipment?.name?.toLowerCase();
-              const paramEquip = typeof params.equipment === 'object' ? params.equipment.name : params.equipment;
-              if (paramEquip && !itemEquipName?.includes(paramEquip.toLowerCase())) {
+              if (!itemEquipName?.includes(searchEquip.toLowerCase())) {
                 return false;
               }
             }

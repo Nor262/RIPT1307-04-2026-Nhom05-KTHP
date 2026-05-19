@@ -34,7 +34,8 @@ const ProfilePage: React.FC = () => {
 
   const handleChangePassword = async (values: any) => {
     if (values.new_password !== values.confirm_password) {
-      return message.error('Mật khẩu xác nhận không khớp');
+      message.error('Mật khẩu xác nhận không khớp');
+      return;
     }
     setLoading(true);
     try {
