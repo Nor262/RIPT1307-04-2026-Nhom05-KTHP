@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, message, Modal } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { history, useIntl, Link, useModel } from '@umijs/max';
+import { Link, useModel } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
 import Footer from '@/components/Footer';
@@ -10,7 +10,6 @@ import styles from './index.less';
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const intl = useIntl();
   const [form] = Form.useForm();
   const loginAction = useAuthStore((state) => state.login);
   const { setInitialState } = useModel('@@initialState');

@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Tag, Space, Typography, Card, Statistic, Row, Col } from 'antd';
+import { Button, message, Space, Card, Statistic, Row, Col } from 'antd';
 import type { FormInstance } from 'antd';
-import { PlusOutlined, CheckCircleOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
+import { PlusOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormDatePicker, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
-import { getMaintenance, createMaintenance, completeMaintenance, getEquipment } from '@/services/api';
+import { getMaintenance, createMaintenance, getEquipment } from '@/services/api';
 
-const { Title } = Typography;
+
 
 export type MaintenanceItem = {
   id: number;

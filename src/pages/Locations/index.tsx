@@ -22,7 +22,6 @@ const LocationList: React.FC = () => {
     {
       title: 'Tên vị trí kho',
       dataIndex: 'name',
-      rules: [{ required: true }],
     },
     {
       title: 'Địa chỉ',
