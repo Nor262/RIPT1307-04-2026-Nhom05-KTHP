@@ -203,7 +203,6 @@ const ExportReport: React.FC = () => {
             );
           },
           optionRender: (searchConfig, formProps, dom) => [
-<<<<<<< HEAD
             <Button
               key="reset"
               onClick={() => {

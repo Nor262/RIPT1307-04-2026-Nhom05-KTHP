@@ -14,6 +14,7 @@ const GlobalHeaderRight: React.FC = () => {
 	}
 
 	return (
+		<div className={styles.right}>
 			<NotificationBell />
 			<AvatarDropdown menu />
 		</div>

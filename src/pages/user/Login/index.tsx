@@ -130,7 +130,6 @@ const Login: React.FC = () => {
   };
 
   return (
-  return (
     <GoogleOAuthProvider clientId="612309700754-ib1shrs5nn00cgesh8coto8ba00856iv.apps.googleusercontent.com">
       <div className={styles.container}>
         <div className={styles.content}>
