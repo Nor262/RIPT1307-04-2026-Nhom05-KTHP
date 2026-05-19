@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-components';
-import { Card, Form, Input, Button, Upload, message, Switch, Tabs, Row, Col, Avatar } from 'antd';
+import { Card, Form, Input, Button, Upload, message, Switch, Tabs, Row, Col, Avatar, Spin } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
 import axios from '@/utils/axios';
@@ -10,7 +10,9 @@ import { useAuthStore } from '@/stores/useAuthStore';
 const ProfilePage: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const user = initialState?.currentUser;
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(user?.avatar_url);
 
   const handleUpdateProfile = async (values: any) => {
     setLoading(true);
@@ -54,45 +56,34 @@ const ProfilePage: React.FC = () => {
       Authorization: `Bearer ${useAuthStore.getState().accessToken}`,
     },
     onChange(info: any) {
+      if (info.file.status === 'uploading') {
+        setUploading(true);
+      }
       if (info.file.status === 'done') {
+        setUploading(false);
         const res = info.file.response;
-        let updatedUser = null;
-        
-        if (res) {
-          // 1. Cấu trúc chuẩn NestJS: { status: 'success', data: { user: ... } }
-          if (res.data?.user) {
-            updatedUser = res.data.user;
-          }
-          // 2. Cấu trúc NestJS bọc trực tiếp user: { status: 'success', data: { id, role, ... } }
-          else if (res.data?.id && res.data?.role) {
-            updatedUser = res.data;
-          }
-          // 3. Cấu trúc thô không bọc: { user: ... }
-          else if (res.user) {
-            updatedUser = res.user;
-          }
-          // 4. Đối tượng user thô trực tiếp: { id, role, ... }
-          else if (res.id && res.role) {
-            updatedUser = res;
-          }
-          // 5. Cấu trúc lồng ghép đặc biệt: { data: { data: { user: ... } } }
-          else if (res.data?.data?.user) {
-            updatedUser = res.data.data.user;
-          }
-          else if (res.data?.data?.id && res.data?.data?.role) {
-            updatedUser = res.data.data;
-          }
-        }
+        // Backend trả: { status: 'success', data: { message, avatar_url, user } }
+        const newAvatarUrl = res?.data?.avatar_url || res?.data?.user?.avatar_url || res?.avatar_url;
+        const updatedUser = res?.data?.user || res?.data;
 
-        if (updatedUser) {
-          message.success(`Ảnh đã được tải lên thành công`);
-          setInitialState((s: any) => ({ ...s, currentUser: updatedUser }));
-          useAuthStore.setState({ user: updatedUser });
+        if (newAvatarUrl) {
+          // Thêm timestamp để bust cache trình duyệt
+          const cacheBustedUrl = `${newAvatarUrl}?t=${Date.now()}`;
+          setAvatarUrl(cacheBustedUrl);
+          
+          // Cập nhật cả 2 store để header avatar cũng đổi
+          const currentUser = useAuthStore.getState().user;
+          const merged = { ...currentUser, ...updatedUser, avatar_url: cacheBustedUrl };
+          setInitialState((s: any) => ({ ...s, currentUser: merged }));
+          useAuthStore.setState({ user: merged });
+          
+          message.success('Ảnh đại diện đã được cập nhật');
         } else {
-          message.error(`Tải lên thành công nhưng không thể cập nhật thông tin người dùng. Phản hồi: ${JSON.stringify(res)}`);
+          message.warning('Tải lên thành công nhưng không nhận được URL ảnh mới');
         }
       } else if (info.file.status === 'error') {
-        message.error(`Lỗi tải ảnh lên.`);
+        setUploading(false);
+        message.error('Lỗi tải ảnh lên.');
       }
     },
   };
@@ -103,11 +94,13 @@ const ProfilePage: React.FC = () => {
         <Col span={8}>
           <Card>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <Avatar size={120} src={user?.avatar_url} icon={<UserOutlined />} />
+              <Spin spinning={uploading}>
+                <Avatar size={120} src={avatarUrl || user?.avatar_url} icon={<UserOutlined />} />
+              </Spin>
               <h2 style={{ marginTop: 16 }}>{user?.full_name}</h2>
               <p>{user?.email}</p>
-              <Upload {...uploadProps} showUploadList={false}>
-                <Button icon={<UploadOutlined />}>Đổi ảnh đại diện</Button>
+              <Upload {...uploadProps} showUploadList={false} disabled={uploading}>
+                <Button icon={<UploadOutlined />} loading={uploading} disabled={uploading}>Đổi ảnh đại diện</Button>
               </Upload>
             </div>
           </Card>
