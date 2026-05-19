@@ -6,6 +6,7 @@ html,
 body,
 #root {
 	height: 100%;
+	background-color: #f3f4f6;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -279,7 +280,10 @@ canvas {
 
 .ant-card {
 	height: 100%;
-
+	border: none !important;
+	box-shadow: 0 4px 24px rgba(0,0,0,0.04) !important;
+	border-radius: 16px !important;
+	
 	.ant-card-head-title {
 		white-space: pre-wrap;
 	}
@@ -422,6 +426,11 @@ canvas {
 	padding: 3px 5px !important;
 }
 
+.ant-table-wrapper {
+	border-radius: 12px;
+	overflow: hidden;
+}
+
 .bg-primary-selected {
 	background-color: var(--primary-1) !important;
 }
@@ -548,5 +557,30 @@ canvas {
 .ant-pro-table-search {
 	.ant-row {
 		align-items: center;
+	}
+}
+
+.stat-card-premium {
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	cursor: pointer;
+	border: none !important;
+	border-radius: 16px !important;
+	background-color: #ffffff;
+	
+	&:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08) !important;
+	}
+	
+	.ant-statistic-title {
+		font-weight: 600;
+		color: #6b7280;
+		font-size: 15px;
+	}
+	
+	.ant-statistic-content {
+		font-weight: 700;
+		font-size: 28px;
+		margin-top: 8px;
 	}
 }

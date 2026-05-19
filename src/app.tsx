@@ -11,7 +11,43 @@ import './styles/global.less';
 import { useAuthStore } from './stores/useAuthStore';
 import defaultSettings from '../config/defaultSettings';
 import React, { useEffect, useState } from 'react';
-import { Spin } from 'antd';
+import { Spin, ConfigProvider } from 'antd';
+
+export function rootContainer(container: React.ReactNode) {
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          borderRadius: 12,
+          colorBgLayout: '#f3f4f6',
+          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+          colorTextHeading: '#1f2937',
+          colorText: '#374151',
+        },
+        components: {
+          Button: {
+            controlHeight: 40,
+            borderRadius: 8,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          },
+          Input: {
+            controlHeight: 40,
+            borderRadius: 8,
+          },
+          Select: {
+            controlHeight: 40,
+            borderRadius: 8,
+          },
+          Card: {
+            boxShadowTertiary: '0 4px 24px rgba(0, 0, 0, 0.04)',
+          }
+        }
+      }}
+    >
+      {container}
+    </ConfigProvider>
+  );
+}
 
 const ContentWrapper = ({ dom }: { dom: React.ReactNode }) => {
 	const location = useLocation();
@@ -145,6 +181,33 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 				<ContentWrapper dom={dom as any} />
 			</ErrorBoundary>
 		),
+		
+		// ProLayout Premium Styling
+		token: {
+			header: {
+				colorBgHeader: 'rgba(255, 255, 255, 0.65)',
+				colorHeaderTitle: '#1f2937',
+			},
+			sider: {
+				colorMenuBackground: '#ffffff',
+				colorBgMenuItemSelected: 'rgba(22, 119, 255, 0.08)',
+				colorTextMenuSelected: '#1677ff',
+			},
+			pageContainer: {
+				colorBgPageContainer: '#f3f4f6',
+			}
+		},
+		headerStyle: {
+			backdropFilter: 'blur(12px)',
+			WebkitBackdropFilter: 'blur(12px)',
+			boxShadow: '0 1px 4px rgba(0,0,0,0.02)',
+			borderBottom: '1px solid rgba(0,0,0,0.04)',
+		},
+		siderStyle: {
+			boxShadow: '2px 0 8px rgba(0,0,0,0.02)',
+			borderRight: 'none',
+		},
+		
 		...initialState?.settings,
 		...defaultSettings,
 	} as any;

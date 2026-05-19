@@ -4,6 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useModel } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import Footer from '@/components/Footer';
 import OtpInput from '@/components/OtpInput';
 import styles from './index.less';
@@ -102,66 +103,104 @@ const Login: React.FC = () => {
     }
   };
 
+  // Hàm xử lý khi đăng nhập Google thành công và gửi token lên Backend NestJS
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      setSubmitting(true);
+      const response = await axios.post('/auth/google', {
+        token: credentialResponse.credential,
+      });
+
+      if (response?.data?.status === 'success' && response?.data?.data) {
+        const { user, access_token } = response.data.data;
+
+        // THÊM: Đồng bộ thông tin user và token vào Zustand Store của hệ thống
+        loginAction({
+          user,
+          accessToken: access_token,
+          refreshToken: access_token
+        });
+
+        message.success('Đăng nhập bằng Google thành công!');
+        history.replace('/dashboard');
+      }
+    } catch (error) {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.top}>
-          <div className={styles.logoContainer}>
-            <img alt="logo" className={styles.logo} src="/logo-full.svg" />
-          </div>
-          <h1 className={styles.title}>Quản lý Thiết bị</h1>
-          <div className={styles.desc}>Hệ thống Quản lý Mượn/Trả Thiết bị</div>
-        </div>
-
-        <div className={styles.main}>
-          <Form
-            form={form}
-            onFinish={handleSubmit}
-            layout="vertical"
-            size="large"
-          >
-            <Form.Item
-              name="identifier"
-              rules={[
-                { required: true, message: 'Vui lòng nhập Email hoặc Tên đăng nhập!' },
-              ]}
-            >
-              <Input
-                placeholder="Email hoặc Tên đăng nhập"
-                prefix={<UserOutlined className={styles.prefixIcon} />}
-                style={{ borderRadius: 8, height: 46 }}
-              />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: 'Vui lòng nhập Mật khẩu!' }]}
-            >
-              <Input.Password
-                placeholder="Mật khẩu"
-                prefix={<LockOutlined className={styles.prefixIcon} />}
-                style={{ borderRadius: 8, height: 46 }}
-              />
-            </Form.Item>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-              <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#cc0404ba', fontWeight: 300 }}>Quên mật khẩu?</a>
+    <GoogleOAuthProvider clientId="612309700754-ib1shrs5nn00cgesh8coto8ba00856iv.apps.googleusercontent.com">
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.top}>
+            <div className={styles.logoContainer}>
+              <img alt="logo" className={styles.logo} src="/logo-full.svg" />
             </div>
+            <h1 className={styles.title}>Quản lý Thiết bị</h1>
+            <div className={styles.desc}>Hệ thống Quản lý Mượn/Trả Thiết bị</div>
+          </div>
 
-            <Form.Item style={{ marginBottom: 8 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                loading={submitting}
-                style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+          <div className={styles.main}>
+            <Form
+              form={form}
+              onFinish={handleSubmit}
+              layout="vertical"
+              size="large"
+            >
+              <Form.Item
+                name="identifier"
+                rules={[
+                  { required: true, message: 'Vui lòng nhập Email hoặc Tên đăng nhập!' },
+                ]}
               >
-                Đăng nhập
-              </Button>
-              <div style={{ marginTop: 20, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
-                Chưa có tài khoản? <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
+                <Input
+                  placeholder="Email hoặc Tên đăng nhập"
+                  prefix={<UserOutlined className={styles.prefixIcon} />}
+                  style={{ borderRadius: 8, height: 46 }}
+                />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[{ required: true, message: 'Vui lòng nhập Mật khẩu!' }]}
+              >
+                <Input.Password
+                  placeholder="Mật khẩu"
+                  prefix={<LockOutlined className={styles.prefixIcon} />}
+                  style={{ borderRadius: 8, height: 46 }}
+                />
+              </Form.Item>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+                <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#cc0404ba', fontWeight: 300 }}>Quên mật khẩu?</a>
               </div>
-            </Form.Item>
-          </Form>
+
+              <Form.Item style={{ marginBottom: 8 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  loading={submitting}
+                  style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+                >
+                  Đăng nhập
+                </Button>
+
+                {/*Khối hiển thị nút bấm đăng nhập Google chuẩn của thư viện */}
+                <div style={{ marginTop: "12px", display: 'flex', justifyContent: 'center' }}>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => message.error('Đăng nhập bằng Google thất bại')}
+                    useOneTap
+                  />
+                </div>
+
+                <div style={{ marginTop: 20, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
+                  Chưa có tài khoản? <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
 
           <Modal
             open={forgotPasswordVisible}
@@ -263,11 +302,11 @@ const Login: React.FC = () => {
             </div>
           </Modal>
         </div>
+        <div className="login-footer">
+          <Footer />
+        </div>
       </div>
-      <div className="login-footer">
-        <Footer />
-      </div>
-    </div>
+    </GoogleOAuthProvider>
   );
 };
 

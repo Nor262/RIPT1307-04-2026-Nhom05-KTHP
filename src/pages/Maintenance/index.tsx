@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Space, Card, Statistic, Row, Col } from 'antd';
+import { Button, message, Tag, Space, Typography, Card, Statistic, Row, Col, Tooltip } from 'antd';
 import type { FormInstance } from 'antd';
-import { PlusOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
+import { PlusOutlined, CheckCircleOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormDatePicker, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
-import { getMaintenance, createMaintenance, getEquipment } from '@/services/api';
+import { getMaintenance, createMaintenance, getEquipment, completeMaintenance } from '@/services/api';
 
 
 
@@ -18,6 +18,11 @@ export type MaintenanceItem = {
   cost: number;
   next_maintenance_date?: string;
   status: 'pending' | 'completed';
+};
+
+const statusMap: Record<string, { text: string; color: string; bg: string; border: string }> = {
+  pending: { text: 'Đang bảo trì', color: '#d97706', bg: '#fef3c7', border: '#fde68a' },
+  completed: { text: 'Đã hoàn thành', color: '#059669', bg: '#d1fae5', border: '#a7f3d0' },
 };
 
 const MaintenanceList: React.FC = () => {
@@ -64,27 +69,77 @@ const MaintenanceList: React.FC = () => {
       dataIndex: 'next_maintenance_date',
       valueType: 'date',
     },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      render: (_, record) => {
+        const s = statusMap[record.status] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
+        return (
+          <span style={{ 
+            padding: '4px 12px', 
+            borderRadius: '999px', 
+            backgroundColor: s.bg, 
+            color: s.color, 
+            border: `1px solid ${s.border}`,
+            fontWeight: 500,
+            fontSize: '13px',
+            whiteSpace: 'nowrap'
+          }}>
+            {s.text}
+          </span>
+        );
+      },
+    },
+    {
+      title: 'Thao tác',
+      dataIndex: 'option',
+      valueType: 'option',
+      width: 150,
+      render: (_, record) => (
+        <Space size="middle">
+          {record.status === 'pending' && (
+            <Tooltip title="Hoàn tất bảo trì">
+              <Button
+                type="text"
+                shape="circle"
+                icon={<CheckCircleOutlined style={{ color: '#10b981' }} />}
+                onClick={async () => {
+                  if (record.equipment?.id) {
+                    await completeMaintenance(record.equipment.id);
+                    message.success('Đã hoàn tất bảo trì, thiết bị đã sẵn sàng');
+                    actionRef.current?.reload();
+                  }
+                }}
+                style={{ background: '#ecfdf5' }}
+              />
+            </Tooltip>
+          )}
+        </Space>
+      ),
+    },
   ];
 
   return (
     <div style={{ padding: '24px' }}>
-      <Row gutter={16} style={{ marginBottom: 16 }}>
-        <Col span={8}>
-          <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Đang bảo trì" value={pendingCount} prefix={<ToolOutlined />} valueStyle={{
-              backgroundImage: 'url("/background_card3.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
-              backgroundSize: 'contain',
-              borderLeft: '4px solid #faad14'
-            }} />
+      <Row gutter={24} style={{ marginBottom: 24 }}>
+        <Col xs={24} sm={12}>
+          <Card bordered={false} className="stat-card-premium" bodyStyle={{ padding: '24px' }}>
+            <Statistic 
+              title="Đang bảo trì" 
+              value={pendingCount} 
+              prefix={<div style={{ padding: '12px', borderRadius: '12px', background: '#fffbeb', display: 'flex', marginRight: 12 }}><ToolOutlined style={{ color: '#f59e0b' }} /></div>} 
+              valueStyle={{ color: '#f59e0b' }} 
+            />
           </Card>
         </Col>
-        <Col span={8}>
-          <Card bordered={false} bodyStyle={{ padding: '16px' }}>
-            <Statistic title="Tổng chi phí" value={totalCost.toLocaleString('vi-VN')} suffix="VNĐ" prefix={<HistoryOutlined />} valueStyle={{
-              backgroundImage: 'url("/background_card4.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
-              backgroundSize: 'contain',
-              borderLeft: '4px solid #faad14'
-            }} />
+        <Col xs={24} sm={12}>
+          <Card bordered={false} className="stat-card-premium" bodyStyle={{ padding: '24px' }}>
+            <Statistic 
+              title="Tổng chi phí" 
+              value={totalCost} 
+              suffix="VNĐ" 
+              prefix={<div style={{ padding: '12px', borderRadius: '12px', background: '#eff6ff', display: 'flex', marginRight: 12 }}><HistoryOutlined style={{ color: '#3b82f6' }} /></div>} 
+            />
           </Card>
         </Col>
       </Row>
