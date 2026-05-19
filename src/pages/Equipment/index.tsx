@@ -4,7 +4,6 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-components';
-import { useAccess, Access } from '@umijs/max';
 import {
   getEquipment, createEquipment, updateEquipment, deleteEquipment,
   getCategories, getSuppliers, getLocations
@@ -41,7 +40,6 @@ const EquipmentList: React.FC = () => {
   const [qrModalVisible, setQrModalVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [qrData, setQrData] = useState<string>('');
-  const access = useAccess();
 
   const columns: ProColumns<EquipmentItem>[] = [
     {
@@ -122,28 +120,24 @@ const EquipmentList: React.FC = () => {
           <Tooltip title="Xem chi tiết">
             <Button type="text" shape="circle" icon={<EyeOutlined />} onClick={() => { setCurrentRow(record); setDetailVisible(true); }} style={{ background: '#f9fafb' }} />
           </Tooltip>
-          <Access accessible={access.canAdmin}>
-            <Tooltip title="Chỉnh sửa">
-              <Button type="text" shape="circle" icon={<EditOutlined style={{ color: '#1677ff' }} />} onClick={() => { setCurrentRow(record); handleModalVisible(true); }} style={{ background: '#f0f5ff' }} />
-            </Tooltip>
-          </Access>
+          <Tooltip title="Chỉnh sửa">
+            <Button type="text" shape="circle" icon={<EditOutlined style={{ color: '#1677ff' }} />} onClick={() => { setCurrentRow(record); handleModalVisible(true); }} style={{ background: '#f0f5ff' }} />
+          </Tooltip>
           <Tooltip title="Mã QR">
             <Button type="text" shape="circle" icon={<QrcodeOutlined style={{ color: '#8b5cf6' }} />} onClick={() => { setQrData(record.qr_code_data || record.serial_number); setQrModalVisible(true); }} style={{ background: '#f5f3ff' }} />
           </Tooltip>
-          <Access accessible={access.canAdmin}>
-            <Popconfirm
-              title="Bạn có chắc chắn muốn xóa thiết bị này?"
-              onConfirm={async () => {
-                await deleteEquipment(record.id);
-                message.success('Xóa thành công');
-                actionRef.current?.reload();
-              }}
-            >
-              <Tooltip title="Xóa">
-                <Button type="text" danger shape="circle" icon={<DeleteOutlined />} style={{ background: '#fef2f2' }} />
-              </Tooltip>
-            </Popconfirm>
-          </Access>
+          <Popconfirm
+            title="Bạn có chắc chắn muốn xóa thiết bị này?"
+            onConfirm={async () => {
+              await deleteEquipment(record.id);
+              message.success('Xóa thành công');
+              actionRef.current?.reload();
+            }}
+          >
+            <Tooltip title="Xóa">
+              <Button type="text" danger shape="circle" icon={<DeleteOutlined />} style={{ background: '#fef2f2' }} />
+            </Tooltip>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -184,18 +178,17 @@ const EquipmentList: React.FC = () => {
           ],
         }}
         toolBarRender={() => [
-          <Access accessible={access.canAdmin} key="primary">
-            <Button
-              type="primary"
-              danger
-              onClick={() => {
-                setCurrentRow(undefined);
-                handleModalVisible(true);
-              }}
-            >
-              <PlusOutlined /> Thêm mới
-            </Button>
-          </Access>,
+          <Button
+            type="primary"
+            danger
+            key="primary"
+            onClick={() => {
+              setCurrentRow(undefined);
+              handleModalVisible(true);
+            }}
+          >
+            <PlusOutlined /> Thêm mới
+          </Button>,
         ]}
         request={async (params) => {
           const res = await getEquipment(params);

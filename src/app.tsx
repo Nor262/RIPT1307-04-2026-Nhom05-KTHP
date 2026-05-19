@@ -18,7 +18,6 @@ export function rootContainer(container: React.ReactNode) {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#ff4d4f', // Đổi toàn bộ màu chủ đạo sang Đỏ
           borderRadius: 12,
           colorBgLayout: '#f3f4f6',
           fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
@@ -191,8 +190,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			},
 			sider: {
 				colorMenuBackground: '#ffffff',
-				colorBgMenuItemSelected: 'rgba(255, 77, 79, 0.08)',
-				colorTextMenuSelected: '#ff4d4f',
+				colorBgMenuItemSelected: 'rgba(22, 119, 255, 0.08)',
+				colorTextMenuSelected: '#1677ff',
 			},
 			pageContainer: {
 				colorBgPageContainer: '#f3f4f6',

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useRequest, useAccess, useModel } from '@umijs/max';
-import { Row, Col, Card, Statistic, Spin, Typography, Space, Button, Result } from 'antd';
+import { useRequest } from '@umijs/max';
+import { Row, Col, Card, Statistic, Spin, Badge, List, Typography, Tag, Space } from 'antd';
 import {
   DatabaseOutlined,
   SwapOutlined,
@@ -8,23 +8,32 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   WarningOutlined,
-  BookOutlined,
-  FileTextOutlined,
-  SmileOutlined,
 } from '@ant-design/icons';
 import ReactApexChart from 'react-apexcharts';
 import { getDashboardStats } from '@/services/api';
 import { ProCard } from '@ant-design/pro-components';
-import { history } from '@umijs/max';
 
-const { Text, Title, Paragraph } = Typography;
+const { Text, Title } = Typography;
 
-// Dashboard dành cho Admin & Storekeeper
-const AdminDashboard: React.FC = () => {
+const Dashboard: React.FC = () => {
+  // Polling data mỗi 5 giây
   const { data: stats, loading } = useRequest(
     async () => {
-      const res = await getDashboardStats();
-      return res.data.data;
+      try {
+        const res = await getDashboardStats();
+        return res.data.data;
+      } catch (err) {
+        return {
+          summary: {
+            total_equipment: 0,
+            available_count: 0,
+            in_use_count: 0,
+            maintenance_count: 0,
+          },
+          alerts: { pending_requests: 0, overdue_transactions: 0 },
+          charts: { top_borrowed: [], borrow_frequency_by_month: [] },
+        };
+      }
     },
     {
       pollingInterval: 5000,
@@ -36,6 +45,7 @@ const AdminDashboard: React.FC = () => {
   const alerts = stats?.alerts || {};
   const charts = stats?.charts || {};
 
+  // Pie Chart - Trạng thái thiết bị
   const pieOptions: any = {
     labels: ['Sẵn sàng', 'Đang mượn', 'Bảo trì'],
     colors: ['#10b981', '#3b82f6', '#f59e0b'],
@@ -48,22 +58,38 @@ const AdminDashboard: React.FC = () => {
     summary.maintenance_count || 0,
   ];
 
+  // Bar Chart - Thiết bị mượn nhiều nhất
   const barOptions: any = {
     chart: { id: 'top-borrowed', toolbar: { show: false } },
-    xaxis: { categories: charts.top_borrowed?.map((i: any) => i.name) || [] },
+    xaxis: {
+      categories: charts.top_borrowed?.map((i: any) => i.name) || [],
+    },
     colors: ['#8b5cf6'],
     plotOptions: { bar: { borderRadius: 6, horizontal: true } },
   };
-  const barSeries = [{ name: 'Số lần mượn', data: charts.top_borrowed?.map((i: any) => i.borrow_count) || [] }];
+  const barSeries = [
+    {
+      name: 'Số lần mượn',
+      data: charts.top_borrowed?.map((i: any) => i.borrow_count) || [],
+    },
+  ];
 
+  // Line Chart - Tần suất mượn theo tháng
   const lineOptions: any = {
     chart: { id: 'monthly-frequency', toolbar: { show: false } },
-    xaxis: { categories: charts.borrow_frequency_by_month?.map((i: any) => i.month) || [] },
+    xaxis: {
+      categories: charts.borrow_frequency_by_month?.map((i: any) => i.month) || [],
+    },
     colors: ['#3b82f6'],
     stroke: { curve: 'smooth', width: 3 },
     markers: { size: 5 },
   };
-  const lineSeries = [{ name: 'Giao dịch', data: charts.borrow_frequency_by_month?.map((i: any) => i.count) || [] }];
+  const lineSeries = [
+    {
+      name: 'Giao dịch',
+      data: charts.borrow_frequency_by_month?.map((i: any) => i.count) || [],
+    },
+  ];
 
   if (loading && !stats)
     return (
@@ -74,6 +100,7 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
+      {/* Stats Cards */}
       <Row gutter={[24, 24]}>
         <Col xs={24} sm={12} md={6}>
           <ProCard ghost className="stat-card-premium" style={{ padding: '24px' }}>
@@ -113,6 +140,7 @@ const AdminDashboard: React.FC = () => {
         </Col>
       </Row>
 
+      {/* Alert Cards */}
       <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
         <Col xs={24} sm={12}>
           <Card bordered={false} style={{ borderRadius: 16, background: 'linear-gradient(135deg, #fffbeb 0%, #ffffff 100%)', borderLeft: '6px solid #f59e0b' }}>
@@ -122,7 +150,9 @@ const AdminDashboard: React.FC = () => {
               </div>
               <div>
                 <Text type="secondary" style={{ fontSize: 16, fontWeight: 500 }}>Đơn chờ duyệt</Text>
-                <Title level={2} style={{ margin: 0, color: '#1f2937' }}>{alerts.pending_requests || 0}</Title>
+                <Title level={2} style={{ margin: 0, color: '#1f2937' }}>
+                  {alerts.pending_requests || 0}
+                </Title>
               </div>
             </Space>
           </Card>
@@ -135,13 +165,16 @@ const AdminDashboard: React.FC = () => {
               </div>
               <div>
                 <Text type="secondary" style={{ fontSize: 16, fontWeight: 500 }}>Quá hạn trả</Text>
-                <Title level={2} style={{ margin: 0, color: '#ef4444' }}>{alerts.overdue_transactions || 0}</Title>
+                <Title level={2} style={{ margin: 0, color: '#ef4444' }}>
+                  {alerts.overdue_transactions || 0}
+                </Title>
               </div>
             </Space>
           </Card>
         </Col>
       </Row>
 
+      {/* Charts */}
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={10}>
           <Card title="Trạng thái thiết bị" bordered={false}>
@@ -155,6 +188,7 @@ const AdminDashboard: React.FC = () => {
         </Col>
       </Row>
 
+      {/* Monthly Trend */}
       {charts.borrow_frequency_by_month?.length > 0 && (
         <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
           <Col span={24}>
@@ -166,82 +200,6 @@ const AdminDashboard: React.FC = () => {
       )}
     </div>
   );
-};
-
-// Dashboard dành riêng cho Borrower (Sinh viên) - không gọi API analytics
-const BorrowerDashboard: React.FC = () => {
-  const { initialState } = useModel('@@initialState');
-  const userName = initialState?.currentUser?.full_name || 'Bạn';
-
-  return (
-    <div style={{ padding: '24px' }}>
-      <Result
-        icon={<SmileOutlined style={{ color: '#ff4d4f' }} />}
-        title={`Xin chào, ${userName}!`}
-        subTitle="Chào mừng bạn đến với Hệ thống Quản lý Mượn/Trả Thiết bị RIPT."
-        extra={[
-          <Button
-            key="equipment"
-            type="primary"
-            icon={<DatabaseOutlined />}
-            size="large"
-            onClick={() => history.push('/asset/equipment')}
-          >
-            Xem danh sách thiết bị
-          </Button>,
-        ]}
-      />
-
-      <Row gutter={[24, 24]} style={{ marginTop: 8 }}>
-        <Col xs={24} md={8}>
-          <Card
-            hoverable
-            bordered={false}
-            style={{ borderRadius: 16, textAlign: 'center', cursor: 'pointer', borderTop: '4px solid #3b82f6' }}
-            onClick={() => history.push('/asset/equipment')}
-          >
-            <DatabaseOutlined style={{ fontSize: 40, color: '#3b82f6', marginBottom: 16 }} />
-            <Title level={4}>Danh sách thiết bị</Title>
-            <Paragraph type="secondary">Xem tất cả thiết bị hiện có trong kho và tình trạng sẵn sàng mượn.</Paragraph>
-          </Card>
-        </Col>
-        <Col xs={24} md={8}>
-          <Card
-            hoverable
-            bordered={false}
-            style={{ borderRadius: 16, textAlign: 'center', cursor: 'pointer', borderTop: '4px solid #10b981' }}
-            onClick={() => history.push('/my-bookings')}
-          >
-            <FileTextOutlined style={{ fontSize: 40, color: '#10b981', marginBottom: 16 }} />
-            <Title level={4}>Đơn mượn của tôi</Title>
-            <Paragraph type="secondary">Theo dõi lịch sử và trạng thái các đơn mượn thiết bị của bạn.</Paragraph>
-          </Card>
-        </Col>
-        <Col xs={24} md={8}>
-          <Card
-            hoverable
-            bordered={false}
-            style={{ borderRadius: 16, textAlign: 'center', cursor: 'pointer', borderTop: '4px solid #f59e0b' }}
-          >
-            <BookOutlined style={{ fontSize: 40, color: '#f59e0b', marginBottom: 16 }} />
-            <Title level={4}>Hướng dẫn mượn thiết bị</Title>
-            <Paragraph type="secondary">Tìm hiểu quy trình đặt mượn và các quy định sử dụng thiết bị.</Paragraph>
-          </Card>
-        </Col>
-      </Row>
-    </div>
-  );
-};
-
-// Component chính - tự động chọn Dashboard phù hợp theo role
-const Dashboard: React.FC = () => {
-  const access = useAccess();
-
-  if (access.canAdminOrStorekeeper) {
-    return <AdminDashboard />;
-  }
-
-  return <BorrowerDashboard />;
 };
 
 export default Dashboard;

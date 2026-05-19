@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { history, useIntl, Link, useModel } from '@umijs/max';
+import { history, useIntl, Link } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
@@ -13,7 +13,6 @@ const Login: React.FC = () => {
   const intl = useIntl();
   const [form] = Form.useForm();
   const loginAction = useAuthStore((state) => state.login);
-  const { setInitialState } = useModel('@@initialState');
 
   const handleSubmit = async (values: any) => {
     try {
@@ -26,14 +25,8 @@ const Login: React.FC = () => {
       if (response?.data?.status === 'success' && response?.data?.data) {
         const { user, accessToken, refreshToken } = response.data.data;
 
-        // Cập nhật Zustand store
+        // Gọi action login từ Zustand
         loginAction({ user, accessToken, refreshToken });
-
-        // Cập nhật initialState của UmiJS để access plugin nhận biết role ngay lập tức
-        await setInitialState((prevState: any) => ({
-          ...prevState,
-          currentUser: user,
-        }));
 
         message.success('Đăng nhập thành công');
         history.replace('/dashboard');
