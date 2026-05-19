@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Tag, Typography, Space, Button, message } from 'antd';
+import { Tag, Typography, Space, Button, message, Tooltip } from 'antd';
 import { WarningOutlined, BellOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -68,13 +68,27 @@ const OverdueReport: React.FC = () => {
       hideInSearch: true,
       render: (_, record) => {
         const days = calcOverdueDays(record.due_date);
-        let color = 'orange';
-        if (days > 7) color = 'red';
-        if (days > 14) color = 'magenta';
+        let color = '#d97706';
+        let bg = '#fef3c7';
+        let border = '#fde68a';
+        if (days > 7) { color = '#dc2626'; bg = '#fee2e2'; border = '#fecaca'; }
+        if (days > 14) { color = '#be185d'; bg = '#fce7f3'; border = '#fbcfe8'; }
         return (
-          <Tag color={color} icon={<WarningOutlined />}>
-            {days} ngày
-          </Tag>
+          <span style={{ 
+            padding: '4px 12px', 
+            borderRadius: '999px', 
+            backgroundColor: bg, 
+            color: color, 
+            border: `1px solid ${border}`,
+            fontWeight: 500,
+            fontSize: '13px',
+            whiteSpace: 'nowrap',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}>
+            <WarningOutlined /> {days} ngày
+          </span>
         );
       },
       sorter: (a, b) => calcOverdueDays(a.due_date) - calcOverdueDays(b.due_date),
@@ -89,16 +103,17 @@ const OverdueReport: React.FC = () => {
       title: 'Thao tác',
       valueType: 'option',
       render: (_, record) => [
-        <Button
-          key="remind"
-          type="link"
-          icon={<BellOutlined />}
-          onClick={() => {
-            message.info(`Đã gửi nhắc nhở đến ${record.borrower?.full_name}`);
-          }}
-        >
-          Nhắc nhở
-        </Button>,
+        <Tooltip title="Gửi nhắc nhở" key="remind">
+          <Button
+            type="text"
+            shape="circle"
+            icon={<BellOutlined style={{ color: '#1677ff' }} />}
+            onClick={() => {
+              message.info(`Đã gửi nhắc nhở đến ${record.borrower?.full_name}`);
+            }}
+            style={{ background: '#f0f5ff' }}
+          />
+        </Tooltip>,
       ],
     },
   ];

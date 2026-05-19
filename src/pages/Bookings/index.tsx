@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Tag, Modal, Space, Input, Typography, Descriptions, Badge } from 'antd';
+import { Button, message, Tag, Modal, Space, Input, Typography, Descriptions, Timeline, Badge, Tooltip } from 'antd';
 import type { FormInstance } from 'antd';
 import {
   CheckCircleOutlined,
@@ -33,13 +33,13 @@ type TransactionItem = {
   feedback?: string;
 };
 
-const statusMap: Record<string, { text: string; color: string }> = {
-  pending: { text: 'Chờ duyệt', color: 'gold' },
-  approved: { text: 'Đã duyệt', color: 'blue' },
-  rejected: { text: 'Từ chối', color: 'red' },
-  checked_out: { text: 'Đang mượn', color: 'cyan' },
-  completed: { text: 'Đã trả', color: 'green' },
-  overdue: { text: 'Quá hạn', color: 'magenta' },
+const statusMap: Record<string, { text: string; color: string; bg: string; border: string }> = {
+  pending: { text: 'Chờ duyệt', color: '#d97706', bg: '#fef3c7', border: '#fde68a' },
+  approved: { text: 'Đã duyệt', color: '#2563eb', bg: '#dbeafe', border: '#bfdbfe' },
+  rejected: { text: 'Từ chối', color: '#dc2626', bg: '#fee2e2', border: '#fecaca' },
+  checked_out: { text: 'Đang mượn', color: '#0891b2', bg: '#cffafe', border: '#a5f3fc' },
+  completed: { text: 'Đã trả', color: '#059669', bg: '#d1fae5', border: '#a7f3d0' },
+  overdue: { text: 'Quá hạn', color: '#c026d3', bg: '#fae8ff', border: '#f5d0fe' },
 };
 
 const BookingApproval: React.FC = () => {
@@ -116,8 +116,21 @@ const BookingApproval: React.FC = () => {
         Object.entries(statusMap).map(([k, v]) => [k, { text: v.text }])
       ),
       render: (_, record) => {
-        const s = statusMap[record.status] || { text: record.status, color: 'default' };
-        return <Tag color={s.color}>{s.text}</Tag>;
+        const s = statusMap[record.status] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
+        return (
+          <span style={{ 
+            padding: '4px 12px', 
+            borderRadius: '999px', 
+            backgroundColor: s.bg, 
+            color: s.color, 
+            border: `1px solid ${s.border}`,
+            fontWeight: 500,
+            fontSize: '13px',
+            whiteSpace: 'nowrap'
+          }}>
+            {s.text}
+          </span>
+        );
       },
     },
     {
@@ -147,30 +160,23 @@ const BookingApproval: React.FC = () => {
       valueType: 'option',
       width: 260,
       render: (_, record) => {
-        const actions = [
-          <a key="detail" onClick={() => { setCurrentRow(record); setDetailVisible(true); }}>
-            <EyeOutlined /> Chi tiết
-          </a>,
-        ];
-        if (record.status === 'pending') {
-          actions.push(
-            <a key="approve" style={{ color: '#52c41a' }} onClick={() => handleApprove(record)}>
-              <CheckCircleOutlined /> Duyệt
-            </a>,
-            <a
-              key="reject"
-              style={{ color: '#c00c0c' }}
-              onClick={() => {
-                setCurrentRow(record);
-                setRejectReason('');
-                setRejectVisible(true);
-              }}
-            >
-              <CloseCircleOutlined /> Từ chối
-            </a>,
-          );
-        }
-        return actions;
+        return (
+          <Space size="middle">
+            <Tooltip title="Chi tiết">
+              <Button type="text" shape="circle" icon={<EyeOutlined />} onClick={() => { setCurrentRow(record); setDetailVisible(true); }} style={{ background: '#f3f4f6' }} />
+            </Tooltip>
+            {record.status === 'pending' && (
+              <>
+                <Tooltip title="Phê duyệt">
+                  <Button type="text" shape="circle" icon={<CheckCircleOutlined style={{ color: '#10b981' }} />} onClick={() => handleApprove(record)} style={{ background: '#ecfdf5' }} />
+                </Tooltip>
+                <Tooltip title="Từ chối">
+                  <Button type="text" danger shape="circle" icon={<CloseCircleOutlined />} onClick={() => { setCurrentRow(record); setRejectReason(''); setRejectVisible(true); }} style={{ background: '#fef2f2' }} />
+                </Tooltip>
+              </>
+            )}
+          </Space>
+        );
       },
     },
   ];

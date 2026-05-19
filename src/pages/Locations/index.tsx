@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Space, Tooltip } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -38,28 +38,34 @@ const LocationList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 150,
-      render: (_, record) => [
-        <a
-          key="edit"
-          onClick={() => {
-            setCurrentRow(record);
-            handleModalVisible(true);
-          }}
-        >
-          <EditOutlined /> Sửa
-        </a>,
-        <Popconfirm
-          key="delete"
-          title="Xóa vị trí này?"
-          onConfirm={async () => {
-            await deleteLocation(record.id);
-            message.success('Đã xóa');
-            actionRef.current?.reload();
-          }}
-        >
-          <a style={{ color: '#c00c0c' }}><DeleteOutlined /> Xóa</a>
-        </Popconfirm>,
-      ],
+      render: (_, record) => (
+        <Space size="middle">
+          <Tooltip title="Chỉnh sửa">
+            <Button
+              type="text"
+              shape="circle"
+              icon={<EditOutlined style={{ color: '#1677ff' }} />}
+              onClick={() => {
+                setCurrentRow(record);
+                handleModalVisible(true);
+              }}
+              style={{ background: '#f0f5ff' }}
+            />
+          </Tooltip>
+          <Popconfirm
+            title="Xóa vị trí này?"
+            onConfirm={async () => {
+              await deleteLocation(record.id);
+              message.success('Đã xóa');
+              actionRef.current?.reload();
+            }}
+          >
+            <Tooltip title="Xóa">
+              <Button type="text" danger shape="circle" icon={<DeleteOutlined />} style={{ background: '#fef2f2' }} />
+            </Tooltip>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 
@@ -73,6 +79,7 @@ const LocationList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
+            danger
             key="primary"
             style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
             onClick={() => {

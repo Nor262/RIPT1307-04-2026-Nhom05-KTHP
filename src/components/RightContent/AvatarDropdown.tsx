@@ -1,7 +1,8 @@
 import { history } from 'umi';
 import { landingUrl } from '@/services/base/constant';
 import { FileWordOutlined, GlobalOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Spin } from 'antd';
+import { useState } from 'react';
+import { Avatar, Menu, Spin, Modal } from 'antd';
 import type { MenuProps } from 'antd';
 import React from 'react';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -27,6 +28,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 
 	const fullName = user.full_name || user.email || 'User';
 	const lastNameChar = fullName.split(' ')?.at(-1)?.[0]?.toUpperCase() || 'U';
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const items: MenuProps['items'] = [
 		{
@@ -70,6 +72,31 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 					<span className={`${styles.name}`}>{fullName}</span>
 				</span>
 			</HeaderDropdown>
+			<Modal
+				title="Thông tin tài khoản"
+				open={isModalOpen}
+				onCancel={() => setIsModalOpen(false)}
+				footer={null}
+				centered
+			>
+				<div style={{ padding: '16px 0', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+					<div>
+						<strong>Họ và tên:</strong> {user.full_name || 'Chưa cập nhật'}
+					</div>
+					<div>
+						<strong>Email:</strong> {user.email}
+					</div>
+					<div>
+						<strong>Chức vụ (Role):</strong> {
+							{
+								admin: 'Quản trị viên',
+								borrower: 'Người mượn thiết bị',
+								storekeeper: 'Quản lý kho'
+							}[user.role] || user.role
+						}
+					</div>
+				</div>
+			</Modal>
 		</>
 	);
 };

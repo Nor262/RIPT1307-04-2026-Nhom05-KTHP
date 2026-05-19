@@ -155,11 +155,35 @@ const HandleTransaction: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Row gutter={24}>
+    <div style={{ padding: '32px 24px', backgroundColor: '#f9fafb', minHeight: 'calc(100vh - 64px)' }}>
+      <style>
+        {`
+          @keyframes syncPulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+          }
+          .sync-active-icon {
+            animation: syncPulse 2s infinite ease-in-out;
+            color: #52c41a;
+            filter: drop-shadow(0 0 8px rgba(82, 196, 26, 0.4));
+          }
+          .custom-dragger .ant-upload-drag {
+            background-color: #ffffff !important;
+            border: 2px dashed #d9d9d9 !important;
+            border-radius: 12px !important;
+            transition: all 0.3s;
+          }
+          .custom-dragger .ant-upload-drag:hover {
+            border-color: #1677ff !important;
+            background-color: #f0f5ff !important;
+          }
+        `}
+      </style>
+      <Row gutter={[24, 24]}>
         <Col span={24}>
-          <Space style={{ marginBottom: 16 }}>
-            <Title level={4} style={{ margin: 0 }}>
+          <Space style={{ marginBottom: 20 }}>
+            <Title level={3} style={{ margin: 0, fontWeight: 700, color: '#1f2937' }}>
               <SwapOutlined /> Xử lý Bàn giao / Thu hồi thiết bị
             </Title>
             <ConfigProvider
@@ -173,25 +197,29 @@ const HandleTransaction: React.FC = () => {
                 },
               }}
             >
-              <Radio.Group value={mode} onChange={(e) => setMode(e.target.value)} buttonStyle="solid">
-                <Radio.Button value="checkout" ><LogoutOutlined /> Bàn giao (Check-out)</Radio.Button>
-                <Radio.Button value="checkin"><LoginOutlined /> Thu hồi (Check-in)</Radio.Button>
+              <Radio.Group value={mode} onChange={(e) => setMode(e.target.value)} buttonStyle="solid" size="large" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: 8, marginLeft: 16 }}>
+                <Radio.Button value="checkout" style={{ borderRadius: '8px 0 0 8px', padding: '0 24px' }}><LogoutOutlined /> Bàn giao (Check-out)</Radio.Button>
+                <Radio.Button value="checkin" style={{ borderRadius: '0 8px 8px 0', padding: '0 24px' }}><LoginOutlined /> Thu hồi (Check-in)</Radio.Button>
               </Radio.Group>
             </ConfigProvider>
           </Space>
           <Alert
-            message="Chế độ Hybrid — Không cần máy quét chuyên dụng"
-            description="Nhập mã Serial Number thủ công, tải ảnh QR hoặc dùng Mobile App quét mã để đồng bộ trạng thái lên đây."
+            message={<Text strong style={{ fontSize: 15 }}>Chế độ Hybrid — Không cần máy quét chuyên dụng</Text>}
+            description={<Text type="secondary">Nhập mã Serial Number thủ công, tải ảnh QR hoặc dùng Mobile App quét mã để đồng bộ trạng thái lên đây.</Text>}
             type="info"
             showIcon
-            style={{ marginBottom: 24 }}
+            style={{ marginBottom: 24, borderRadius: 12, border: 'none', backgroundColor: '#e6f4ff', padding: '16px 24px' }}
           />
         </Col>
 
         {/* Input Panel */}
         <Col xs={24} lg={8}>
           <Space direction="vertical" style={{ width: '100%' }} size="large">
-            <Card title="1. Nhập mã thủ công (Manual Entry)" size="small">
+            <Card 
+              title={<Text strong style={{ fontSize: 16 }}>1. Nhập mã thủ công</Text>} 
+              bordered={false} 
+              style={{ borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.04)' }}
+            >
               <ConfigProvider
                 theme={{
                   token: {
@@ -216,15 +244,22 @@ const HandleTransaction: React.FC = () => {
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   onSearch={handleVerify}
+                  style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.02))' }}
                 />
               </ConfigProvider>
             </Card>
 
-            <Card title="2. Tải ảnh QR (File-to-Scan)" size="small">
+            <Card 
+              title={<Text strong style={{ fontSize: 16 }}>2. Tải ảnh QR (File-to-Scan)</Text>} 
+              bordered={false} 
+              style={{ borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.04)' }}
+            >
               <Dragger
                 beforeUpload={handleFileUpload}
                 showUploadList={false}
                 accept="image/*"
+                className="custom-dragger"
+                style={{ padding: '20px 0' }}
               >
                 <p className="ant-upload-drag-icon"><InboxOutlined /></p>
                 <p className="ant-upload-text">Kéo thả hoặc Click để chọn ảnh QR</p>
@@ -232,11 +267,25 @@ const HandleTransaction: React.FC = () => {
               </Dragger>
             </Card>
 
-            <Card title="3. Mobile-to-Web Sync" size="small">
-              <div style={{ textAlign: 'center', padding: '10px' }}>
-                <MobileOutlined style={{ fontSize: 36, color: isSyncing ? '#52c41a' : '#bfbfbf', marginBottom: 10 }} />
-                <p>Tự động nhận tín hiệu từ Mobile App</p>
-                <p style={{ fontSize: 12, color: '#888' }}>Polling mỗi 3 giây khi bật</p>
+            <Card 
+              title={<Text strong style={{ fontSize: 16 }}>3. Mobile-to-Web Sync</Text>} 
+              bordered={false} 
+              style={{ borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.04)' }}
+            >
+              <div style={{ textAlign: 'center', padding: '16px 10px' }}>
+                <MobileOutlined 
+                  className={isSyncing ? 'sync-active-icon' : ''}
+                  style={{ 
+                    fontSize: 48, 
+                    color: isSyncing ? '#52c41a' : '#d9d9d9', 
+                    marginBottom: 16,
+                    transition: 'all 0.3s ease'
+                  }} 
+                />
+                <div style={{ marginBottom: 20 }}>
+                  <Text strong style={{ display: 'block', fontSize: 15 }}>Tự động nhận tín hiệu từ Mobile App</Text>
+                  <Text type="secondary" style={{ fontSize: 13 }}>Hệ thống tự động polling mỗi 3 giây</Text>
+                </div>
                 <Button
                   type={isSyncing ? 'primary' : 'default'}
                   danger={isSyncing}
@@ -255,19 +304,23 @@ const HandleTransaction: React.FC = () => {
         {/* Status Board */}
         <Col xs={24} lg={16}>
           <Card
+            bordered={false}
+            style={{ borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.04)', height: '100%' }}
+            headStyle={{ padding: '20px 24px', borderBottom: '1px solid #f0f0f0' }}
+            bodyStyle={{ padding: '24px' }}
             title={
-              <Space>
-                <span>Bảng trạng thái Real-time</span>
-                <Tag color={mode === 'checkout' ? 'blue' : 'green'}>
+              <Space size="middle">
+                <Text strong style={{ fontSize: 18 }}>Bảng trạng thái Real-time</Text>
+                <Tag color={mode === 'checkout' ? 'blue-inverse' : 'green-inverse'} style={{ borderRadius: 4, padding: '2px 8px' }}>
                   {mode === 'checkout' ? 'CHẾ ĐỘ BÀN GIAO' : 'CHẾ ĐỘ THU HỒI'}
                 </Tag>
               </Space>
             }
             extra={
               <Space>
-                {isSyncing && <Tag color="processing" icon={<SyncOutlined spin />}>Đang theo dõi...</Tag>}
-                <Button size="small" danger onClick={clearAll} disabled={pendingItems.length === 0}>
-                  Xóa tất cả
+                {isSyncing && <Tag color="success" icon={<SyncOutlined spin />} style={{ border: 'none', background: '#f6ffed', padding: '4px 8px' }}>Đang lắng nghe...</Tag>}
+                <Button type="text" danger onClick={clearAll} disabled={pendingItems.length === 0} icon={<DeleteOutlined />}>
+                  Xóa danh sách
                 </Button>
               </Space>
             }
@@ -277,7 +330,15 @@ const HandleTransaction: React.FC = () => {
               columns={columns}
               rowKey="serial_number"
               pagination={false}
-              locale={{ emptyText: 'Chưa có thiết bị nào trong hàng đợi. Hãy nhập mã hoặc tải ảnh QR ở bên trái.' }}
+              locale={{ 
+                emptyText: (
+                  <div style={{ padding: '60px 0' }}>
+                    <InboxOutlined style={{ fontSize: 56, color: '#e6e6e6', marginBottom: 16 }} />
+                    <p style={{ fontSize: 16, color: '#8c8c8c', margin: 0, fontWeight: 500 }}>Chưa có thiết bị nào trong hàng đợi</p>
+                    <p style={{ fontSize: 14, color: '#bfbfbf', marginTop: 8 }}>Vui lòng nhập mã thủ công, tải ảnh QR hoặc dùng Mobile App để bắt đầu.</p>
+                  </div>
+                ) 
+              }}
             />
 
             {pendingItems.length > 0 && (
