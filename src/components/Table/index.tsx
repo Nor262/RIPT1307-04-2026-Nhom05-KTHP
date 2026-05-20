@@ -641,7 +641,7 @@ const TableBase = (props: TableBaseProps) => {
 							footer={false}
 							bodyStyle={{ padding: 0 }}
 							visible={visibleForm}
-							destroyOnClose={destroyModal || false}
+							destroyOnHidden={destroyModal || false}
 						>
 							<Form title={title ?? ''} {...props.formProps} />
 							<CloseOutlined
@@ -658,7 +658,7 @@ const TableBase = (props: TableBaseProps) => {
 							footer={false}
 							bodyStyle={{ padding: 0 }}
 							visible={visibleForm}
-							destroyOnClose={destroyModal || false}
+							destroyOnHidden={destroyModal || false}
 						>
 							<Form title={title ?? ''} {...props.formProps} />
 						</Modal>

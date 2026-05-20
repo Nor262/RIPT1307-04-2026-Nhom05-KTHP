@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Tag, Space, Typography, Card, Statistic, Row, Col, Tooltip } from 'antd';
+import { Button, message, Space, Card, Statistic, Row, Col, Tooltip } from 'antd';
 import type { FormInstance } from 'antd';
 import { PlusOutlined, CheckCircleOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
@@ -240,8 +240,15 @@ const MaintenanceList: React.FC = () => {
             return true;
           });
           
+          // Local pagination
+          const current = params.current || 1;
+          const pageSize = params.pageSize || 10;
+          const startIndex = (current - 1) * pageSize;
+          const endIndex = startIndex + pageSize;
+          const paginatedData = filteredList.slice(startIndex, endIndex);
+
           return {
-            data: filteredList,
+            data: paginatedData,
             success: true,
             total: filteredList.length,
           };
@@ -253,7 +260,7 @@ const MaintenanceList: React.FC = () => {
         title="Tạo bản ghi bảo trì mới"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
-        modalProps={{ destroyOnClose: true }}
+        modalProps={{ destroyOnHidden: true }}
         onFinish={async (value) => {
           await createMaintenance(value);
           message.success('Đã tạo bản ghi bảo trì. Trạng thái thiết bị đã chuyển sang [Bảo trì]');

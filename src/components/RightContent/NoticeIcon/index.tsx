@@ -82,7 +82,7 @@ const NoticeIconView = () => {
 			<Modal
 				width={800}
 				bodyStyle={{ padding: 0 }}
-				destroyOnClose
+				destroyOnHidden
 				onCancel={() => setVisibleDetail(false)}
 				visible={visibleDetail}
 				okButtonProps={{ hidden: true }}

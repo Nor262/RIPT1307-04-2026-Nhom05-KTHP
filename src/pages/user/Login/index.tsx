@@ -212,7 +212,7 @@ const Login: React.FC = () => {
               setForgotPassword('');
             }}
             footer={null}
-            destroyOnClose
+            destroyOnHidden
             centered
             width={400}
             bodyStyle={{ padding: '20px 20px 12px 20px' }}

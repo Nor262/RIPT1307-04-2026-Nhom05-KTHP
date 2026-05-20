@@ -299,7 +299,7 @@ const ThongBaoPage = (props: { notiType: NotificationType }) => {
 				cancelText='Đóng'
 				visible={visible}
 				onCancel={() => setVisible(false)}
-				destroyOnClose
+				destroyOnHidden
 			>
 				<ViewThongBao record={record} />
 			</Modal>
@@ -311,7 +311,7 @@ const ThongBaoPage = (props: { notiType: NotificationType }) => {
 				cancelText='Đóng'
 				visible={visibleNguoiNhan}
 				onCancel={() => setVisibleNguoiNhan(false)}
-				destroyOnClose
+				destroyOnHidden
 			>
 				<TableReceiverThongBao record={record} />
 			</Modal>

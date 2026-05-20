@@ -297,8 +297,15 @@ const EquipmentList: React.FC = () => {
             return true;
           });
 
+          // Local pagination
+          const current = params.current || 1;
+          const pageSize = params.pageSize || 10;
+          const startIndex = (current - 1) * pageSize;
+          const endIndex = startIndex + pageSize;
+          const paginatedData = filteredList.slice(startIndex, endIndex);
+
           return {
-            data: filteredList,
+            data: paginatedData,
             success: true,
             total: filteredList.length,
           };
@@ -312,7 +319,7 @@ const EquipmentList: React.FC = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         initialValues={currentRow ? { ...currentRow, category_id: currentRow.category?.id } : undefined}
-        modalProps={{ destroyOnClose: true }}
+        modalProps={{ destroyOnHidden: true }}
         onFinish={async (value) => {
           if (currentRow) {
             await updateEquipment(currentRow.id, value);

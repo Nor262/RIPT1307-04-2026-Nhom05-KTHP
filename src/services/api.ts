@@ -128,6 +128,10 @@ export async function rateTransaction(id: number, data: { rating: number; feedba
   return axios.patch(`/transactions/${id}/rate`, data);
 }
 
+export async function remindTransaction(id: number) {
+  return axios.post(`/transactions/${id}/remind`);
+}
+
 
 // ==================== Analytics ====================
 export async function getDashboardStats() {

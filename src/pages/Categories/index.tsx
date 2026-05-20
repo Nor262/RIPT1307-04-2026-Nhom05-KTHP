@@ -153,8 +153,15 @@ const CategoryManagement: React.FC = () => {
             return true;
           });
 
+          // Local pagination
+          const current = params.current || 1;
+          const pageSize = params.pageSize || 10;
+          const startIndex = (current - 1) * pageSize;
+          const endIndex = startIndex + pageSize;
+          const paginatedData = filteredList.slice(startIndex, endIndex);
+
           return {
-            data: filteredList,
+            data: paginatedData,
             success: true,
             total: filteredList.length,
           };
@@ -167,7 +174,7 @@ const CategoryManagement: React.FC = () => {
         visible={modalVisible}
         onVisibleChange={setModalVisible}
         initialValues={currentRow}
-        modalProps={{ destroyOnClose: true }}
+        modalProps={{ destroyOnHidden: true }}
         onFinish={async (values) => {
           if (currentRow) {
             await updateCategory(currentRow.id, values);

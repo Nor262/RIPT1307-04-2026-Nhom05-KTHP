@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Tag, Space, Tooltip } from 'antd';
+import { Button, message, Popconfirm, Space, Tooltip } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -111,7 +111,7 @@ const SupplierList: React.FC = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         initialValues={currentRow}
-        modalProps={{ destroyOnClose: true }}
+        modalProps={{ destroyOnHidden: true }}
         onFinish={async (value) => {
           if (currentRow) {
             await updateSupplier(currentRow.id, value);

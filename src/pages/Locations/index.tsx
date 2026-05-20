@@ -105,7 +105,7 @@ const LocationList: React.FC = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         initialValues={currentRow ? { ...currentRow, manager_id: currentRow.manager?.id } : undefined}
-        modalProps={{ destroyOnClose: true }}
+        modalProps={{ destroyOnHidden: true }}
         onFinish={async (value) => {
           if (currentRow) {
             await updateLocation(currentRow.id, value);

@@ -73,7 +73,7 @@ const ModalExport = (props: ModalExportProps) => {
 			onCancel={onCancelModal}
 			footer={null}
 			width={800}
-			destroyOnClose
+			destroyOnHidden
 			maskClosable={maskCloseableForm || false}
 		>
 			{!!exportFields.length ? (

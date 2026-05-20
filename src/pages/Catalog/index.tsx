@@ -95,7 +95,8 @@ const Catalog: React.FC = () => {
       if (!selectedItem) return [];
       try {
         const res = await findByEquipment(selectedItem.id);
-        return res.data || [];
+        const data = res.data?.data;
+        return Array.isArray(data) ? data : data?.items || data?.result || res.data || [];
       } catch {
         return [];
       }
@@ -109,8 +110,8 @@ const Catalog: React.FC = () => {
   // Filter list locally
   const filteredList = equipmentList.filter((item: EquipmentItem) => {
     const matchSearch =
-      item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.serial_number.toLowerCase().includes(searchText.toLowerCase());
+      item.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.serial_number?.toLowerCase().includes(searchText.toLowerCase());
     const matchCategory =
       selectedCategory === 'all' || item.category?.name === selectedCategory;
     const matchStatus = selectedStatus === 'all' || item.status === selectedStatus;
@@ -330,7 +331,7 @@ const Catalog: React.FC = () => {
           ),
         ]}
         centered
-        destroyOnClose
+        destroyOnHidden
       >
         {selectedItem && (
           <Row gutter={[24, 24]} style={{ marginTop: 16 }}>
@@ -455,7 +456,7 @@ const Catalog: React.FC = () => {
         okText="Gửi yêu cầu"
         cancelText="Hủy"
         centered
-        destroyOnClose
+        destroyOnHidden
       >
         {selectedItem && (
           <Form form={form} layout="vertical" onFinish={handleBookingSubmit} style={{ marginTop: 16 }}>

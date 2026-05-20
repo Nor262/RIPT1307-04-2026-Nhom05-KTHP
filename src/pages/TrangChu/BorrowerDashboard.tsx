@@ -506,7 +506,7 @@ const BorrowerDashboard: React.FC = () => {
         okText="Xác nhận nhận đồ"
         cancelText="Hủy"
         centered
-        destroyOnClose
+        destroyOnHidden
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleCheckoutSubmit} style={{ marginTop: 16 }}>
@@ -551,7 +551,7 @@ const BorrowerDashboard: React.FC = () => {
         okText="Xác nhận trả đồ"
         cancelText="Hủy"
         centered
-        destroyOnClose
+        destroyOnHidden
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleCheckinSubmit} style={{ marginTop: 16 }}>
@@ -600,7 +600,7 @@ const BorrowerDashboard: React.FC = () => {
         okText="Gia hạn ngay"
         cancelText="Hủy"
         centered
-        destroyOnClose
+        destroyOnHidden
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleExtendSubmit} style={{ marginTop: 16 }}>
@@ -643,7 +643,7 @@ const BorrowerDashboard: React.FC = () => {
         okText="Gửi đánh giá"
         cancelText="Hủy"
         centered
-        destroyOnClose
+        destroyOnHidden
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleRateSubmit} style={{ marginTop: 16 }}>

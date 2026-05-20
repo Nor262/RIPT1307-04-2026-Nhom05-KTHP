@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Tag, Modal, Space, Switch, Popconfirm, Tooltip } from 'antd';
+import { Button, message, Space, Popconfirm, Tooltip } from 'antd';
 import type { FormInstance } from 'antd';
 import { PlusOutlined, EditOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
@@ -258,8 +258,15 @@ const UserManagement: React.FC = () => {
             return true;
           });
 
+          // Local pagination
+          const current = params.current || 1;
+          const pageSize = params.pageSize || 10;
+          const startIndex = (current - 1) * pageSize;
+          const endIndex = startIndex + pageSize;
+          const paginatedData = filteredList.slice(startIndex, endIndex);
+
           return {
-            data: filteredList,
+            data: paginatedData,
             success: true,
             total: filteredList.length,
           };
@@ -272,7 +279,7 @@ const UserManagement: React.FC = () => {
         visible={modalVisible}
         onVisibleChange={setModalVisible}
         initialValues={currentRow}
-        modalProps={{ destroyOnClose: true }}
+        modalProps={{ destroyOnHidden: true }}
         onFinish={async (values) => {
           if (currentRow) {
             await updateUser(currentRow.id, values);

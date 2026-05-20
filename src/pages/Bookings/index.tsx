@@ -1,16 +1,17 @@
 import React, { useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Tag, Modal, Space, Input, Typography, Descriptions, Timeline, Badge, Tooltip } from 'antd';
+import { Button, message, Tag, Modal, Space, Input, Typography, Descriptions, Badge, Tooltip } from 'antd';
 import type { FormInstance } from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   EyeOutlined,
   ExclamationCircleOutlined,
+  BellOutlined,
 } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { getTransactions, reviewTransaction } from '@/services/api';
+import { getTransactions, reviewTransaction, remindTransaction } from '@/services/api';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -22,7 +23,7 @@ type TransactionItem = {
   approver?: { id: number; full_name: string };
   storekeeper?: { id: number; full_name: string };
   type: string;
-  status: 'pending' | 'approved' | 'rejected' | 'completed' | 'overdue' | 'checked_out';
+  status: 'pending' | 'approved' | 'rejected' | 'completed' | 'overdue' | 'checked_out' | 'active';
   request_date: string;
   approval_date?: string;
   due_date: string;
@@ -79,6 +80,19 @@ const BookingApproval: React.FC = () => {
     actionRef.current?.reload();
   };
 
+  const handleSendReminder = async (record: TransactionItem) => {
+    try {
+      const res = await remindTransaction(record.id);
+      if (res.data?.status === 'success' || res.data?.message) {
+        message.success('Đã gửi thông báo nhắc nhở hoàn trả thiết bị thành công!');
+      } else {
+        message.error('Gửi nhắc nhở thất bại.');
+      }
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Có lỗi xảy ra khi gửi nhắc nhở.');
+    }
+  };
+
   const columns: ProColumns<TransactionItem>[] = [
     {
       title: 'STT',
@@ -116,7 +130,8 @@ const BookingApproval: React.FC = () => {
         Object.entries(statusMap).map(([k, v]) => [k, { text: v.text }])
       ),
       render: (_, record) => {
-        const s = statusMap[record.status] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
+        const statusKey = record.status === 'active' ? 'checked_out' : record.status;
+        const s = statusMap[statusKey] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
         return (
           <span style={{ 
             padding: '4px 12px', 
@@ -174,6 +189,16 @@ const BookingApproval: React.FC = () => {
                   <Button type="text" danger shape="circle" icon={<CloseCircleOutlined />} onClick={() => { setCurrentRow(record); setRejectReason(''); setRejectVisible(true); }} style={{ background: '#fef2f2' }} />
                 </Tooltip>
               </>
+            )}
+            {['active', 'overdue', 'checked_out'].includes(record.status) && (
+              <Button 
+                size="small"
+                icon={<BellOutlined />} 
+                onClick={() => handleSendReminder(record)} 
+                style={{ borderColor: '#d97706', color: '#d97706', background: '#fffbeb', fontSize: 12 }} 
+              >
+                Nhắc nhở
+              </Button>
             )}
           </Space>
         );
@@ -243,20 +268,35 @@ const BookingApproval: React.FC = () => {
           const list = data?.items || data?.result || data || [];
 
           const filteredList = list.filter((item: TransactionItem) => {
-            // Extract search terms safely from all possible naming conventions
-            const searchEquip = 
-              typeof params.equipment === 'string' ? params.equipment :
-              (params.equipment as any)?.name || 
-              (params as any)['equipment.name'] || 
-              (params as any)['equipment,name'] ||
-              '';
+            const getSearchVal = (obj: any, path: string[], legacyKeys: string[]) => {
+              if (!obj) return '';
+              let val = obj;
+              for (const part of path) {
+                if (val && typeof val === 'object') {
+                  val = val[part];
+                } else {
+                  val = undefined;
+                  break;
+                }
+              }
+              if (typeof val === 'string') return val;
+              
+              for (const key of legacyKeys) {
+                if (typeof obj[key] === 'string') return obj[key];
+              }
+              
+              for (const key of Object.keys(obj)) {
+                if (key.toLowerCase().includes(path[0].toLowerCase()) && 
+                    key.toLowerCase().includes(path[path.length - 1].toLowerCase()) &&
+                    typeof obj[key] === 'string') {
+                  return obj[key];
+                }
+              }
+              return '';
+            };
 
-            const searchBorrower = 
-              typeof params.borrower === 'string' ? params.borrower :
-              (params.borrower as any)?.full_name || 
-              (params as any)['borrower.full_name'] || 
-              (params as any)['borrower,full_name'] ||
-              '';
+            const searchEquip = getSearchVal(params, ['equipment', 'name'], ['equipment.name', 'equipment,name', 'equipment_name', 'equipment']);
+            const searchBorrower = getSearchVal(params, ['borrower', 'full_name'], ['borrower.full_name', 'borrower,full_name', 'borrower_full_name', 'borrower']);
 
             if (searchEquip) {
               const itemEquipName = item.equipment?.name?.toLowerCase();
@@ -274,15 +314,25 @@ const BookingApproval: React.FC = () => {
 
             // Status filter logic (use activeTab first, fallback to form field status)
             const statusFilter = activeTab !== 'all' ? activeTab : params.status;
-            if (statusFilter && statusFilter !== 'all' && item.status !== statusFilter) {
-              return false;
+            if (statusFilter && statusFilter !== 'all') {
+              const mappedStatus = statusFilter === 'checked_out' ? 'active' : statusFilter;
+              if (item.status !== mappedStatus && item.status !== statusFilter) {
+                return false;
+              }
             }
 
             return true;
           });
 
+          // Local pagination
+          const current = params.current || 1;
+          const pageSize = params.pageSize || 10;
+          const startIndex = (current - 1) * pageSize;
+          const endIndex = startIndex + pageSize;
+          const paginatedData = filteredList.slice(startIndex, endIndex);
+
           return {
-            data: filteredList,
+            data: paginatedData,
             success: true,
             total: filteredList.length,
           };
@@ -332,7 +382,9 @@ const BookingApproval: React.FC = () => {
             <Descriptions.Item label="Serial Number">{currentRow.equipment?.serial_number}</Descriptions.Item>
             <Descriptions.Item label="Người mượn">{currentRow.borrower?.full_name} ({currentRow.borrower?.email})</Descriptions.Item>
             <Descriptions.Item label="Trạng thái">
-              <Tag color={statusMap[currentRow.status]?.color}>{statusMap[currentRow.status]?.text}</Tag>
+              <Tag color={statusMap[currentRow.status === 'active' ? 'checked_out' : currentRow.status]?.color}>
+                {statusMap[currentRow.status === 'active' ? 'checked_out' : currentRow.status]?.text || currentRow.status}
+              </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Ngày gửi đơn">{new Date(currentRow.request_date).toLocaleString('vi-VN')}</Descriptions.Item>
             <Descriptions.Item label="Hạn trả">{new Date(currentRow.due_date).toLocaleString('vi-VN')}</Descriptions.Item>
