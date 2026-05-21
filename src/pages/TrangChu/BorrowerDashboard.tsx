@@ -38,7 +38,7 @@ import {
   checkinTransaction,
 } from '@/services/api';
 import { useAuthStore } from '@/stores/useAuthStore';
-import dayjs from 'dayjs';
+import dayjs, { locale } from 'dayjs';
 
 const { Text, Title } = Typography;
 
@@ -65,6 +65,7 @@ const extractArray = (res: any): any[] => {
 };
 
 const BorrowerDashboard: React.FC = () => {
+
   const user = useAuthStore((state) => state.user);
   const [form] = Form.useForm();
 
@@ -92,8 +93,8 @@ const BorrowerDashboard: React.FC = () => {
       }
     },
     {
-      pollingInterval: 10000,
-      pollingWhenHidden: false,
+      // pollingInterval: 10000,
+      // pollingWhenHidden: false,
     }
   );
 
@@ -270,7 +271,11 @@ const BorrowerDashboard: React.FC = () => {
         <Col xs={12} sm={6}>
           <Card
             bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
-            style={{ borderRadius: 12, borderLeft: `4px solid #faad14` }}
+            style={{
+              borderRadius: 12, borderLeft: `4px solid #faad14`, backgroundImage: "url('./background_card2.svg')",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right center',
+            }}
           >
             <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#faad1415', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#faad14' }}>
               <ClockCircleOutlined />
@@ -284,7 +289,11 @@ const BorrowerDashboard: React.FC = () => {
         <Col xs={12} sm={6}>
           <Card
             bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
-            style={{ borderRadius: 12, borderLeft: `4px solid #c00c0c` }}
+            style={{
+              borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card1.svg')",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right center',
+            }}
           >
             <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#c00c0c15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#c00c0c' }}>
               <SwapOutlined />
@@ -298,7 +307,11 @@ const BorrowerDashboard: React.FC = () => {
         <Col xs={12} sm={6}>
           <Card
             bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
-            style={{ borderRadius: 12, borderLeft: `4px solid #c00c0c` }}
+            style={{
+              borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card3.svg')",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right center',
+            }}
           >
             <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#ff4d4f15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#c00c0c' }}>
               <ExclamationCircleOutlined />
@@ -312,7 +325,11 @@ const BorrowerDashboard: React.FC = () => {
         <Col xs={12} sm={6}>
           <Card
             bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
-            style={{ borderRadius: 12, borderLeft: `4px solid #52c41a` }}
+            style={{
+              borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card4.svg')",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right center',
+            }}
           >
             <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#52c41a15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#52c41a' }}>
               <CheckCircleOutlined />
