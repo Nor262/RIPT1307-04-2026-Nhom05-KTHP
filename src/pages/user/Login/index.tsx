@@ -113,16 +113,20 @@ const Login: React.FC = () => {
 
       if (response?.data?.status === 'success' && response?.data?.data) {
         const { user, access_token } = response.data.data;
-
-        // THÊM: Đồng bộ thông tin user và token vào Zustand Store của hệ thống
         loginAction({
           user,
           accessToken: access_token,
           refreshToken: access_token
         });
 
+
+        await setInitialState((prev: any) => ({
+          ...prev,
+          currentUser: user,
+        }));
+
         message.success('Đăng nhập bằng Google thành công!');
-        history.replace('/dashboard');
+        window.location.href = '/dashboard';
       }
     } catch (error) {
       setSubmitting(false);
