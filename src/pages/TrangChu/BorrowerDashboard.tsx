@@ -37,7 +37,7 @@ import {
   checkinTransaction,
 } from '@/services/api';
 import { useAuthStore } from '@/stores/useAuthStore';
-import dayjs from 'dayjs';
+import dayjs, { locale } from 'dayjs';
 
 const { Text, Title } = Typography;
 
@@ -51,6 +51,7 @@ const statusConfig: Record<string, { text: string; color: string; icon: React.Re
 };
 
 const BorrowerDashboard: React.FC = () => {
+
   const user = useAuthStore((state) => state.user);
   const [form] = Form.useForm();
 
