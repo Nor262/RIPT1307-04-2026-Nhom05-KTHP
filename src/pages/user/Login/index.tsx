@@ -187,7 +187,7 @@ const Login: React.FC = () => {
                 </Button>
 
                 {/*Khối hiển thị nút bấm đăng nhập Google chuẩn của thư viện */}
-                <div style={{ marginTop: "12px", display: 'flex', justifyContent: 'center' }}>
+                <div style={{ marginTop: "12px" }}>
                   <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={() => message.error('Đăng nhập bằng Google thất bại')}
