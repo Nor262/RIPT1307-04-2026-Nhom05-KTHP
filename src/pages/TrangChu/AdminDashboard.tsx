@@ -98,40 +98,42 @@ const AdminDashboard: React.FC = () => {
       {/* Stats Cards */}
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard style={{ border: '0.2px solid #c2bebe', background: '#e6f7ff', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Tổng thiết bị"
               value={summary.total_equipment || 0}
               prefix={<DatabaseOutlined style={{ color: '#1890ff' }} />}
+              valueStyle={{ color: '#0050b3' }}
             />
           </ProCard>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard style={{ border: '0.2px solid #c2bebe', background: '#e3fce7', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Sẵn sàng"
               value={summary.available_count || 0}
               prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />}
-              valueStyle={{ color: '#52c41a' }}
+              valueStyle={{ color: '#389e0d' }}
             />
           </ProCard>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard style={{ border: '0.2px solid #c2bebe', background: '#efc9c973', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Đang cho mượn"
               value={summary.in_use_count || 0}
               prefix={<SwapOutlined style={{ color: '#1890ff' }} />}
+              valueStyle={{ color: '#0050b3' }}
             />
           </ProCard>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <ProCard ghost style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
+          <ProCard style={{ border: '0.2px solid #c2bebe', background: '#fffbe6', borderRadius: 8, padding: '20px' }}>
             <Statistic
               title="Đang bảo trì"
               value={summary.maintenance_count || 0}
               prefix={<WarningOutlined style={{ color: '#faad14' }} />}
-              valueStyle={{ color: '#faad14' }}
+              valueStyle={{ color: '#d46b08' }}
             />
           </ProCard>
         </Col>
@@ -140,7 +142,14 @@ const AdminDashboard: React.FC = () => {
       {/* Alert Cards */}
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} sm={12}>
-          <Card size="small" style={{ borderLeft: '4px solid #faad14' }}>
+          <Card size="small" style={{
+            backgroundImage: "url('./background_card1.svg')",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right center',
+            borderLeft: '4px solid #faad14',
+            borderRadius: '0 8px 8px 0',
+            padding: '20px'
+          }}>
             <Space>
               <ClockCircleOutlined style={{ fontSize: 24, color: '#faad14' }} />
               <div>
@@ -153,7 +162,14 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12}>
-          <Card size="small" style={{ borderLeft: '4px solid #c00c0c' }}>
+          <Card size="small" style={{
+            backgroundImage: "url('./background_card2.svg')",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right center',
+            borderLeft: '4px solid #faad14',
+            borderRadius: '0 8px 8px 0',
+            padding: '20px'
+          }}>
             <Space>
               <ExclamationCircleOutlined style={{ fontSize: 24, color: '#c00c0c' }} />
               <div>
@@ -165,12 +181,21 @@ const AdminDashboard: React.FC = () => {
             </Space>
           </Card>
         </Col>
-      </Row>
+      </Row >
 
       {/* Charts */}
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+      <Row Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={10}>
-          <Card title="Trạng thái thiết bị" bordered={false}>
+          <Card title="Trạng thái thiết bị" bordered={false}
+            style={{
+              backgroundImage: "url('./assignment_background.svg')",
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right center',
+              borderLeft: '4px solid #faad14',
+              borderRadius: '0 8px 8px 0',
+              padding: '20px'
+            }}
+          >
             <ReactApexChart options={pieOptions} series={pieSeries} type="pie" height={320} />
           </Card>
         </Col>
@@ -179,19 +204,21 @@ const AdminDashboard: React.FC = () => {
             <ReactApexChart options={barOptions} series={barSeries} type="bar" height={320} />
           </Card>
         </Col>
-      </Row>
+      </Row >
 
       {/* Monthly Trend */}
-      {charts.borrow_frequency_by_month?.length > 0 && (
-        <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-          <Col span={24}>
-            <Card title="Tần suất mượn theo tháng" bordered={false}>
-              <ReactApexChart options={lineOptions} series={lineSeries} type="line" height={300} />
-            </Card>
-          </Col>
-        </Row>
-      )}
-    </div>
+      {
+        charts.borrow_frequency_by_month?.length > 0 && (
+          <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+            <Col span={24}>
+              <Card title="Tần suất mượn theo tháng" bordered={false}>
+                <ReactApexChart options={lineOptions} series={lineSeries} type="line" height={300} />
+              </Card>
+            </Col>
+          </Row>
+        )
+      }
+    </div >
   );
 };
 
