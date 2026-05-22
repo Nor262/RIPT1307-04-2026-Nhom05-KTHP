@@ -60,7 +60,7 @@ const BookingApproval: React.FC = () => {
       okText: 'Phê duyệt',
       okType: 'primary',
       onOk: async () => {
-        await reviewTransaction(record.id, { action: 'approve' });
+        await reviewTransaction(record.id, { status: 'approved' });
         message.success('Đã phê duyệt yêu cầu mượn');
         actionRef.current?.reload();
       },
@@ -73,7 +73,7 @@ const BookingApproval: React.FC = () => {
       message.warning('Vui lòng nhập lý do từ chối');
       return;
     }
-    await reviewTransaction(currentRow.id, { action: 'reject', reason: rejectReason });
+    await reviewTransaction(currentRow.id, { status: 'rejected', notes: rejectReason });
     message.success('Đã từ chối yêu cầu');
     setRejectVisible(false);
     setRejectReason('');

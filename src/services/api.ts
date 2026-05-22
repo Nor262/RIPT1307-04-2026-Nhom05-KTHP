@@ -95,7 +95,7 @@ export async function createBorrowRequest(data: any) {
   return axios.post('/transactions/borrow', data);
 }
 
-export async function reviewTransaction(id: number, data: { action: string; reason?: string }) {
+export async function reviewTransaction(id: number, data: { status: string; notes?: string }) {
   return axios.put(`/transactions/${id}/review`, data);
 }
 
