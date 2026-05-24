@@ -175,3 +175,5 @@ export async function completeMaintenance(equipmentId: number) {
   return axios.put(`/maintenance/complete/${equipmentId}`);
 }
 
+
+//debug
