@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useRequest } from '@umijs/max';
+import React, { useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -34,11 +33,11 @@ import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
 
-
 type EquipmentItem = {
   id: number;
   name: string;
-  category?: { id: number; name: string };
+  category_id?: number;
+  category?: { id: number; name: string; description?: string }; 
   serial_number: string;
   status: 'available' | 'in_use' | 'broken' | 'maintenance';
   description?: string;
@@ -55,67 +54,105 @@ const statusConfig: Record<string, { text: string; color: string }> = {
 
 const Catalog: React.FC = () => {
   const [form] = Form.useForm();
+  
+  // States lưu trữ dữ liệu từ API
+  const [equipmentList, setEquipmentList] = useState<EquipmentItem[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // State quản lý bộ lọc
   const [searchText, setSearchText] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string | number>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
 
-  // Detail Modal State
+  // Modal States
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<EquipmentItem | null>(null);
-
-  // Booking Modal State
   const [bookingVisible, setBookingVisible] = useState<boolean>(false);
   const [submittingBooking, setSubmittingBooking] = useState<boolean>(false);
+  
+  // State quản lý lịch đặt thiết bị
+  const [schedule, setSchedule] = useState<any[]>([]);
+  const [loadingSchedule, setLoadingSchedule] = useState<boolean>(false);
 
-  // Fetch Categories
-  const { data: categories = [] } = useRequest(async () => {
+  // HÀM FETCH DATA 
+  const loadData = async () => {
+    setLoading(true);
     try {
-      const res = await getCategories();
-      const data = res.data?.data;
-      return Array.isArray(data) ? data : data?.items || data?.result || [];
-    } catch {
-      return [];
-    }
-  });
+      // Gọi API Categories
+      const resCat = await getCategories();
+      if (resCat?.data?.data && Array.isArray(resCat.data.data)) {
+        setCategories(resCat.data.data);
+      } else if (Array.isArray(resCat?.data)) {
+        setCategories(resCat.data);
+      }
 
-  // Fetch Equipment list
-  const { data: equipmentList = [], loading, refresh } = useRequest(async () => {
-    try {
-      const res = await getEquipment();
-      const data = res.data?.data;
-      return Array.isArray(data) ? data : data?.items || data?.result || [];
-    } catch {
-      return [];
+      // Gọi API Equipment
+      const resEquip = await getEquipment();
+      if (resEquip?.data?.data && Array.isArray(resEquip.data.data)) {
+        setEquipmentList(resEquip.data.data);
+      } else if (Array.isArray(resEquip?.data)) {
+        setEquipmentList(resEquip.data);
+      }
+    } catch (error) {
+      console.error('❌ Lỗi tải dữ liệu hệ thống:', error);
+      message.error('Không thể kết nối tới máy chủ dữ liệu.');
+    } finally {
+      setLoading(false);
     }
-  });
+  };
 
-  // Fetch Booking Schedule for selected equipment
-  const { data: schedule = [], loading: loadingSchedule } = useRequest(
-    async () => {
-      if (!selectedItem) return [];
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // Gọi API lấy lịch đặt khi nhấn xem chi tiết thiết bị
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      if (!selectedItem?.id) {
+        setSchedule([]);
+        return;
+      }
+      setLoadingSchedule(true);
       try {
         const res = await findByEquipment(selectedItem.id);
-        const data = res.data?.data;
-        return Array.isArray(data) ? data : data?.items || data?.result || res.data || [];
+        const data = res?.data?.data !== undefined ? res.data.data : res?.data;
+        setSchedule(Array.isArray(data) ? data : []);
       } catch {
-        return [];
+        setSchedule([]);
+      } finally {
+        setLoadingSchedule(false);
       }
-    },
-    {
-      ready: !!selectedItem,
-      refreshDeps: [selectedItem],
-    }
-  );
+    };
+    fetchSchedule();
+  }, [selectedItem?.id]);
 
-  // Filter list locally
+  // BỘ LỌC 
   const filteredList = equipmentList.filter((item: EquipmentItem) => {
-    const matchSearch =
-      item.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.serial_number?.toLowerCase().includes(searchText.toLowerCase());
-    const matchCategory =
-      selectedCategory === 'all' || item.category?.name === selectedCategory;
-    const matchStatus = selectedStatus === 'all' || item.status === selectedStatus;
-    return matchSearch && matchCategory && matchStatus;
+    if (!item) return false;
+
+    // Tìm kiếm theo từ khóa nhập vào
+    const searchLower = searchText ? searchText.trim().toLowerCase() : '';
+    if (searchLower) {
+      const nameMatch = item.name?.toLowerCase().includes(searchLower) || false;
+      const serialMatch = item.serial_number?.toLowerCase().includes(searchLower) || false;
+      const catNameMatch = item.category?.name?.toLowerCase().includes(searchLower) || false;
+      if (!nameMatch && !serialMatch && !catNameMatch) return false;
+    }
+
+    // Lọc theo danh mục chọn từ Select
+    if (selectedCategory && selectedCategory !== 'all' && selectedCategory !== '') {
+      if (Number(item.category_id) !== Number(selectedCategory)) return false;
+    }
+
+    // Lọc theo trạng thái thiết bị
+    if (selectedStatus && selectedStatus !== 'all' && selectedStatus !== '') {
+      const itemStatus = String(item.status || '').toLowerCase();
+      const selectedStat = String(selectedStatus).toLowerCase();
+      if (itemStatus !== selectedStat) return false;
+    }
+
+    return true;
   });
 
   const handleOpenDetail = (item: EquipmentItem) => {
@@ -142,7 +179,7 @@ const Catalog: React.FC = () => {
       setBookingVisible(false);
       setDetailVisible(false);
       form.resetFields();
-      refresh();
+      loadData(); 
     } catch (error: any) {
       message.error(
         error?.response?.data?.message || 'Có lỗi xảy ra khi đăng ký mượn thiết bị.'
@@ -165,11 +202,11 @@ const Catalog: React.FC = () => {
       </div>
 
       {/* Filter controls */}
-      <Card style={{ marginBottom: 24, borderRadius: 12 }} bodyStyle={{ padding: '16px 24px' }}>
+      <Card style={{ marginBottom: 24, borderRadius: 12 }} styles={{ body: { padding: '16px 24px' } }}>
         <Row gutter={[16, 16]} align="middle">
           <Col xs={24} md={10}>
             <Input
-              placeholder="Tìm theo tên thiết bị hoặc số Sê-ri..."
+              placeholder="Tìm theo tên thiết bị, số Sê-ri hoặc danh mục..."
               prefix={<SearchOutlined style={{ color: '#bfbfbf' }} />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -187,8 +224,8 @@ const Catalog: React.FC = () => {
               onChange={setSelectedCategory}
             >
               <Select.Option value="all">Tất cả danh mục</Select.Option>
-              {categories.map((c: any) => (
-                <Select.Option key={c.id} value={c.name}>
+              {Array.isArray(categories) && categories.map((c: any) => (
+                <Select.Option key={c.id} value={c.id}>
                   {c.name}
                 </Select.Option>
               ))}
@@ -220,7 +257,7 @@ const Catalog: React.FC = () => {
       ) : filteredList.length > 0 ? (
         <Row gutter={[20, 20]}>
           {filteredList.map((item: EquipmentItem) => {
-            const cfg = statusConfig[item.status] || { text: item.status, color: 'default' };
+            const cfg = statusConfig[item.status] || { text: item.status || 'Chưa rõ', color: 'default' };
             return (
               <Col xs={24} sm={12} md={8} lg={6} key={item.id}>
                 <Card
@@ -232,7 +269,7 @@ const Catalog: React.FC = () => {
                     display: 'flex',
                     flexDirection: 'column',
                   }}
-                  bodyStyle={{ padding: 16, flex: 1, display: 'flex', flexDirection: 'column' }}
+                  styles={{ body: { padding: 16, flex: 1, display: 'flex', flexDirection: 'column' } }}
                   cover={
                     <div
                       style={{
@@ -285,7 +322,9 @@ const Catalog: React.FC = () => {
                     >
                       {item.name}
                     </div>
-                    <div style={{ fontSize: 12, color: '#bfbfbf' }}>SN: {item.serial_number}</div>
+                    <div style={{ fontSize: 12, color: '#bfbfbf' }}>
+                      {item.serial_number ? `SN: ${item.serial_number}` : ''}
+                    </div>
                   </div>
                   <Button
                     type="primary"
@@ -317,7 +356,7 @@ const Catalog: React.FC = () => {
             Chi tiết & Đặt lịch Thiết bị
           </span>
         }
-        visible={detailVisible}
+        open={detailVisible}
         onCancel={() => setDetailVisible(false)}
         width={720}
         footer={[
@@ -331,7 +370,7 @@ const Catalog: React.FC = () => {
           ),
         ]}
         centered
-        destroyOnHidden
+        destroyOnClose
       >
         {selectedItem && (
           <Row gutter={[24, 24]} style={{ marginTop: 16 }}>
@@ -360,10 +399,10 @@ const Catalog: React.FC = () => {
                 <Descriptions.Item label="Danh mục">
                   {selectedItem.category?.name || '—'}
                 </Descriptions.Item>
-                <Descriptions.Item label="Số Sê-ri">{selectedItem.serial_number}</Descriptions.Item>
+                <Descriptions.Item label="Số Sê-ri">{selectedItem.serial_number || '—'}</Descriptions.Item>
                 <Descriptions.Item label="Trạng thái">
-                  <Tag color={statusConfig[selectedItem.status]?.color}>
-                    {statusConfig[selectedItem.status]?.text}
+                  <Tag color={statusConfig[selectedItem.status]?.color || 'default'}>
+                    {statusConfig[selectedItem.status]?.text || selectedItem.status}
                   </Tag>
                 </Descriptions.Item>
               </Descriptions>
@@ -375,7 +414,7 @@ const Catalog: React.FC = () => {
               )}
             </Col>
 
-            {/* Calendar / Timeline view (BOK-01) */}
+            {/* Calendar / Timeline view */}
             <Col xs={24} md={12}>
               <div style={{ marginBottom: 12 }}>
                 <span style={{ fontWeight: 600, fontSize: 14 }}>
@@ -384,7 +423,7 @@ const Catalog: React.FC = () => {
                 </span>
               </div>
               <Card
-                bodyStyle={{ padding: 16, maxHeight: 300, overflowY: 'auto' }}
+                styles={{ body: { padding: 16, maxHeight: 300, overflowY: 'auto' } }}
                 style={{ borderRadius: 8, background: '#fafafa' }}
               >
                 {loadingSchedule ? (
@@ -420,10 +459,8 @@ const Catalog: React.FC = () => {
                                 : 'Chờ duyệt'}
                             </strong>
                             <div style={{ color: '#595959', marginTop: 2 }}>
-                              {dayjs(s.request_date).format('DD/MM')} -{' '}
-                              {s.actual_check_in
-                                ? dayjs(s.actual_check_in).format('DD/MM')
-                                : 'Chưa trả'}
+                              {dayjs(s.start_date).format('DD/MM HH:mm')} -{' '}
+                              {dayjs(s.due_date).format('DD/MM HH:mm')}
                             </div>
                           </div>
                         </Timeline.Item>
@@ -449,14 +486,14 @@ const Catalog: React.FC = () => {
             Đăng ký mượn thiết bị
           </span>
         }
-        visible={bookingVisible}
+        open={bookingVisible}
         onCancel={() => setBookingVisible(false)}
         onOk={() => form.submit()}
         confirmLoading={submittingBooking}
         okText="Gửi yêu cầu"
         cancelText="Hủy"
         centered
-        destroyOnHidden
+        destroyOnClose
       >
         {selectedItem && (
           <Form form={form} layout="vertical" onFinish={handleBookingSubmit} style={{ marginTop: 16 }}>
