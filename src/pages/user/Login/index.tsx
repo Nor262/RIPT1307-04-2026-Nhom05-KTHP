@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, message, Modal } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Link, useModel, history } from '@umijs/max';
+import { Link, useModel } from '@umijs/max';
 import { useAuthStore } from '@/stores/useAuthStore';
 import axios from '@/utils/axios';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
@@ -17,6 +17,20 @@ const Login: React.FC = () => {
 
   // Forgot password modal state
   const [forgotPasswordVisible, setForgotPasswordVisible] = useState(false);
+
+  // Google Sign-In button responsive width
+  const [btnWidth, setBtnWidth] = useState(376);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // 440px container width minus padding (32px * 2) = 376px on desktop
+      // 380px container width minus padding (24px * 2) = 332px on mobile
+      setBtnWidth(window.innerWidth > 480 ? 376 : 332);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [forgotStep, setForgotStep] = useState<1 | 2>(1);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotOtp, setForgotOtp] = useState('');
@@ -191,11 +205,14 @@ const Login: React.FC = () => {
                 </Button>
 
                 {/*Khối hiển thị nút bấm đăng nhập Google chuẩn của thư viện */}
-                <div style={{ marginTop: "12px" }}>
+                <div style={{ marginTop: "12px", display: 'flex', justifyContent: 'center', width: '100%' }}>
                   <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={() => message.error('Đăng nhập bằng Google thất bại')}
-                    useOneTap
+                    size="large"
+                    shape="rectangular"
+                    width={btnWidth}
+                    containerProps={{ style: { display: 'flex', justifyContent: 'center', width: '100%' } }}
                   />
                 </div>
 
