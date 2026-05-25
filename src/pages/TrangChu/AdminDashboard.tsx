@@ -20,15 +20,12 @@ const AdminDashboard: React.FC = () => {
     async () => {
       try {
         const res = await getDashboardStats();
-        return res.data.data;
+        // console.log("data:", res);
+        return res.data || res; 
       } catch (err) {
+        console.error("Lỗi khi fetch stats:", err);
         return {
-          summary: {
-            total_equipment: 0,
-            available_count: 0,
-            in_use_count: 0,
-            maintenance_count: 0,
-          },
+          summary: { total_equipment: 0, available_count: 0, in_use_count: 0, maintenance_count: 0 },
           alerts: { pending_requests: 0, overdue_transactions: 0 },
           charts: { top_borrowed: [], borrow_frequency_by_month: [] },
         };
@@ -184,7 +181,7 @@ const AdminDashboard: React.FC = () => {
       </Row >
 
       {/* Charts */}
-      <Row Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={10}>
           <Card title="Trạng thái thiết bị" bordered={false}
             style={{
