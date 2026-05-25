@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useRequest } from '@umijs/max';
+import React, { useState, useEffect } from 'react';
 import {
   Row,
   Col,
@@ -38,7 +37,7 @@ import {
   checkinTransaction,
 } from '@/services/api';
 import { useAuthStore } from '@/stores/useAuthStore';
-import dayjs, { locale } from 'dayjs';
+import dayjs from 'dayjs';
 
 const { Text, Title } = Typography;
 
@@ -51,23 +50,13 @@ const statusConfig: Record<string, { text: string; color: string; icon: React.Re
   overdue: { text: 'Quá hạn', color: '#c00c0c', icon: <ExclamationCircleOutlined /> },
 };
 
-/** Safely extract array from API response */
-const extractArray = (res: any): any[] => {
-  try {
-    const data = res?.data?.data;
-    if (Array.isArray(data)) return data;
-    if (data?.items && Array.isArray(data.items)) return data.items;
-    if (data?.result && Array.isArray(data.result)) return data.result;
-    return [];
-  } catch {
-    return [];
-  }
-};
-
 const BorrowerDashboard: React.FC = () => {
-
   const user = useAuthStore((state) => state.user);
   const [form] = Form.useForm();
+
+  // States quản lý dữ liệu hệ thống
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Active item to operate on
   const [activeTx, setActiveTx] = useState<any | null>(null);
@@ -82,21 +71,36 @@ const BorrowerDashboard: React.FC = () => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [submittingAction, setSubmittingAction] = useState<boolean>(false);
 
-  // Fetch Transactions with 10s Auto-polling
-  const { data: transactions = [], loading, refresh } = useRequest(
-    async () => {
-      try {
-        const res = await getMyTransactions();
-        return extractArray(res);
-      } catch {
-        return [];
+  // HÀM FETCH DATA CHUẨN AXIOS - AN TOÀN TUYỆT ĐỐI
+  const loadTransactions = async () => {
+    setLoading(true);
+    try {
+      const res = await getMyTransactions();
+      // Bóc tách đa tầng linh hoạt giống file Catalog
+      const data = res?.data?.data !== undefined ? res.data.data : res?.data;
+      
+      if (Array.isArray(data)) {
+        setTransactions(data);
+      } else if (data?.items && Array.isArray(data.items)) {
+        setTransactions(data.items);
+      } else if (data?.result && Array.isArray(data.result)) {
+        setTransactions(data.result);
+      } else {
+        setTransactions([]);
       }
-    },
-    {
-      // pollingInterval: 10000,
-      // pollingWhenHidden: false,
+    } catch (error) {
+      console.error('❌ Lỗi load đơn mượn cá nhân:', error);
+      message.error('Không thể tải danh sách đơn mượn thiết bị.');
+      setTransactions([]);
+    } finally {
+      setLoading(false);
     }
-  );
+  };
+
+  // Tự động chạy khi khởi tạo trang Dashboard
+  useEffect(() => {
+    loadTransactions();
+  }, []);
 
   const allItems = Array.isArray(transactions) ? transactions : [];
   const pendingCount = allItems.filter((t: any) => t.status === 'pending').length;
@@ -154,7 +158,7 @@ const BorrowerDashboard: React.FC = () => {
       await checkoutTransaction(activeTx.id, formData);
       message.success('Nhận thiết bị (Check-out) thành công!');
       setCheckoutVisible(false);
-      refresh();
+      loadTransactions();
     } catch (error: any) {
       message.error(error?.response?.data?.message || 'Check-out thất bại. Vui lòng thử lại.');
     } finally {
@@ -176,7 +180,7 @@ const BorrowerDashboard: React.FC = () => {
       await checkinTransaction(activeTx.id, formData);
       message.success('Trả thiết bị & báo cáo tình trạng thành công!');
       setCheckinVisible(false);
-      refresh();
+      loadTransactions();
     } catch (error: any) {
       message.error(error?.response?.data?.message || 'Trả thiết bị thất bại. Vui lòng thử lại.');
     } finally {
@@ -193,7 +197,7 @@ const BorrowerDashboard: React.FC = () => {
       });
       message.success('Gia hạn thành công!');
       setExtendVisible(false);
-      refresh();
+      loadTransactions();
     } catch (error: any) {
       message.error(error?.response?.data?.message || 'Gia hạn thất bại.');
     } finally {
@@ -211,7 +215,7 @@ const BorrowerDashboard: React.FC = () => {
       });
       message.success('Cảm ơn bạn đã đánh giá thiết bị!');
       setRateVisible(false);
-      refresh();
+      loadTransactions();
     } catch (error: any) {
       message.error(error?.response?.data?.message || 'Đánh giá thất bại.');
     } finally {
@@ -243,7 +247,7 @@ const BorrowerDashboard: React.FC = () => {
           border: 'none',
           borderRadius: 14,
         }}
-        bodyStyle={{ padding: '24px 28px' }}
+        styles={{ body: { padding: '24px 28px' } }}
       >
         <Row align="middle" gutter={16}>
           <Col>
@@ -270,7 +274,7 @@ const BorrowerDashboard: React.FC = () => {
       <Row gutter={[12, 12]} style={{ marginBottom: 20 }}>
         <Col xs={12} sm={6}>
           <Card
-            bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
+            styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
               borderRadius: 12, borderLeft: `4px solid #faad14`, backgroundImage: "url('./background_card2.svg')",
               backgroundRepeat: 'no-repeat',
@@ -288,7 +292,7 @@ const BorrowerDashboard: React.FC = () => {
         </Col>
         <Col xs={12} sm={6}>
           <Card
-            bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
+            styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
               borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card1.svg')",
               backgroundRepeat: 'no-repeat',
@@ -306,7 +310,7 @@ const BorrowerDashboard: React.FC = () => {
         </Col>
         <Col xs={12} sm={6}>
           <Card
-            bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
+            styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
               borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card3.svg')",
               backgroundRepeat: 'no-repeat',
@@ -324,7 +328,7 @@ const BorrowerDashboard: React.FC = () => {
         </Col>
         <Col xs={12} sm={6}>
           <Card
-            bodyStyle={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}
+            styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
               borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card4.svg')",
               backgroundRepeat: 'no-repeat',
@@ -354,7 +358,7 @@ const BorrowerDashboard: React.FC = () => {
           </span>
         }
         style={{ borderRadius: 12, marginBottom: 16 }}
-        bodyStyle={{ padding: currentItems.length > 0 ? '0' : '24px' }}
+        styles={{ body: { padding: currentItems.length > 0 ? '0' : '24px' } }}
       >
         {currentItems.length > 0 ? (
           <List
@@ -459,7 +463,7 @@ const BorrowerDashboard: React.FC = () => {
             </span>
           }
           style={{ borderRadius: 12 }}
-          bodyStyle={{ padding: 0 }}
+          styles={{ body: { padding: 0 } }}
         >
           <List
             dataSource={recentItems}
@@ -516,14 +520,14 @@ const BorrowerDashboard: React.FC = () => {
             Xác nhận Nhận thiết bị (Check-out)
           </span>
         }
-        visible={checkoutVisible}
+        open={checkoutVisible}
         onCancel={() => setCheckoutVisible(false)}
         onOk={() => form.submit()}
         confirmLoading={submittingAction}
         okText="Xác nhận nhận đồ"
         cancelText="Hủy"
         centered
-        destroyOnHidden
+        destroyOnClose
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleCheckoutSubmit} style={{ marginTop: 16 }}>
@@ -561,14 +565,14 @@ const BorrowerDashboard: React.FC = () => {
             Trả đồ & Báo cáo sự cố (BOK-06)
           </span>
         }
-        visible={checkinVisible}
+        open={checkinVisible}
         onCancel={() => setCheckinVisible(false)}
         onOk={() => form.submit()}
         confirmLoading={submittingAction}
         okText="Xác nhận trả đồ"
         cancelText="Hủy"
         centered
-        destroyOnHidden
+        destroyOnClose
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleCheckinSubmit} style={{ marginTop: 16 }}>
@@ -610,14 +614,14 @@ const BorrowerDashboard: React.FC = () => {
             Gia hạn mượn thiết bị (BOK-07)
           </span>
         }
-        visible={extendVisible}
+        open={extendVisible}
         onCancel={() => setExtendVisible(false)}
         onOk={() => form.submit()}
         confirmLoading={submittingAction}
         okText="Gia hạn ngay"
         cancelText="Hủy"
         centered
-        destroyOnHidden
+        destroyOnClose
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleExtendSubmit} style={{ marginTop: 16 }}>
@@ -653,14 +657,14 @@ const BorrowerDashboard: React.FC = () => {
             Đánh giá thiết bị đã dùng (BOK-08)
           </span>
         }
-        visible={rateVisible}
+        open={rateVisible}
         onCancel={() => setRateVisible(false)}
         onOk={() => form.submit()}
         confirmLoading={submittingAction}
         okText="Gửi đánh giá"
         cancelText="Hủy"
         centered
-        destroyOnHidden
+        destroyOnClose
       >
         {activeTx && (
           <Form form={form} layout="vertical" onFinish={handleRateSubmit} style={{ marginTop: 16 }}>
