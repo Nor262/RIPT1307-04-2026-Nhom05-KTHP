@@ -2,7 +2,7 @@ import axios from 'axios';
 import { message, notification } from 'antd';
 import { useAuthStore } from '@/stores/useAuthStore';
 
-axios.defaults.baseURL = 'http://localhost:3000/v1';
+axios.defaults.baseURL = (typeof APP_CONFIG_IP_ROOT !== 'undefined' && APP_CONFIG_IP_ROOT) ? APP_CONFIG_IP_ROOT : 'http://localhost:3000/v1';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 let isRefreshing = false;
