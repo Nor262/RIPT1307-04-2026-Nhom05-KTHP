@@ -110,3 +110,4 @@ NoticeIcon.defaultProps = {
 NoticeIcon.Tab = NoticeList;
 
 export default NoticeIcon;
+

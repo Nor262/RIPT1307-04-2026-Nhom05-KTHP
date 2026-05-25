@@ -78,7 +78,7 @@ const BorrowerDashboard: React.FC = () => {
       const res = await getMyTransactions();
       // Bóc tách đa tầng linh hoạt giống file Catalog
       const data = res?.data?.data !== undefined ? res.data.data : res?.data;
-      
+
       if (Array.isArray(data)) {
         setTransactions(data);
       } else if (data?.items && Array.isArray(data.items)) {

@@ -21,22 +21,22 @@ const NoticeIconView = () => {
 	} = useModel('thongbao.noticeicon');
 	const [visibleDetail, setVisibleDetail] = useState<boolean>(false);
 	const [visiblePopup, setVisiblePopup] = useState<boolean>(false);
-	const [isShaking, setIsShaking] = useState<boolean>(false);	
+	const [isShaking, setIsShaking] = useState<boolean>(false);
 
 	useEffect(() => {
 		getThongBaoModel();
 	}, [page, limit]);
 
 	useEffect(() => {
-    // rung lần đầu tiên khi component được mount
-    // rung khi số lượng tin nhắn mới (unread) tăng lên
-    if (unread >= 0) {
-        setIsShaking(true);
-        const timer = setTimeout(() => setIsShaking(false), 600);
-        return () => clearTimeout(timer);
-    }
-    
-}, [unread]); 
+		// rung lần đầu tiên khi component được mount
+		// rung khi số lượng tin nhắn mới (unread) tăng lên
+		if (unread >= 0) {
+			setIsShaking(true);
+			const timer = setTimeout(() => setIsShaking(false), 600);
+			return () => clearTimeout(timer);
+		}
+
+	}, [unread]);
 
 	const clearReadState = async () => {
 		readNotificationModel('ALL');
@@ -74,7 +74,7 @@ const NoticeIconView = () => {
 						title='Thông báo'
 						emptyText='Bạn đã xem tất cả thông báo'
 						showClear={!!unread}
-						showViewMore={danhSach.length < total}
+						showViewMore={(danhSach?.length || 0) < total}
 					/>
 				</NoticeIcon>
 			</div>
@@ -82,7 +82,7 @@ const NoticeIconView = () => {
 			<Modal
 				width={800}
 				bodyStyle={{ padding: 0 }}
-				destroyOnHidden
+				destroyOnClose
 				onCancel={() => setVisibleDetail(false)}
 				visible={visibleDetail}
 				okButtonProps={{ hidden: true }}
