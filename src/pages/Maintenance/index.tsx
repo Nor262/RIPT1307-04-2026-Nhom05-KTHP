@@ -7,22 +7,25 @@ import { ProTable } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProFormSelect, ProFormDatePicker, ProFormTextArea, ProFormDigit } from '@ant-design/pro-components';
 import { getMaintenance, createMaintenance, getEquipment, completeMaintenance } from '@/services/api';
 
-
-
 export type MaintenanceItem = {
   id: number;
-  equipment?: { id: number; name: string; serial_number: string };
+  equipment_id: number;
   maintenance_date: string;
   performed_by: string;
   details: string;
-  cost: number;
-  next_maintenance_date?: string;
-  status: 'pending' | 'completed';
+  cost: number | string;
+  next_maintenance_date?: string | null;
+  equipment?: {
+    id: number;
+    name: string;
+    serial_number: string;
+    status: 'available' | 'maintenance' | string;
+  };
 };
 
 const statusMap: Record<string, { text: string; color: string; bg: string; border: string }> = {
-  pending: { text: 'Đang bảo trì', color: '#d97706', bg: '#fef3c7', border: '#fde68a' },
-  completed: { text: 'Đã hoàn thành', color: '#059669', bg: '#d1fae5', border: '#a7f3d0' },
+  maintenance: { text: 'Đang bảo trì', color: '#d97706', bg: '#fef3c7', border: '#fde68a' },
+  available: { text: 'Đã hoàn thành', color: '#059669', bg: '#d1fae5', border: '#a7f3d0' },
 };
 
 const MaintenanceList: React.FC = () => {
@@ -30,7 +33,7 @@ const MaintenanceList: React.FC = () => {
   const formRef = useRef<FormInstance>();
   const searchTimeoutRef = useRef<any>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [pendingCount, setPendingCount] = useState<number>(0);
+  const [maintenanceCount, setmaintenanceCount] = useState<number>(0);
   const [totalCost, setTotalCost] = useState<number>(0);
 
   const columns: ProColumns<MaintenanceItem>[] = [
@@ -71,15 +74,16 @@ const MaintenanceList: React.FC = () => {
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
+      dataIndex: ['equipment', 'status'],
       render: (_, record) => {
-        const s = statusMap[record.status] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
+        const currentStatus = record.equipment?.status || '';
+        const s = statusMap[currentStatus] || { text: currentStatus, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
         return (
-          <span style={{ 
-            padding: '4px 12px', 
-            borderRadius: '999px', 
-            backgroundColor: s.bg, 
-            color: s.color, 
+          <span style={{
+            padding: '4px 12px',
+            borderRadius: '999px',
+            backgroundColor: s.bg,
+            color: s.color,
             border: `1px solid ${s.border}`,
             fontWeight: 500,
             fontSize: '13px',
@@ -97,7 +101,7 @@ const MaintenanceList: React.FC = () => {
       width: 150,
       render: (_, record) => (
         <Space size="middle">
-          {record.status === 'pending' && (
+          {record.equipment?.status === 'maintenance' && (
             <Tooltip title="Hoàn tất bảo trì">
               <Button
                 type="text"
@@ -124,21 +128,21 @@ const MaintenanceList: React.FC = () => {
       <Row gutter={24} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12}>
           <Card bordered={false} className="stat-card-premium" bodyStyle={{ padding: '24px' }}>
-            <Statistic 
-              title="Đang bảo trì" 
-              value={pendingCount} 
-              prefix={<div style={{ padding: '12px', borderRadius: '12px', background: '#fffbeb', display: 'flex', marginRight: 12 }}><ToolOutlined style={{ color: '#f59e0b' }} /></div>} 
-              valueStyle={{ color: '#f59e0b' }} 
+            <Statistic
+              title="Đang bảo trì"
+              value={maintenanceCount}
+              prefix={<div style={{ padding: '12px', borderRadius: '12px', background: '#fffbeb', display: 'flex', marginRight: 12 }}><ToolOutlined style={{ color: '#f59e0b' }} /></div>}
+              valueStyle={{ color: '#f59e0b' }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={12}>
           <Card bordered={false} className="stat-card-premium" bodyStyle={{ padding: '24px' }}>
-            <Statistic 
-              title="Tổng chi phí" 
-              value={totalCost} 
-              suffix="VNĐ" 
-              prefix={<div style={{ padding: '12px', borderRadius: '12px', background: '#eff6ff', display: 'flex', marginRight: 12 }}><HistoryOutlined style={{ color: '#3b82f6' }} /></div>} 
+            <Statistic
+              title="Tổng chi phí"
+              value={totalCost}
+              suffix="VNĐ"
+              prefix={<div style={{ padding: '12px', borderRadius: '12px', background: '#eff6ff', display: 'flex', marginRight: 12 }}><HistoryOutlined style={{ color: '#3b82f6' }} /></div>}
             />
           </Card>
         </Col>
@@ -172,7 +176,7 @@ const MaintenanceList: React.FC = () => {
               </span>
             );
           },
-          optionRender: (searchConfig, formProps, dom) => [
+          optionRender: (searchConfig, formProps) => [
             <Button
               key="reset"
               onClick={() => {
@@ -207,29 +211,27 @@ const MaintenanceList: React.FC = () => {
           const res = await getMaintenance(params);
           const data = res.data?.data || [];
           const list = Array.isArray(data) ? data : (data?.items || data?.result || []);
-          
-          // Tính thống kê từ toàn bộ dữ liệu
-          const pending = list.filter((item: MaintenanceItem) => item.status === 'pending').length;
+          const maintenance = list.filter((item: MaintenanceItem) => item.equipment?.status === 'maintenance').length;
           const cost = list.reduce((sum: number, item: MaintenanceItem) => sum + Number(item.cost || 0), 0);
-          setPendingCount(pending);
+          setmaintenanceCount(maintenance);
           setTotalCost(cost);
-          
+
           const filteredList = list.filter((item: MaintenanceItem) => {
             if (params.performed_by && !item.performed_by?.toLowerCase().includes(params.performed_by.toLowerCase())) {
               return false;
             }
-            if (params.status && item.status !== params.status) {
+            if (params.status && item.equipment?.status !== params.status) {
               return false;
             }
             if (params.maintenance_date && item.maintenance_date && !item.maintenance_date.startsWith(params.maintenance_date)) {
               return false;
             }
-            const searchEquip = 
+            const searchEquip =
               typeof params.equipment === 'string' ? params.equipment :
-              (params.equipment as any)?.name || 
-              (params as any)['equipment.name'] || 
-              (params as any)['equipment,name'] ||
-              '';
+                (params.equipment as any)?.name ||
+                (params as any)['equipment.name'] ||
+                (params as any)['equipment,name'] ||
+                '';
 
             if (searchEquip) {
               const itemEquipName = item.equipment?.name?.toLowerCase();
@@ -239,8 +241,7 @@ const MaintenanceList: React.FC = () => {
             }
             return true;
           });
-          
-          // Local pagination
+
           const current = params.current || 1;
           const pageSize = params.pageSize || 10;
           const startIndex = (current - 1) * pageSize;
