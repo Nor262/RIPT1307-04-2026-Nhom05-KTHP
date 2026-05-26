@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   Card,
   Input,
@@ -15,6 +14,8 @@ import {
   Radio,
   Divider,
   ConfigProvider,
+  Form,
+  Modal,
 } from 'antd';
 import {
   SearchOutlined,
@@ -26,11 +27,14 @@ import {
   SwapOutlined,
   LoginOutlined,
   LogoutOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
 import { useRequest } from '@umijs/max';
 import { useTransactionStore } from '@/stores/useTransactionStore';
-import { verifyItem, syncTransactionStatus } from '@/services/api';
+import { verifyItem, syncTransactionStatus, checkoutTransaction, checkinTransaction } from '@/services/api';
 import jsQR from 'jsqr';
+
+import React, { useState } from 'react';
 
 const { Title, Text } = Typography;
 const { Dragger } = Upload;
@@ -39,6 +43,51 @@ const HandleTransaction: React.FC = () => {
   const { pendingItems, addPendingItem, removePendingItem, updateItemStatus, clearAll, isSyncing, setSyncing } = useTransactionStore();
   const [searchValue, setSearchValue] = useState('');
   const [mode, setMode] = useState<'checkout' | 'checkin'>('checkout');
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [form] = Form.useForm();
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  const uploadProps = {
+    onRemove: () => setFileList([]),
+    beforeUpload: (file: any) => {
+      setFileList([file]);
+      return false; // prevent auto upload
+    },
+    fileList,
+  };
+
+  const handleDirectSubmit = async (values: any) => {
+    if (!selectedItem) return;
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append('qr_code_data', selectedItem.serial_number);
+      formData.append('condition', values.condition || '');
+      
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        formData.append('image', fileList[0].originFileObj);
+      }
+
+      if (mode === 'checkout') {
+        await checkoutTransaction(selectedItem.transaction_id, formData);
+        message.success('Bàn giao thiết bị thành công!');
+      } else {
+        await checkinTransaction(selectedItem.transaction_id, formData);
+        message.success('Thu hồi thiết bị thành công!');
+      }
+
+      updateItemStatus(selectedItem.serial_number, 'success');
+      setModalVisible(false);
+    } catch (err: any) {
+      message.error(err?.response?.data?.message || 'Xử lý thất bại. Vui lòng thử lại.');
+      updateItemStatus(selectedItem.serial_number, 'failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   // Polling check status từ Backend cho Mobile-to-Web Sync
   useRequest(
@@ -143,13 +192,31 @@ const HandleTransaction: React.FC = () => {
       title: 'Hành động',
       key: 'action',
       render: (_: any, record: any) => (
-        <Button
-          type="text"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={() => removePendingItem(record.serial_number)}
-          disabled={record.status === 'success'}
-        />
+        <Space>
+          {record.status !== 'success' && (
+            <Button
+              type="primary"
+              size="small"
+              danger={mode === 'checkout'}
+              style={{ backgroundColor: mode === 'checkin' ? '#52c41a' : undefined, border: 'none' }}
+              onClick={() => {
+                setSelectedItem(record);
+                setFileList([]);
+                form.resetFields();
+                setModalVisible(true);
+              }}
+            >
+              {mode === 'checkout' ? 'Bàn giao' : 'Thu hồi'}
+            </Button>
+          )}
+          <Button
+            type="text"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => removePendingItem(record.serial_number)}
+            disabled={record.status === 'success'}
+          />
+        </Space>
       ),
     },
   ];
@@ -367,6 +434,59 @@ const HandleTransaction: React.FC = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Modal Xử lý trực tiếp từ Web */}
+      <Modal
+        title={
+          <span style={{ fontWeight: 600 }}>
+            {mode === 'checkout' ? (
+              <><LogoutOutlined style={{ color: '#c00c0c', marginRight: 8 }} /> Bàn giao thiết bị trực tiếp (Check-out)</>
+            ) : (
+              <><LoginOutlined style={{ color: '#52c41a', marginRight: 8 }} /> Thu hồi thiết bị trực tiếp (Check-in)</>
+            )}
+          </span>
+        }
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onOk={() => form.submit()}
+        confirmLoading={submitting}
+        okText={mode === 'checkout' ? 'Xác nhận bàn giao' : 'Xác nhận thu hồi'}
+        cancelText="Hủy"
+        centered
+        destroyOnClose
+      >
+        {selectedItem && (
+          <Form form={form} layout="vertical" onFinish={handleDirectSubmit} style={{ marginTop: 16 }}>
+            <Form.Item label="Thiết bị">
+              <Input value={selectedItem.name} disabled />
+            </Form.Item>
+            <Form.Item label="Số Serial">
+              <Input value={selectedItem.serial_number} disabled />
+            </Form.Item>
+            <Form.Item label="Mã Giao dịch">
+              <Input value={`#${selectedItem.transaction_id}`} disabled />
+            </Form.Item>
+            <Form.Item 
+              name="condition" 
+              label="Mô tả tình trạng hiện tại"
+              rules={mode === 'checkin' ? [{ required: true, message: 'Vui lòng mô tả tình trạng lúc thu hồi!' }] : []}
+            >
+              <Input.TextArea 
+                placeholder={mode === 'checkout' ? 'Nhập ghi chú tình trạng ban đầu (tùy chọn)...' : 'Nhập ghi chú tình trạng lúc thu hồi (bắt buộc)...'} 
+                rows={3} 
+              />
+            </Form.Item>
+            <Form.Item label="Tải lên ảnh minh chứng">
+              <Upload {...uploadProps} maxCount={1} listType="picture">
+                <Button icon={<UploadOutlined />}>Chọn file ảnh chụp</Button>
+              </Upload>
+              <span style={{ fontSize: 11, color: '#8c8c8c', display: 'block', marginTop: 4 }}>
+                Đính kèm hình ảnh hiện trạng thực tế của thiết bị.
+              </span>
+            </Form.Item>
+          </Form>
+        )}
+      </Modal>
     </div>
   );
 };

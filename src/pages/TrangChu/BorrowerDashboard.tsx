@@ -24,10 +24,10 @@ import {
   SwapOutlined,
   UserOutlined,
   CalendarOutlined,
-  WarningOutlined,
   StarOutlined,
-  UploadOutlined,
   ScanOutlined,
+  UploadOutlined,
+  WarningOutlined,
 } from '@ant-design/icons';
 import {
   getMyTransactions,
@@ -70,6 +70,15 @@ const BorrowerDashboard: React.FC = () => {
   // Image Upload State
   const [fileList, setFileList] = useState<any[]>([]);
   const [submittingAction, setSubmittingAction] = useState<boolean>(false);
+
+  const uploadProps = {
+    onRemove: () => setFileList([]),
+    beforeUpload: (file: any) => {
+      setFileList([file]);
+      return false; // prevent auto upload
+    },
+    fileList,
+  };
 
   // HÀM FETCH DATA CHUẨN AXIOS - AN TOÀN TUYỆT ĐỐI
   const loadTransactions = async () => {
@@ -117,20 +126,6 @@ const BorrowerDashboard: React.FC = () => {
   const recentItems = allItems
     .filter((t: any) => ['completed', 'rejected'].includes(t.status))
     .slice(0, 5);
-
-  const handleOpenCheckout = (tx: any) => {
-    setActiveTx(tx);
-    setFileList([]);
-    form.resetFields();
-    setCheckoutVisible(true);
-  };
-
-  const handleOpenCheckin = (tx: any) => {
-    setActiveTx(tx);
-    setFileList([]);
-    form.resetFields();
-    setCheckinVisible(true);
-  };
 
   const handleOpenExtend = (tx: any) => {
     setActiveTx(tx);
@@ -223,14 +218,7 @@ const BorrowerDashboard: React.FC = () => {
     }
   };
 
-  const uploadProps = {
-    onRemove: () => setFileList([]),
-    beforeUpload: (file: any) => {
-      setFileList([file]);
-      return false; // prevent auto upload
-    },
-    fileList,
-  };
+
 
   if (loading && allItems.length === 0) return (
     <div style={{ textAlign: 'center', padding: 80 }}>
@@ -373,34 +361,6 @@ const BorrowerDashboard: React.FC = () => {
                 <List.Item
                   style={{ padding: '14px 20px' }}
                   actions={[
-                    // Quick Action: Check-out physically
-                    item.status === 'approved' && (
-                      <Button
-                        key="checkout"
-                        type="primary"
-                        danger
-                        size="small"
-                        icon={<ScanOutlined />}
-                        style={{ borderRadius: 6 }}
-                        onClick={() => handleOpenCheckout(item)}
-                      >
-                        Nhận thiết bị
-                      </Button>
-                    ),
-                    // Quick Action: Return / Report Damage
-                    (item.status === 'checked_out' || item.status === 'overdue') && (
-                      <Button
-                        key="checkin"
-                        type="primary"
-                        ghost
-                        size="small"
-                        icon={<WarningOutlined />}
-                        style={{ borderRadius: 6 }}
-                        onClick={() => handleOpenCheckin(item)}
-                      >
-                        Trả đồ / Báo lỗi
-                      </Button>
-                    ),
                     // Quick Action: Extend
                     (item.status === 'checked_out' || item.status === 'overdue') && !item.is_extended && (
                       <Button
