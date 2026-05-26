@@ -86,6 +86,14 @@ export async function resolveMaintenanceEquipment(id: number) {
   return axios.patch(`/equipment/${id}/resolve-maintenance`);
 }
 
+export async function uploadEquipmentImage(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return axios.post('/equipment/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+}
+
 // ==================== Transactions ====================
 export async function getTransactions(params?: any) {
   return axios.get('/transactions', { params });

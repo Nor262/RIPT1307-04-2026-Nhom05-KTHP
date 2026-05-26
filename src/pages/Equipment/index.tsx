@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image, Upload, Tooltip } from 'antd';
+import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image, Upload, Tooltip, Input, Form } from 'antd';
 import type { FormInstance } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined, UploadOutlined, DownloadOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
@@ -8,7 +8,7 @@ import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea, ProFormDatePick
 import {
   getEquipment, createEquipment, updateEquipment, deleteEquipment,
   getCategories, getSuppliers, getLocations, importBulkEquipment, exportEquipmentExcel,
-  resolveMaintenanceEquipment
+  resolveMaintenanceEquipment, uploadEquipmentImage
 } from '@/services/api';
 
 export type EquipmentItem = {
@@ -33,6 +33,63 @@ const statusMap: Record<string, { text: string; color: string; bg: string; borde
   in_use: { text: 'Đang mượn', color: '#2563eb', bg: '#dbeafe', border: '#bfdbfe' },
   broken: { text: 'Hỏng', color: '#dc2626', bg: '#fee2e2', border: '#fecaca' },
   maintenance: { text: 'Bảo trì', color: '#d97706', bg: '#fef3c7', border: '#fde68a' },
+};
+
+const EquipmentImageUpload = ({ value, onChange }: { value?: string; onChange?: (val: string) => void }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleUpload = async (file: any) => {
+    setLoading(true);
+    try {
+      const res = await uploadEquipmentImage(file);
+      if (res.data?.url) {
+        onChange?.(res.data.url);
+        message.success('Tải ảnh lên thành công');
+      } else {
+        message.error('Tải ảnh thất bại: URL không tồn tại');
+      }
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Tải ảnh thất bại');
+    } finally {
+      setLoading(false);
+    }
+    return false; // prevent default upload behavior
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <Input 
+          placeholder="Nhập link ảnh hoặc bấm nút Tải ảnh lên" 
+          value={value} 
+          onChange={(e) => onChange?.(e.target.value)} 
+          style={{ flex: 1 }}
+        />
+        <Upload
+          accept="image/*"
+          showUploadList={false}
+          beforeUpload={handleUpload}
+          disabled={loading}
+        >
+          <Button icon={<UploadOutlined />} loading={loading} disabled={loading}>
+            Tải ảnh lên
+          </Button>
+        </Upload>
+        {value && (
+          <Button 
+            danger 
+            icon={<DeleteOutlined />} 
+            onClick={() => onChange?.('')}
+          />
+        )}
+      </div>
+      {value && (
+        <div style={{ marginTop: '8px' }}>
+          <img src={value} alt="Preview" style={{ maxWidth: '100%', maxHeight: '150px', borderRadius: '4px', border: '1px solid #d9d9d9', padding: '4px' }} />
+        </div>
+      )}
+    </div>
+  );
 };
 
 const EquipmentList: React.FC = () => {
@@ -372,7 +429,9 @@ const EquipmentList: React.FC = () => {
           }}
         />
         <ProFormTextArea name="current_condition" label="Tình trạng hiện tại" />
-        <ProFormText name="image_url" label="Link ảnh thiết bị" />
+        <Form.Item name="image_url" label="Ảnh thiết bị">
+          <EquipmentImageUpload />
+        </Form.Item>
         <ProFormDatePicker name="purchase_date" label="Ngày mua" />
         <ProFormTextArea
           name="specifications"
