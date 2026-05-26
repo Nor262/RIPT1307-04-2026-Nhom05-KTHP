@@ -42,8 +42,9 @@ const EquipmentImageUpload = ({ value, onChange }: { value?: string; onChange?: 
     setLoading(true);
     try {
       const res = await uploadEquipmentImage(file);
-      if (res.data?.url) {
-        onChange?.(res.data.url);
+      const url = res.data?.data?.url || res.data?.url;
+      if (url) {
+        onChange?.(url);
         message.success('Tải ảnh lên thành công');
       } else {
         message.error('Tải ảnh thất bại: URL không tồn tại');
