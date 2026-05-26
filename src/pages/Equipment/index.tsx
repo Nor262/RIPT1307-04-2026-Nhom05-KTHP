@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image, Upload, Tooltip, Input, Form } from 'antd';
+import { Button, message, Popconfirm, Tag, Modal, Space, Descriptions, Image, Upload, Tooltip, Input, Form, QRCode } from 'antd';
 import type { FormInstance } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, QrcodeOutlined, EyeOutlined, UploadOutlined, DownloadOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
@@ -456,11 +456,10 @@ const EquipmentList: React.FC = () => {
         ]}
         centered
       >
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <img
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`}
-            alt="QR Code"
-            style={{ width: '250px', height: '250px' }}
+        <div style={{ textAlign: 'center', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <QRCode
+            value={qrData || ''}
+            size={250}
           />
           <div style={{ marginTop: '16px', fontWeight: 'bold', fontSize: '18px' }}>{qrData}</div>
           <div style={{ color: '#888', marginTop: 8 }}>Dán nhãn QR lên thiết bị thực tế để phục vụ quét mã</div>
@@ -519,10 +518,9 @@ const EquipmentList: React.FC = () => {
               </Descriptions.Item>
             )}
             <Descriptions.Item label="Mã QR">
-              <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(currentRow.qr_code_data || currentRow.serial_number)}`}
-                alt="QR"
-                style={{ width: 100 }}
+              <QRCode
+                value={currentRow.qr_code_data || currentRow.serial_number || ''}
+                size={100}
               />
             </Descriptions.Item>
           </Descriptions>
