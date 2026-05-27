@@ -36,6 +36,21 @@ const Login: React.FC = () => {
   const [forgotOtp, setForgotOtp] = useState('');
   const [forgotPassword, setForgotPassword] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotCountdown, setForgotCountdown] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (forgotCountdown > 0) {
+      interval = setInterval(() => {
+        setForgotCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [forgotCountdown]);
+
+  const startForgotTimer = () => {
+    setForgotCountdown(60);
+  };
 
   const handleSendOtp = async () => {
     if (!forgotEmail.trim()) {
@@ -47,8 +62,23 @@ const Login: React.FC = () => {
       await axios.post('/auth/forgot-password', { email: forgotEmail });
       message.success('Mã OTP đã được gửi về Email của bạn!');
       setForgotStep(2);
+      startForgotTimer();
     } catch (err) {
       // Axios interceptor handles showing standard error notification
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (forgotCountdown > 0) return;
+    setForgotLoading(true);
+    try {
+      await axios.post('/auth/forgot-password', { email: forgotEmail });
+      message.success('Mã OTP mới đã được gửi về Email của bạn!');
+      startForgotTimer();
+    } catch (err) {
+      // Handled by Axios interceptor
     } finally {
       setForgotLoading(false);
     }
@@ -310,11 +340,25 @@ const Login: React.FC = () => {
                   >
                     Đặt lại mật khẩu
                   </Button>
+                  <div style={{ textAlign: 'center', marginTop: 12 }}>
+                    <span style={{ fontSize: '13.5px', color: '#64748b' }}>Chưa nhận được mã? </span>
+                    <Button
+                      type="link"
+                      disabled={forgotCountdown > 0}
+                      onClick={handleResendOtp}
+                      style={{ padding: 0, height: 'auto', fontSize: '13.5px', color: forgotCountdown > 0 ? '#94a3b8' : '#c00c0c', fontWeight: 600 }}
+                    >
+                      {forgotCountdown > 0 ? `Gửi lại mã (${forgotCountdown}s)` : 'Gửi lại mã'}
+                    </Button>
+                  </div>
                   <Button
                     type="link"
                     block
-                    onClick={() => setForgotStep(1)}
-                    style={{ fontSize: '13.5px', color: '#c00c0c', fontWeight: 600, marginTop: 4 }}
+                    onClick={() => {
+                      setForgotStep(1);
+                      setForgotCountdown(0);
+                    }}
+                    style={{ fontSize: '13.5px', color: '#64748b', fontWeight: 500, marginTop: 8 }}
                   >
                     Quay lại nhập Email
                   </Button>
