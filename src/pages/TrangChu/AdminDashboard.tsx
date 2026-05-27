@@ -1,6 +1,6 @@
 import React from 'react';
-import { useRequest } from '@umijs/max';
-import { Row, Col, Card, Statistic, Spin, Badge, Typography, Space } from 'antd';
+import { useRequest, history } from '@umijs/max';
+import { Row, Col, Card, Statistic, Spin, Badge, Typography, Space, Button } from 'antd';
 import {
   DatabaseOutlined,
   SwapOutlined,
@@ -8,6 +8,8 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   WarningOutlined,
+  TeamOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import ReactApexChart from 'react-apexcharts';
 import { getDashboardStats } from '@/services/api';
@@ -179,6 +181,88 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Col>
       </Row >
+
+      {/* Lối tắt quản trị */}
+      <Card title="Lối tắt quản trị" style={{ marginTop: 16, borderRadius: 8 }} bordered={false}>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12} md={6}>
+            <Button
+              type="default"
+              icon={<TeamOutlined style={{ color: '#1890ff' }} />}
+              onClick={() => history.push('/system/users')}
+              block
+              style={{
+                height: 50,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 14,
+                fontWeight: 600,
+                borderRadius: 8,
+              }}
+            >
+              Quản lý Người dùng
+            </Button>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Button
+              type="default"
+              icon={<SwapOutlined style={{ color: '#52c41a' }} />}
+              onClick={() => history.push('/booking/list')}
+              block
+              style={{
+                height: 50,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 14,
+                fontWeight: 600,
+                borderRadius: 8,
+              }}
+            >
+              Phê duyệt Mượn/Trả
+            </Button>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Button
+              type="default"
+              icon={<DatabaseOutlined style={{ color: '#faad14' }} />}
+              onClick={() => history.push('/asset/equipment')}
+              block
+              style={{
+                height: 50,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 14,
+                fontWeight: 600,
+                borderRadius: 8,
+              }}
+            >
+              Quản lý Thiết bị
+            </Button>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Button
+              type="default"
+              icon={<BarChartOutlined style={{ color: '#722ed1' }} />}
+              onClick={() => history.push('/reports/export')}
+              block
+              style={{
+                height: 50,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 14,
+                fontWeight: 600,
+                borderRadius: 8,
+              }}
+            >
+              Xuất Báo cáo
+            </Button>
+          </Col>
+        </Row>
+      </Card>
 
       {/* Charts */}
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
