@@ -14,7 +14,6 @@ import {
   DatePicker,
   Input,
   Rate,
-  Upload,
   message,
 } from 'antd';
 import {
@@ -25,16 +24,11 @@ import {
   UserOutlined,
   CalendarOutlined,
   StarOutlined,
-  ScanOutlined,
-  UploadOutlined,
-  WarningOutlined,
 } from '@ant-design/icons';
 import {
   getMyTransactions,
   extendBooking,
   rateTransaction,
-  checkoutTransaction,
-  checkinTransaction,
 } from '@/services/api';
 import { useAuthStore } from '@/stores/useAuthStore';
 import dayjs from 'dayjs';
@@ -62,23 +56,10 @@ const BorrowerDashboard: React.FC = () => {
   const [activeTx, setActiveTx] = useState<any | null>(null);
 
   // Modals visibility
-  const [checkoutVisible, setCheckoutVisible] = useState<boolean>(false);
-  const [checkinVisible, setCheckinVisible] = useState<boolean>(false);
   const [extendVisible, setExtendVisible] = useState<boolean>(false);
   const [rateVisible, setRateVisible] = useState<boolean>(false);
 
-  // Image Upload State
-  const [fileList, setFileList] = useState<any[]>([]);
   const [submittingAction, setSubmittingAction] = useState<boolean>(false);
-
-  const uploadProps = {
-    onRemove: () => setFileList([]),
-    beforeUpload: (file: any) => {
-      setFileList([file]);
-      return false; // prevent auto upload
-    },
-    fileList,
-  };
   // HÀM FETCH DATA CHUẨN AXIOS - AN TOÀN TUYỆT ĐỐI
   const loadTransactions = async () => {
     setLoading(true);
@@ -138,49 +119,7 @@ const BorrowerDashboard: React.FC = () => {
     setRateVisible(true);
   };
 
-  const handleCheckoutSubmit = async (values: any) => {
-    if (!activeTx) return;
-    setSubmittingAction(true);
-    try {
-      const formData = new FormData();
-      formData.append('qr_code_data', values.qr_code_data);
-      formData.append('condition', values.condition || '');
-      if (fileList.length > 0 && fileList[0].originFileObj) {
-        formData.append('image', fileList[0].originFileObj);
-      }
 
-      await checkoutTransaction(activeTx.id, formData);
-      message.success('Nhận thiết bị (Check-out) thành công!');
-      setCheckoutVisible(false);
-      loadTransactions();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Check-out thất bại. Vui lòng thử lại.');
-    } finally {
-      setSubmittingAction(false);
-    }
-  };
-
-  const handleCheckinSubmit = async (values: any) => {
-    if (!activeTx) return;
-    setSubmittingAction(true);
-    try {
-      const formData = new FormData();
-      formData.append('qr_code_data', values.qr_code_data);
-      formData.append('condition', values.condition || '');
-      if (fileList.length > 0 && fileList[0].originFileObj) {
-        formData.append('image', fileList[0].originFileObj);
-      }
-
-      await checkinTransaction(activeTx.id, formData);
-      message.success('Trả thiết bị & báo cáo tình trạng thành công!');
-      setCheckinVisible(false);
-      loadTransactions();
-    } catch (error: any) {
-      message.error(error?.response?.data?.message || 'Trả thiết bị thất bại. Vui lòng thử lại.');
-    } finally {
-      setSubmittingAction(false);
-    }
-  };
 
   const handleExtendSubmit = async (values: any) => {
     if (!activeTx) return;
@@ -471,99 +410,7 @@ const BorrowerDashboard: React.FC = () => {
         </Card>
       )}
 
-      {/* Check-out Modal */}
-      <Modal
-        title={
-          <span style={{ fontWeight: 600 }}>
-            <ScanOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
-            Xác nhận Nhận thiết bị (Check-out)
-          </span>
-        }
-        open={checkoutVisible}
-        onCancel={() => setCheckoutVisible(false)}
-        onOk={() => form.submit()}
-        confirmLoading={submittingAction}
-        okText="Xác nhận nhận đồ"
-        cancelText="Hủy"
-        centered
-        destroyOnClose
-      >
-        {activeTx && (
-          <Form form={form} layout="vertical" onFinish={handleCheckoutSubmit} style={{ marginTop: 16 }}>
-            <Form.Item label="Thiết bị bàn giao">
-              <Input value={activeTx.equipment?.name} disabled />
-            </Form.Item>
-            <Form.Item
-              name="qr_code_data"
-              label="Mã QR thiết bị / Số Sê-ri"
-              rules={[{ required: true, message: 'Vui lòng nhập hoặc quét mã thiết bị!' }]}
-              extra="Vui lòng nhập chính xác số Serial (ví dụ: MBP-2023-001) dán trên thiết bị để khớp bàn giao."
-            >
-              <Input placeholder="Nhập mã serial dán trên thiết bị..." prefix={<ScanOutlined />} />
-            </Form.Item>
-            <Form.Item name="condition" label="Ghi chú tình trạng ban đầu">
-              <Input.TextArea placeholder="Tình trạng lúc nhận thiết bị (tốt, có trầy xước nhẹ...)" rows={2} />
-            </Form.Item>
-            <Form.Item label="Tải lên ảnh trước khi nhận (BOK-06)">
-              <Upload {...uploadProps} maxCount={1} listType="picture">
-                <Button icon={<UploadOutlined />}>Chọn file ảnh chụp</Button>
-              </Upload>
-              <span style={{ fontSize: 11, color: '#8c8c8c', display: 'block', marginTop: 4 }}>
-                Chụp ảnh rõ nét hiện trạng của thiết bị trước khi bắt đầu sử dụng.
-              </span>
-            </Form.Item>
-          </Form>
-        )}
-      </Modal>
 
-      {/* Check-in / Damage report Modal */}
-      <Modal
-        title={
-          <span style={{ fontWeight: 600 }}>
-            <WarningOutlined style={{ color: '#faad14', marginRight: 8 }} />
-            Trả đồ & Báo cáo sự cố (BOK-06)
-          </span>
-        }
-        open={checkinVisible}
-        onCancel={() => setCheckinVisible(false)}
-        onOk={() => form.submit()}
-        confirmLoading={submittingAction}
-        okText="Xác nhận trả đồ"
-        cancelText="Hủy"
-        centered
-        destroyOnClose
-      >
-        {activeTx && (
-          <Form form={form} layout="vertical" onFinish={handleCheckinSubmit} style={{ marginTop: 16 }}>
-            <Form.Item label="Thiết bị trả">
-              <Input value={activeTx.equipment?.name} disabled />
-            </Form.Item>
-            <Form.Item
-              name="qr_code_data"
-              label="Mã QR thiết bị / Số Sê-ri"
-              rules={[{ required: true, message: 'Vui lòng nhập hoặc quét mã để trả!' }]}
-            >
-              <Input placeholder="Nhập mã serial để trả đồ..." prefix={<ScanOutlined />} />
-            </Form.Item>
-            <Form.Item
-              name="condition"
-              label="Mô tả tình trạng hiện tại"
-              rules={[{ required: true, message: 'Vui lòng mô tả tình trạng trả đồ!' }]}
-              extra="Nếu thiết bị có sự cố/lỗi, hãy viết mô tả chứa các từ khóa như 'hỏng', 'lỗi', 'broken'..."
-            >
-              <Input.TextArea placeholder="Nhập mô tả tình trạng thực tế của thiết bị lúc trả..." rows={2} />
-            </Form.Item>
-            <Form.Item label="Tải lên ảnh sau khi dùng (BOK-06)">
-              <Upload {...uploadProps} maxCount={1} listType="picture">
-                <Button icon={<UploadOutlined />}>Chọn file ảnh chụp</Button>
-              </Upload>
-              <span style={{ fontSize: 11, color: '#8c8c8c', display: 'block', marginTop: 4 }}>
-                Chụp ảnh rõ nét hiện trạng của thiết bị lúc trả để lưu vết sự cố (nếu có).
-              </span>
-            </Form.Item>
-          </Form>
-        )}
-      </Modal>
 
       {/* Extend Modal */}
       <Modal
