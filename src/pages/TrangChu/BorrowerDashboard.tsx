@@ -15,6 +15,7 @@ import {
   Input,
   Rate,
   message,
+  Descriptions,
 } from 'antd';
 import {
   ClockCircleOutlined,
@@ -58,6 +59,8 @@ const BorrowerDashboard: React.FC = () => {
   // Modals visibility
   const [extendVisible, setExtendVisible] = useState<boolean>(false);
   const [rateVisible, setRateVisible] = useState<boolean>(false);
+  const [detailVisible, setDetailVisible] = useState<boolean>(false);
+  const [selectedTx, setSelectedTx] = useState<any | null>(null);
 
   const [submittingAction, setSubmittingAction] = useState<boolean>(false);
   // HÀM FETCH DATA CHUẨN AXIOS - AN TOÀN TUYỆT ĐỐI
@@ -299,6 +302,17 @@ const BorrowerDashboard: React.FC = () => {
                 <List.Item
                   style={{ padding: '14px 20px' }}
                   actions={[
+                    <Button
+                      key="detail"
+                      size="small"
+                      type="link"
+                      onClick={() => {
+                        setSelectedTx(item);
+                        setDetailVisible(true);
+                      }}
+                    >
+                      Chi tiết
+                    </Button>,
                     // Quick Action: Extend
                     (item.status === 'checked_out' || item.status === 'overdue') && !item.is_extended && (
                       <Button
@@ -371,6 +385,17 @@ const BorrowerDashboard: React.FC = () => {
                 <List.Item
                   style={{ padding: '12px 20px' }}
                   actions={[
+                    <Button
+                      key="detail"
+                      size="small"
+                      type="link"
+                      onClick={() => {
+                        setSelectedTx(item);
+                        setDetailVisible(true);
+                      }}
+                    >
+                      Chi tiết
+                    </Button>,
                     isCompleted && !item.rating && (
                       <Button
                         key="rate"
@@ -488,6 +513,81 @@ const BorrowerDashboard: React.FC = () => {
               <Input.TextArea placeholder="Hãy nhận xét thêm về trải nghiệm sử dụng hoặc phát hiện lỗi ẩn..." rows={3} />
             </Form.Item>
           </Form>
+        )}
+      </Modal>
+
+      {/* Detail Modal */}
+      <Modal
+        title={
+          <span style={{ fontWeight: 600 }}>
+            <CalendarOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
+            Chi tiết đơn mượn thiết bị
+          </span>
+        }
+        open={detailVisible}
+        onCancel={() => {
+          setDetailVisible(false);
+          setSelectedTx(null);
+        }}
+        footer={[
+          <Button key="close" onClick={() => {
+            setDetailVisible(false);
+            setSelectedTx(null);
+          }}>
+            Đóng
+          </Button>
+        ]}
+        centered
+        width={600}
+      >
+        {selectedTx && (
+          <Descriptions column={1} bordered size="small" style={{ marginTop: 16 }}>
+            <Descriptions.Item label="Thiết bị">
+              <Text strong>{selectedTx.equipment?.name || '—'}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Số Serial">
+              <Tag color="blue">{selectedTx.equipment?.serial_number || '—'}</Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="Trạng thái">
+              {(() => {
+                const cfg = statusConfig[selectedTx.status] || { text: selectedTx.status, color: '#999', icon: null };
+                return (
+                  <Tag color={cfg.color} icon={cfg.icon}>
+                    {cfg.text}
+                  </Tag>
+                );
+              })()}
+            </Descriptions.Item>
+            <Descriptions.Item label="Mục đích mượn">
+              {selectedTx.purpose || selectedTx.notes || '—'}
+            </Descriptions.Item>
+            <Descriptions.Item label="Ngày yêu cầu">
+              {selectedTx.request_date ? new Date(selectedTx.request_date).toLocaleString('vi-VN') : '—'}
+            </Descriptions.Item>
+            <Descriptions.Item label="Hạn trả dự kiến">
+              {selectedTx.due_date ? new Date(selectedTx.due_date).toLocaleDateString('vi-VN') : '—'}
+            </Descriptions.Item>
+            {selectedTx.actual_check_out && (
+              <Descriptions.Item label="Ngày nhận thiết bị (Thực tế)">
+                {new Date(selectedTx.actual_check_out).toLocaleString('vi-VN')}
+              </Descriptions.Item>
+            )}
+            {selectedTx.actual_check_in && (
+              <Descriptions.Item label="Ngày trả thiết bị (Thực tế)">
+                {new Date(selectedTx.actual_check_in).toLocaleString('vi-VN')}
+              </Descriptions.Item>
+            )}
+            {selectedTx.rejection_reason && (
+              <Descriptions.Item label="Lý do từ chối">
+                <Text type="danger">{selectedTx.rejection_reason}</Text>
+              </Descriptions.Item>
+            )}
+            {selectedTx.is_extended && (
+              <Descriptions.Item label="Gia hạn">
+                <Tag color="warning">Đã gia hạn</Tag>
+              </Descriptions.Item>
+            )}
+          </Descriptions>
         )}
       </Modal>
     </div>
