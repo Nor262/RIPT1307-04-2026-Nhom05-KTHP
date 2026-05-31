@@ -89,7 +89,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
 			overlayClassName={styles.popover}
 			trigger={['click']}
 			visible={visible}
-			onVisibleChange={setVisible}
+			onVisibleChange={(setVisible)} // day la cho an vao chuong se goi ham
 			arrow
 		>
 			<Tooltip title='Thông báo' placement='bottom'>

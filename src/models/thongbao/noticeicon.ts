@@ -24,7 +24,7 @@ export default () => {
 			// console.log("Full Response:", response);
 
 
-			const rawData = response?.data?.data?.data;
+			const rawData = response?.data?.data;
 
 			// console.log("Raw Data tầng 3:", rawData);
 
@@ -77,5 +77,3 @@ export default () => {
 		readNotificationModel,
 	};
 };
-
-//debug
