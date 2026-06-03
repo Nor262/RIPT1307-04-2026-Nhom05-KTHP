@@ -249,46 +249,6 @@ const Login: React.FC = () => {
                 <div style={{ marginTop: 20, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
                   Chưa có tài khoản? <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
                 </div>
-
-                <div style={{ 
-                  marginTop: 20, 
-                  padding: '12px', 
-                  borderRadius: 8, 
-                  background: '#f8fafc', 
-                  border: '1px dashed #e2e8f0', 
-                  textAlign: 'center' 
-                }}>
-                  <span style={{ 
-                    fontSize: '13px', 
-                    color: '#64748b', 
-                    display: 'block', 
-                    marginBottom: 8,
-                    fontWeight: 500
-                  }}>
-                    Bạn muốn sử dụng ứng dụng di động?
-                  </span>
-                  <Button 
-                    type="default" 
-                    icon={<AndroidOutlined />} 
-                    href="https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    block
-                    style={{ 
-                      borderRadius: 6, 
-                      borderColor: '#c00c0c', 
-                      color: '#c00c0c', 
-                      fontWeight: 600,
-                      height: 38,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 6
-                    }}
-                  >
-                    Tải về file APK (Android)
-                  </Button>
-                </div>
               </Form.Item>
             </Form>
           </div>
@@ -410,6 +370,15 @@ const Login: React.FC = () => {
         <div className="login-footer">
           <Footer />
         </div>
+        <a 
+          href="https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={styles.downloadFloatingButton}
+        >
+          <AndroidOutlined />
+          <span className={styles.text}>Tải ứng dụng Android</span>
+        </a>
       </div>
     </GoogleOAuthProvider>
   );
