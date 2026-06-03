@@ -1,6 +1,6 @@
-# 💻 BTL-EQM: Web Portal Management
+# 💻 Equipment Management System: Web Portal Management
 
-Cổng thông tin quản trị và vận hành tập trung của dự án **Hệ thống Quản lý Thiết bị Đa nền tảng (BTL-EQM)**. Được thiết kế chuyên biệt dành cho các vai trò **Quản trị viên (Admin)** và **Thủ kho (Storekeeper)** để theo dõi tổng thể, phê duyệt nhanh chóng và quản lý chuyên sâu toàn bộ tài sản.
+Cổng thông tin quản trị và vận hành tập trung của dự án **Hệ thống Quản lý Thiết bị Đa nền tảng (Equipment Management System)**. Được thiết kế chuyên biệt dành cho các vai trò **Quản trị viên (Admin)** và **Thủ kho (Storekeeper)** để theo dõi tổng thể, phê duyệt nhanh chóng và quản lý chuyên sâu toàn bộ tài sản.
 
 ---
 
