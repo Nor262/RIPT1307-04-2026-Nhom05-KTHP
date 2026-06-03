@@ -7,8 +7,6 @@ Cổng thông tin quản trị và vận hành tập trung của dự án **Hệ
 ### 🌐 Cổng kết nối trực tuyến
 * **Cổng thông tin Web Portal (Production):** [https://btl-thltw.onrender.com/](https://btl-thltw.onrender.com/)
 * **Tải xuống ứng dụng di động Android (APK):** [Tải về EquipmentManagement.apk](https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk)
-* **Địa chỉ chạy cục bộ (Local):** [http://localhost:8000](http://localhost:8000)
-
 ---
 
 ### 📊 Công nghệ sử dụng & Huy hiệu
