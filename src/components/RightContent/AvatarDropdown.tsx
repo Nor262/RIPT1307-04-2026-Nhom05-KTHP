@@ -1,6 +1,6 @@
 import { history } from 'umi';
 import { landingUrl } from '@/services/base/constant';
-import { FileWordOutlined, GlobalOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { FileWordOutlined, GlobalOutlined, LogoutOutlined, UserOutlined, AndroidOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { Avatar, Menu, Spin, Modal } from 'antd';
 import type { MenuProps } from 'antd';
@@ -48,6 +48,12 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 			icon: <GlobalOutlined />,
 			label: APP_CONFIG_TITLE_LANDING ?? 'Cổng thông tin',
 			onClick: () => window.open(landingUrl),
+		},
+		{
+			key: 'apk',
+			icon: <AndroidOutlined />,
+			label: 'Tải ứng dụng Android (APK)',
+			onClick: () => window.open('https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk'),
 		},
 		{ type: 'divider', key: 'divider' },
 		{
