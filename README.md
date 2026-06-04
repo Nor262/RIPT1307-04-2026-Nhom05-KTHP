@@ -5,15 +5,17 @@ Cổng thông tin quản trị và vận hành tập trung của dự án **Hệ
 ---
 
 ### 🌐 Cổng kết nối trực tuyến
-* **Cổng thông tin Web Portal (Production):** [https://btl-thltw.onrender.com/](https://btl-thltw.onrender.com/)
-* **Tải xuống ứng dụng di động Android (APK):** [Tải về EquipmentManagement.apk](https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk)
+* **Cổng thông tin Web Portal (Production):** [https://equipmentmanagementsystem.netlify.app/](https://equipmentmanagementsystem.netlify.app/)
+* **Tải xuống ứng dụng di động Android (APK):** [Tải về EquipmentManagement.apk](https://github.com/Nor262/APP_Equipment_Management_System/releases/download/v1.0.0/EquipmentManagement.apk)
+* 🚀 **Mã nguồn Backend:** [Backend_Equipment_Management_System](https://github.com/Nor262/Backend_Equipment_Management_System)
+* 📱 **Mã nguồn App di động:** [APP_Equipment_Management_System](https://github.com/Nor262/APP_Equipment_Management_System)
 ---
 
 ### 📊 Công nghệ sử dụng & Huy hiệu
 
 <p align="left">
-  <a href="https://btl-thltw.onrender.com/"><img src="https://img.shields.io/badge/Production%20Web-Live%20Demo-blue?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo" /></a>
-  <a href="https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk"><img src="https://img.shields.io/badge/Android%20App-APK%20Download-green?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" /></a>
+  <a href="https://equipmentmanagementsystem.netlify.app/"><img src="https://img.shields.io/badge/Production%20Web-Live%20Demo-blue?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo" /></a>
+  <a href="https://github.com/Nor262/APP_Equipment_Management_System/releases/download/v1.0.0/EquipmentManagement.apk"><img src="https://img.shields.io/badge/Android%20App-APK%20Download-green?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" /></a>
   <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/UmiJS-1890FF?style=for-the-badge&logo=react&logoColor=white" alt="UmiJS" />
   <img src="https://img.shields.io/badge/Ant_Design_Pro-0170FE?style=for-the-badge&logo=antdesign&logoColor=white" alt="Ant Design Pro" />

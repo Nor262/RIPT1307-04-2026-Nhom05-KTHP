@@ -371,7 +371,7 @@ const Login: React.FC = () => {
           <Footer />
         </div>
         <a 
-          href="https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk" 
+          href="https://github.com/Nor262/APP_Equipment_Management_System/releases/download/v1.0.0/EquipmentManagement.apk" 
           target="_blank" 
           rel="noopener noreferrer"
           className={styles.downloadFloatingButton}

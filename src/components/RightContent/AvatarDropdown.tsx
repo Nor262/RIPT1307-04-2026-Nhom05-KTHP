@@ -53,7 +53,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 			key: 'apk',
 			icon: <AndroidOutlined />,
 			label: 'Tải ứng dụng Android (APK)',
-			onClick: () => window.open('https://github.com/Nor262/BTL_APP/releases/download/v1.0.0/EquipmentManagement.apk'),
+			onClick: () => window.open('https://github.com/Nor262/APP_Equipment_Management_System/releases/download/v1.0.0/EquipmentManagement.apk'),
 		},
 		{ type: 'divider', key: 'divider' },
 		{
