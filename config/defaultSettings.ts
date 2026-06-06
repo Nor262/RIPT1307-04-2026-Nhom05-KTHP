@@ -14,7 +14,7 @@ const Settings: ProLayoutProps & {
 	fixedHeader: true,
 	fixSiderbar: true,
 	colorWeak: false,
-	title: 'LẬP TRÌNH WEB - RIPT',
+	title: 'Equipment Management System',
 	pwa: false,
 	logo: '/logo.png',
 	iconfontUrl: '',

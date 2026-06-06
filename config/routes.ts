@@ -7,12 +7,14 @@ export default [
 				path: '/user/login',
 				layout: false,
 				name: 'login',
+				title: 'Đăng nhập - Equipment Management System',
 				component: './user/Login',
 			},
 			{
 				path: '/user/register',
 				layout: false,
 				name: 'register',
+				title: 'Đăng ký - Equipment Management System',
 				component: './user/Register',
 			},
 			{

@@ -3,6 +3,7 @@ import defaultSettings from './defaultSettings';
 import routes from './routes';
 
 export default defineConfig({
+	title: 'Equipment Management System',
 	hash: true,
 	esbuildMinifyIIFE: true,
 	antd: {
