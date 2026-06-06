@@ -245,11 +245,45 @@ const HandleTransaction: React.FC = () => {
             border-color: #1677ff !important;
             background-color: #f0f5ff !important;
           }
+          .header-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+          }
+          .mode-radio-group {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            display: inline-flex !important;
+            flex-wrap: nowrap !important;
+            margin-left: 16px;
+          }
+          .mode-radio-button {
+            white-space: nowrap;
+          }
+          @media (max-width: 576px) {
+            .header-container {
+              flex-direction: column;
+              align-items: stretch;
+              gap: 12px;
+            }
+            .mode-radio-group {
+              display: flex !important;
+              margin-left: 0 !important;
+              width: 100%;
+            }
+            .mode-radio-button {
+              flex: 1;
+              text-align: center;
+              padding: 0 12px !important;
+            }
+          }
         `}
       </style>
       <Row gutter={[24, 24]}>
         <Col span={24}>
-          <Space style={{ marginBottom: 20 }}>
+          <div className="header-container">
             <Title level={3} style={{ margin: 0, fontWeight: 700, color: '#1f2937' }}>
               <SwapOutlined /> Xử lý Bàn giao / Thu hồi thiết bị
             </Title>
@@ -264,12 +298,22 @@ const HandleTransaction: React.FC = () => {
                 },
               }}
             >
-              <Radio.Group value={mode} onChange={(e) => setMode(e.target.value)} buttonStyle="solid" size="large" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: 8, marginLeft: 16 }}>
-                <Radio.Button value="checkout" style={{ borderRadius: '8px 0 0 8px', padding: '0 24px' }}><LogoutOutlined /> Bàn giao (Check-out)</Radio.Button>
-                <Radio.Button value="checkin" style={{ borderRadius: '0 8px 8px 0', padding: '0 24px' }}><LoginOutlined /> Thu hồi (Check-in)</Radio.Button>
+              <Radio.Group
+                value={mode}
+                onChange={(e) => setMode(e.target.value)}
+                buttonStyle="solid"
+                size="large"
+                className="mode-radio-group"
+              >
+                <Radio.Button value="checkout" className="mode-radio-button" style={{ borderRadius: '8px 0 0 8px', padding: '0 24px' }}>
+                  <LogoutOutlined /> Bàn giao (Check-out)
+                </Radio.Button>
+                <Radio.Button value="checkin" className="mode-radio-button" style={{ borderRadius: '0 8px 8px 0', padding: '0 24px' }}>
+                  <LoginOutlined /> Thu hồi (Check-in)
+                </Radio.Button>
               </Radio.Group>
             </ConfigProvider>
-          </Space>
+          </div>
           <Alert
             message={<Text strong style={{ fontSize: 15 }}>Chế độ Hybrid — Không cần máy quét chuyên dụng</Text>}
             description={<Text type="secondary">Nhập mã Serial Number thủ công, tải ảnh QR hoặc dùng Mobile App quét mã để đồng bộ trạng thái lên đây.</Text>}
