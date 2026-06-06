@@ -5,6 +5,9 @@ const Settings: ProLayoutProps & {
 	logo?: string;
 	borderRadiusBase: string;
 	siderWidth: number;
+	primaryColor?: string;
+	headerTheme?: string;
+	headerHeight?: number;
 } = {
 	navTheme: 'light',
 	primaryColor: process.env.APP_CONFIG_PRIMARY_COLOR,
