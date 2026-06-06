@@ -1,14 +1,5 @@
-import { ProLayoutProps } from '@ant-design/pro-components';
 
-const Settings: ProLayoutProps & {
-	pwa?: boolean;
-	logo?: string;
-	borderRadiusBase: string;
-	siderWidth: number;
-	primaryColor?: string;
-	headerTheme?: string;
-	headerHeight?: number;
-} = {
+const Settings = {
 	navTheme: 'light',
 	primaryColor: process.env.APP_CONFIG_PRIMARY_COLOR,
 	borderRadiusBase: '2px',
