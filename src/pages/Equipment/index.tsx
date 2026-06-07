@@ -60,10 +60,10 @@ const EquipmentImageUpload = ({ value, onChange }: { value?: string; onChange?: 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <Input 
-          placeholder="Nhập link ảnh hoặc bấm nút Tải ảnh lên" 
-          value={value} 
-          onChange={(e) => onChange?.(e.target.value)} 
+        <Input
+          placeholder="Nhập link ảnh hoặc bấm nút Tải ảnh lên"
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
           style={{ flex: 1 }}
         />
         <Upload
@@ -77,9 +77,9 @@ const EquipmentImageUpload = ({ value, onChange }: { value?: string; onChange?: 
           </Button>
         </Upload>
         {value && (
-          <Button 
-            danger 
-            icon={<DeleteOutlined />} 
+          <Button
+            danger
+            icon={<DeleteOutlined />}
             onClick={() => onChange?.('')}
           />
         )}
@@ -151,11 +151,11 @@ const EquipmentList: React.FC = () => {
       render: (_, record) => {
         const s = statusMap[record.status] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
         return (
-          <span style={{ 
-            padding: '4px 12px', 
-            borderRadius: '999px', 
-            backgroundColor: s.bg, 
-            color: s.color, 
+          <span style={{
+            padding: '4px 12px',
+            borderRadius: '999px',
+            backgroundColor: s.bg,
+            color: s.color,
             border: `1px solid ${s.border}`,
             fontWeight: 500,
             fontSize: '13px',
@@ -240,6 +240,7 @@ const EquipmentList: React.FC = () => {
         headerTitle="Danh sách thiết bị"
         actionRef={actionRef}
         formRef={formRef}
+        scroll={{ x: 'max-content' }}
         form={{
           onValuesChange: () => {
             if (searchTimeoutRef.current) {
@@ -257,7 +258,7 @@ const EquipmentList: React.FC = () => {
           collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
+              <span style={{ color: '#C00C0C', cursor: 'pointer' }}>
                 {collapsed ? (
                   <><PlusOutlined style={{ fontSize: 12 }} /> Mở rộng </>
                 ) : (
@@ -273,22 +274,28 @@ const EquipmentList: React.FC = () => {
                 formProps.form?.resetFields();
                 formProps.form?.submit();
               }}
-              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+              style={{ color: '#C00C0C', borderColor: '#C00C0C' }}
             >
-              Làm lại
+              Tải lại
             </Button>,
             <Button
               key="search"
               type="primary"
               onClick={() => formProps.form?.submit()}
-              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
+              style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
           ],
         }}
         toolBarRender={() => [
-          <Button key="export" onClick={handleExport} icon={<DownloadOutlined />}>
+          <Button
+            key="export"
+            type="primary"
+            onClick={handleExport}
+            icon={<DownloadOutlined />}
+            style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff', fontWeight: 500 }}
+          >
             Xuất Excel
           </Button>,
           <Upload
@@ -313,9 +320,8 @@ const EquipmentList: React.FC = () => {
           </Upload>,
           <Button
             type="primary"
-            danger
             key="primary"
-            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
+            style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C' }}
             onClick={() => {
               setCurrentRow(undefined);
               handleModalVisible(true);
@@ -339,12 +345,12 @@ const EquipmentList: React.FC = () => {
             if (params.status && item.status !== params.status) {
               return false;
             }
-            const searchCat = 
+            const searchCat =
               typeof params.category === 'string' ? params.category :
-              (params.category as any)?.name || 
-              (params as any)['category.name'] || 
-              (params as any)['category,name'] ||
-              '';
+                (params.category as any)?.name ||
+                (params as any)['category.name'] ||
+                (params as any)['category,name'] ||
+                '';
 
             if (searchCat) {
               const itemCatName = item.category?.name?.toLowerCase();
@@ -373,17 +379,49 @@ const EquipmentList: React.FC = () => {
 
       {/* Create/Edit Modal */}
       <ModalForm
+        key={currentRow?.id || 'new'}
         title={currentRow ? 'Cập nhật thiết bị' : 'Thêm thiết bị mới'}
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
-        initialValues={currentRow ? { ...currentRow, category_id: currentRow.category?.id } : undefined}
+        initialValues={currentRow ? {
+          ...currentRow,
+          category_id: currentRow.category?.id,
+          specifications: (() => {
+            if (!currentRow?.specifications) return [];
+            let specs = currentRow.specifications;
+            if (typeof specs === 'string') {
+              try { specs = JSON.parse(specs); } catch { return []; }
+            }
+            if (typeof specs === 'object' && specs !== null) {
+              return Object.entries(specs).map(([key, value]) => ({
+                key,
+                value: typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value)
+              }));
+            }
+            return [];
+          })()
+        } : {
+          specifications: []
+        }}
         modalProps={{ destroyOnHidden: true }}
         onFinish={async (value) => {
+          const specsObject: Record<string, any> = {};
+          if (Array.isArray(value.specifications)) {
+            value.specifications.forEach((item: any) => {
+              if (item && item.key) {
+                specsObject[item.key] = item.value || '';
+              }
+            });
+          }
+          const submitValue = {
+            ...value,
+            specifications: specsObject,
+          };
           if (currentRow) {
-            await updateEquipment(currentRow.id, value);
+            await updateEquipment(currentRow.id, submitValue);
             message.success('Cập nhật thành công');
           } else {
-            await createEquipment(value);
+            await createEquipment(submitValue);
             message.success('Thêm mới thành công');
           }
           handleModalVisible(false);
@@ -434,14 +472,95 @@ const EquipmentList: React.FC = () => {
           <EquipmentImageUpload />
         </Form.Item>
         <ProFormDatePicker name="purchase_date" label="Ngày mua" />
-        <ProFormTextArea
-          name="specifications"
-          label="Thông số kỹ thuật (JSON)"
-          placeholder='{"key": "value"}'
-          transform={(val: any) => {
-            try { return typeof val === 'string' ? JSON.parse(val) : val; } catch { return val; }
-          }}
-        />
+        
+        <Form.List name="specifications">
+          {(fields, { add, remove }) => (
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <span style={{ fontWeight: 500, fontSize: '14px', color: '#1f2937' }}>
+                  Thông số kỹ thuật
+                </span>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  icon={<PlusOutlined />}
+                  size="small"
+                  style={{
+                    color: '#C00C0C',
+                    borderColor: '#C00C0C',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Thêm thông số
+                </Button>
+              </div>
+
+              {fields.length === 0 ? (
+                <div style={{
+                  padding: '24px',
+                  background: '#f9fafb',
+                  border: '1px dashed #e5e7eb',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  color: '#6b7280',
+                  fontSize: '13px',
+                }}>
+                  Không có thông số kỹ thuật nào. Bấm "Thêm thông số" để thiết lập.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <div
+                      key={key}
+                      style={{
+                        display: 'flex',
+                        gap: '12px',
+                        alignItems: 'center',
+                        background: '#f9fafb',
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '1px solid #f3f4f6',
+                      }}
+                    >
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'key']}
+                        rules={[{ required: true, message: 'Nhập tên thông số!' }]}
+                        style={{ marginBottom: 0, flex: 1 }}
+                      >
+                        <Input placeholder="Tên thông số (VD: RAM, CPU)" />
+                      </Form.Item>
+                      
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'value']}
+                        rules={[{ required: true, message: 'Nhập giá trị!' }]}
+                        style={{ marginBottom: 0, flex: 2 }}
+                      >
+                        <Input placeholder="Giá trị (VD: 16GB, Core i7)" />
+                      </Form.Item>
+
+                      <Button
+                        type="text"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => remove(name)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '4px 8px',
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </Form.List>
       </ModalForm>
 
       {/* QR Modal */}
@@ -497,7 +616,7 @@ const EquipmentList: React.FC = () => {
                         ? JSON.parse(currentRow.specifications)
                         : currentRow.specifications;
                     } catch (e) {
-                      return <span style={{ color: '#c00c0c' }}>Lỗi định dạng thông số</span>;
+                      return <span style={{ color: '#A85448' }}>Lỗi định dạng thông số</span>;
                     }
                     if (!specs || Object.keys(specs).length === 0) {
                       return <span>Không có thông số kỹ thuật</span>;
