@@ -165,16 +165,16 @@ const AdminDashboard: React.FC = () => {
             backgroundImage: "url('./background_card2.svg')",
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'right center',
-            borderLeft: '4px solid #A85448',
+            borderLeft: '4px solid #C00C0C',
             borderRadius: '0 8px 8px 0',
             padding: '20px'
           }}>
             <Space>
-              <ExclamationCircleOutlined style={{ fontSize: 24, color: '#A85448' }} />
+              <ExclamationCircleOutlined style={{ fontSize: 24, color: '#C00C0C' }} />
               <div>
                 <Text type="secondary">Quá hạn trả</Text>
-                <Title level={3} style={{ margin: 0, color: '#A85448' }}>
-                  <Badge count={alerts.overdue_transactions || 0} overflowCount={99} showZero style={{ backgroundColor: '#A85448' }} />
+                <Title level={3} style={{ margin: 0, color: '#C00C0C' }}>
+                  <Badge count={alerts.overdue_transactions || 0} overflowCount={99} showZero style={{ backgroundColor: '#C00C0C' }} />
                 </Title>
               </div>
             </Space>

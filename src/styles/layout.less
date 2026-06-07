@@ -296,7 +296,7 @@
 .ant-pro-sider.ant-layout-sider {
 	background-color: #FDFCF8 !important;
 	border-right: 2px solid rgba(222, 216, 207, 0.6) !important;
-	box-shadow: 2px 0 12px -2px rgba(192, 12, 12, 0.04) !important;
+	box-shadow: none !important;
 
 	.ant-layout-sider-children {
 		background-color: #FDFCF8 !important;
@@ -308,7 +308,12 @@
 	backdrop-filter: blur(12px) !important;
 	-webkit-backdrop-filter: blur(12px) !important;
 	border-bottom: 2px solid rgba(222, 216, 207, 0.6) !important;
-	box-shadow: 0 4px 12px -2px rgba(192, 12, 12, 0.04) !important;
+	box-shadow: none !important;
+
+	// Suppress underline hover animation on all links inside header
+	a::after {
+		display: none !important;
+	}
 }
 
 .ant-pro-global-header {

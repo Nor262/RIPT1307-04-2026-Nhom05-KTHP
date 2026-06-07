@@ -39,10 +39,10 @@ const { Text, Title } = Typography;
 const statusConfig: Record<string, { text: string; color: string; icon: React.ReactNode }> = {
   pending: { text: 'Chờ duyệt', color: '#faad14', icon: <ClockCircleOutlined /> },
   approved: { text: 'Đã duyệt', color: '#C00C0C', icon: <CheckCircleOutlined /> },
-  rejected: { text: 'Từ chối', color: '#A85448', icon: <ExclamationCircleOutlined /> },
+  rejected: { text: 'Từ chối', color: '#C00C0C', icon: <ExclamationCircleOutlined /> },
   checked_out: { text: 'Đang mượn', color: '#13c2c2', icon: <SwapOutlined /> },
   completed: { text: 'Đã trả', color: '#52c41a', icon: <CheckCircleOutlined /> },
-  overdue: { text: 'Quá hạn', color: '#A85448', icon: <ExclamationCircleOutlined /> },
+  overdue: { text: 'Quá hạn', color: '#C00C0C', icon: <ExclamationCircleOutlined /> },
 };
 
 const BorrowerDashboard: React.FC = () => {
@@ -234,17 +234,17 @@ const BorrowerDashboard: React.FC = () => {
           <Card
             styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
-              borderRadius: 12, borderLeft: `4px solid #A85448`, backgroundImage: "url('./background_card3.svg')",
+              borderRadius: 12, borderLeft: `4px solid #C00C0C`, backgroundImage: "url('./background_card3.svg')",
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right center',
             }}
           >
-            <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'rgba(168, 84, 72, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#A85448' }}>
+            <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'rgba(192, 12, 12, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#C00C0C' }}>
               <ExclamationCircleOutlined />
             </div>
             <div>
               <Text type="secondary" style={{ fontSize: 12 }}>Quá hạn</Text>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#A85448', lineHeight: 1.2 }}>{overdueCount}</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: '#C00C0C', lineHeight: 1.2 }}>{overdueCount}</div>
             </div>
           </Card>
         </Col>

@@ -27,7 +27,7 @@ export function rootContainer(container: React.ReactNode) {
           colorTextHeading: '#1A1A1A',
           colorText: '#1A1A1A',
           colorBorder: '#E8E4DF',
-          colorError: '#A85448',
+          colorError: '#C00C0C',
         },
         components: {
           Button: {
