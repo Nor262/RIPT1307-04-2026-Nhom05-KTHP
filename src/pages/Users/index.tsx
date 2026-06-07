@@ -19,9 +19,9 @@ type UserItem = {
 };
 
 const roleMap: Record<string, { text: string; color: string; bg: string; border: string }> = {
-  admin: { text: 'Quản trị viên', color: '#dc2626', bg: '#fee2e2', border: '#fecaca' },
-  storekeeper: { text: 'Quản lý kho', color: '#2563eb', bg: '#dbeafe', border: '#bfdbfe' },
-  borrower: { text: 'Người mượn', color: '#059669', bg: '#d1fae5', border: '#a7f3d0' },
+  admin: { text: 'Quản trị viên', color: '#B8860B', bg: 'rgba(184, 134, 11, 0.08)', border: 'rgba(184, 134, 11, 0.25)' },
+  storekeeper: { text: 'Quản lý kho', color: '#6B6B6B', bg: '#F5F3F0', border: '#E8E4DF' },
+  borrower: { text: 'Người mượn', color: '#C00C0C', bg: 'rgba(192, 12, 12, 0.08)', border: 'rgba(192, 12, 12, 0.25)' },
 };
 
 const UserManagement: React.FC = () => {
@@ -64,15 +64,15 @@ const UserManagement: React.FC = () => {
         borrower: { text: 'Người mượn' },
       },
       render: (_, record) => {
-        const role = roleMap[record.role] || { text: record.role, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
+        const role = roleMap[record.role] || { text: record.role, color: '#6B6B6B', bg: '#F5F3F0', border: '#E8E4DF' };
         return (
-          <span style={{ 
-            padding: '4px 12px', 
-            borderRadius: '999px', 
-            backgroundColor: role.bg, 
-            color: role.color, 
+          <span style={{
+            padding: '4px 12px',
+            borderRadius: '6px',
+            backgroundColor: role.bg,
+            color: role.color,
             border: `1px solid ${role.border}`,
-            fontWeight: 500,
+            fontWeight: 600,
             fontSize: '13px',
             whiteSpace: 'nowrap'
           }}>
@@ -90,17 +90,17 @@ const UserManagement: React.FC = () => {
         false: { text: 'Đã khóa', status: 'Error' },
       },
       render: (_, record) => {
-        const color = record.is_active ? '#059669' : '#dc2626';
-        const bg = record.is_active ? '#d1fae5' : '#fee2e2';
-        const border = record.is_active ? '#a7f3d0' : '#fecaca';
+        const color = record.is_active ? '#C00C0C' : '#A85448';
+        const bg = record.is_active ? 'rgba(192, 12, 12, 0.08)' : 'rgba(168, 84, 72, 0.08)';
+        const border = record.is_active ? 'rgba(192, 12, 12, 0.25)' : 'rgba(168, 84, 72, 0.25)';
         return (
-          <span style={{ 
-            padding: '4px 12px', 
-            borderRadius: '999px', 
-            backgroundColor: bg, 
-            color: color, 
+          <span style={{
+            padding: '4px 12px',
+            borderRadius: '6px',
+            backgroundColor: bg,
+            color: color,
             border: `1px solid ${border}`,
-            fontWeight: 500,
+            fontWeight: 600,
             fontSize: '13px',
             whiteSpace: 'nowrap'
           }}>
@@ -152,11 +152,11 @@ const UserManagement: React.FC = () => {
             }}
           >
             <Tooltip title={record.is_active ? 'Khóa' : 'Mở khóa'}>
-              <Button 
-                type="text" 
-                shape="circle" 
-                icon={record.is_active ? <LockOutlined style={{ color: '#ef4444' }} /> : <UnlockOutlined style={{ color: '#10b981' }} />} 
-                style={{ background: record.is_active ? '#fef2f2' : '#ecfdf5' }} 
+              <Button
+                type="text"
+                shape="circle"
+                icon={record.is_active ? <LockOutlined style={{ color: '#ef4444' }} /> : <UnlockOutlined style={{ color: '#10b981' }} />}
+                style={{ background: record.is_active ? '#fef2f2' : '#ecfdf5' }}
               />
             </Tooltip>
           </Popconfirm>
@@ -171,6 +171,7 @@ const UserManagement: React.FC = () => {
         headerTitle="Quản lý Người dùng"
         actionRef={actionRef}
         formRef={formRef}
+        scroll={{ x: 'max-content' }}
         form={{
           onValuesChange: () => {
             if (searchTimeoutRef.current) {
@@ -187,7 +188,7 @@ const UserManagement: React.FC = () => {
           collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
+              <span style={{ color: '#C00C0C', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -203,15 +204,15 @@ const UserManagement: React.FC = () => {
                 formProps.form?.resetFields();
                 formProps.form?.submit();
               }}
-              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+              style={{ color: '#C00C0C', borderColor: '#C00C0C' }}
             >
-              Làm lại
+              Tải lại
             </Button>,
             <Button
               key="search"
               type="primary"
               onClick={() => formProps.form?.submit()}
-              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
+              style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -220,9 +221,8 @@ const UserManagement: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="create"
-            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
+            style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C' }}
             onClick={() => {
               setCurrentRow(undefined);
               setModalVisible(true);
