@@ -131,11 +131,11 @@ const ExportReport: React.FC = () => {
       render: (_, record) => {
         const s = statusMap[record.status] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
         return (
-          <span style={{ 
-            padding: '4px 12px', 
-            borderRadius: '999px', 
-            backgroundColor: s.bg, 
-            color: s.color, 
+          <span style={{
+            padding: '4px 12px',
+            borderRadius: '999px',
+            backgroundColor: s.bg,
+            color: s.color,
             border: `1px solid ${s.border}`,
             fontWeight: 500,
             fontSize: '13px',
@@ -193,7 +193,7 @@ const ExportReport: React.FC = () => {
           labelWidth: 120, collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
+              <span style={{ color: '#C00C0C', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -209,15 +209,15 @@ const ExportReport: React.FC = () => {
                 formProps.form?.resetFields();
                 formProps.form?.submit();
               }}
-              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+              style={{ color: '#C00C0C', borderColor: '#C00C0C' }}
             >
-              Làm lại
+              Tải lại
             </Button>,
             <Button
               key="search"
               type="primary"
               onClick={() => formProps.form?.submit()}
-              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
+              style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -226,12 +226,11 @@ const ExportReport: React.FC = () => {
         toolBarRender={() => [
           <Button
             key="export"
-            danger
             type="primary"
             icon={<FileExcelOutlined />}
             loading={exporting}
             onClick={handleExport}
-            style={{ backgroundColor: '#10b981', borderColor: '#10b981', borderRadius: '8px', fontWeight: 500, boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}
+            style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff', fontWeight: 500 }}
           >
             Xuất Excel
           </Button>,
@@ -240,7 +239,7 @@ const ExportReport: React.FC = () => {
           const res = await getTransactions(params);
           const data = res.data?.data;
           const list = data?.items || data?.result || data || [];
-          
+
           const filteredList = list.filter((item: TransactionExportItem) => {
             if (params.equipment) {
               const itemEquipName = item.equipment?.name?.toLowerCase();
@@ -261,7 +260,7 @@ const ExportReport: React.FC = () => {
             }
             return true;
           });
-          
+
           // Local pagination
           const current = params.current || 1;
           const pageSize = params.pageSize || 10;
