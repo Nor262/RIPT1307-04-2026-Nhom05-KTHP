@@ -325,6 +325,35 @@ const BookingApproval: React.FC = () => {
             return true;
           });
 
+          // Local sorting
+          if (sorter && Object.keys(sorter).length > 0) {
+            const sortField = Object.keys(sorter)[0];
+            const sortOrder = sorter[sortField];
+            filteredList.sort((a: any, b: any) => {
+              let valA = a[sortField];
+              let valB = b[sortField];
+              
+              if (sortField.includes('.')) {
+                const parts = sortField.split('.');
+                valA = parts.reduce((o, key) => (o && o[key] !== undefined) ? o[key] : undefined, a);
+                valB = parts.reduce((o, key) => (o && o[key] !== undefined) ? o[key] : undefined, b);
+              }
+              
+              if (valA === undefined || valA === null) return sortOrder === 'ascend' ? 1 : -1;
+              if (valB === undefined || valB === null) return sortOrder === 'ascend' ? -1 : 1;
+              
+              if (typeof valA === 'string' && typeof valB === 'string') {
+                return sortOrder === 'ascend' 
+                  ? valA.localeCompare(valB) 
+                  : valB.localeCompare(valA);
+              }
+              
+              return sortOrder === 'ascend' 
+                ? (valA > valB ? 1 : -1) 
+                : (valB > valA ? 1 : -1);
+            });
+          }
+
           // Local pagination
           const current = params.current || 1;
           const pageSize = params.pageSize || 10;

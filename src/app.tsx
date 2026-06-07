@@ -23,7 +23,7 @@ export function rootContainer(container: React.ReactNode) {
           borderRadius: 6,
           colorBgLayout: '#FAFAF8',
           colorBgContainer: '#FFFFFF',
-          fontFamily: '"Source Sans 3", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          fontFamily: '"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           colorTextHeading: '#1A1A1A',
           colorText: '#1A1A1A',
           colorBorder: '#E8E4DF',

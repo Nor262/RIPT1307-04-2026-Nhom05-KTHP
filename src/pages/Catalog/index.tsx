@@ -430,11 +430,11 @@ const Catalog: React.FC = () => {
                   <div style={{ textAlign: 'center', padding: 24 }}>
                     <Spin size="small" />
                   </div>
-                ) : schedule.length > 0 ? (
-                  <Timeline mode="left">
-                    {schedule
-                      .filter((s: any) => ['pending', 'approved', 'active'].includes(s.status))
-                      .map((s: any) => (
+                ) : (() => {
+                  const activeSchedule = schedule.filter((s: any) => ['pending', 'approved', 'active'].includes(s.status));
+                  return activeSchedule.length > 0 ? (
+                    <Timeline mode="left">
+                      {activeSchedule.map((s: any) => (
                         <Timeline.Item
                           key={s.id}
                           color={
@@ -465,13 +465,14 @@ const Catalog: React.FC = () => {
                           </div>
                         </Timeline.Item>
                       ))}
-                  </Timeline>
-                ) : (
-                  <Empty
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    description="Hiện chưa có lịch đặt nào. Thiết bị hoàn toàn trống!"
-                  />
-                )}
+                    </Timeline>
+                  ) : (
+                    <Empty
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      description="Hiện chưa có lịch đặt nào. Thiết bị hoàn toàn trống!"
+                    />
+                  );
+                })()}
               </Card>
             </Col>
           </Row>
@@ -513,7 +514,7 @@ const Catalog: React.FC = () => {
               />
             </Form.Item>
             <Form.Item name="notes" label="Lý do mượn / Ghi chú">
-              <Input.TextArea rows={3} placeholder="Mô tả chi tiết mục đích sử dụng..." />
+              <Input.TextArea autoSize={{ minRows: 3, maxRows: 5 }} placeholder="Mô tả chi tiết mục đích sử dụng..." />
             </Form.Item>
           </Form>
         )}

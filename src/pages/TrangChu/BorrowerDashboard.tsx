@@ -40,6 +40,7 @@ const statusConfig: Record<string, { text: string; color: string; icon: React.Re
   pending: { text: 'Chờ duyệt', color: '#faad14', icon: <ClockCircleOutlined /> },
   approved: { text: 'Đã duyệt', color: '#C00C0C', icon: <CheckCircleOutlined /> },
   rejected: { text: 'Từ chối', color: '#C00C0C', icon: <ExclamationCircleOutlined /> },
+  active: { text: 'Đang mượn', color: '#13c2c2', icon: <SwapOutlined /> },
   checked_out: { text: 'Đang mượn', color: '#13c2c2', icon: <SwapOutlined /> },
   completed: { text: 'Đã trả', color: '#52c41a', icon: <CheckCircleOutlined /> },
   overdue: { text: 'Quá hạn', color: '#C00C0C', icon: <ExclamationCircleOutlined /> },
@@ -96,13 +97,13 @@ const BorrowerDashboard: React.FC = () => {
 
   const allItems = Array.isArray(transactions) ? transactions : [];
   const pendingCount = allItems.filter((t: any) => t.status === 'pending').length;
-  const activeCount = allItems.filter((t: any) => ['approved', 'checked_out'].includes(t.status)).length;
+  const activeCount = allItems.filter((t: any) => ['approved', 'active', 'checked_out'].includes(t.status)).length;
   const overdueCount = allItems.filter((t: any) => t.status === 'overdue').length;
   const completedCount = allItems.filter((t: any) => t.status === 'completed').length;
 
   // Active + overdue items (priority list)
   const currentItems = allItems.filter((t: any) =>
-    ['pending', 'approved', 'checked_out', 'overdue'].includes(t.status)
+    ['pending', 'approved', 'active', 'checked_out', 'overdue'].includes(t.status)
   );
 
   // Recent completed
@@ -161,7 +162,16 @@ const BorrowerDashboard: React.FC = () => {
 
 
 
-  if (loading && allItems.length === 0) return (    <div style={{ padding: '24px', maxWidth: 960, margin: '0 auto' }}>
+  if (loading && allItems.length === 0) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Spin size="large" tip="Đang tải dữ liệu..." />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: '24px', maxWidth: 960, margin: '0 auto' }}>
       <Card
         style={{
           marginBottom: 20,
@@ -307,7 +317,7 @@ const BorrowerDashboard: React.FC = () => {
                       Chi tiết
                     </Button>,
                     // Quick Action: Extend
-                    (item.status === 'checked_out' || item.status === 'overdue') && !item.is_extended && (
+                    (item.status === 'active' || item.status === 'checked_out' || item.status === 'overdue') && !item.is_extended && (
                       <Button
                         key="extend"
                         size="small"

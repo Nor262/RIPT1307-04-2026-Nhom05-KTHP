@@ -1,5 +1,5 @@
-import React from 'react';
-import { useRequest, history } from '@umijs/max';
+import React, { useState, useEffect } from 'react';
+import { history } from '@umijs/max';
 import { Row, Col, Card, Statistic, Spin, Tag, Typography, Space, List, Button, Empty } from 'antd';
 import {
   SwapOutlined,
@@ -17,6 +17,7 @@ const { Text, Title } = Typography;
 const statusMap: Record<string, { text: string; color: string }> = {
   pending: { text: 'Chờ duyệt', color: 'gold' },
   approved: { text: 'Chờ bàn giao', color: 'blue' },
+  active: { text: 'Đang mượn', color: 'cyan' },
   checked_out: { text: 'Đang mượn', color: 'cyan' },
   completed: { text: 'Đã trả', color: 'green' },
   overdue: { text: 'Quá hạn', color: 'magenta' },
@@ -25,6 +26,7 @@ const statusMap: Record<string, { text: string; color: string }> = {
 /** Safely extract array from API response */
 const extractArray = (res: any): any[] => {
   try {
+    if (Array.isArray(res?.data)) return res.data;
     const data = res?.data?.data;
     if (Array.isArray(data)) return data;
     if (data?.items && Array.isArray(data.items)) return data.items;
@@ -38,58 +40,46 @@ const extractArray = (res: any): any[] => {
 const StorekeeperDashboard: React.FC = () => {
   const user = useAuthStore((state) => state.user);
 
-  // Fetch pending handover transactions (approved, waiting for checkout)
-  const { data: pendingHandovers = [], loading: loadingHandovers } = useRequest(
-    async () => {
-      try {
-        const res = await getTransactions({ status: 'approved' });
-        return extractArray(res);
-      } catch { return []; }
-    },
-    {}
-  );
+  const [pendingHandovers, setPendingHandovers] = useState<any[]>([]);
+  const [activeLoans, setActiveLoans] = useState<any[]>([]);
+  const [overdueItems, setOverdueItems] = useState<any[]>([]);
+  const [maintenanceItems, setMaintenanceItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Fetch active loans (checked out)
-  const { data: activeLoans = [], loading: loadingLoans } = useRequest(
-    async () => {
-      try {
-        const res = await getTransactions({ status: 'checked_out' });
-        return extractArray(res);
-      } catch { return []; }
-    },
-    {}
-  );
+  const loadDashboardData = async () => {
+    setLoading(true);
+    try {
+      const [txRes, eqRes] = await Promise.all([
+        getTransactions(),
+        getEquipment(),
+      ]);
 
-  // Fetch overdue
-  const { data: overdueItems = [] } = useRequest(
-    async () => {
-      try {
-        const res = await getTransactions({ status: 'overdue' });
-        return extractArray(res);
-      } catch { return []; }
-    },
-    {}
-  );
+      const txData = extractArray(txRes);
+      const eqData = extractArray(eqRes);
 
-  // Fetch equipment needing maintenance
-  const { data: maintenanceItems = [] } = useRequest(
-    async () => {
-      try {
-        const res = await getEquipment({ status: 'maintenance' });
-        return extractArray(res);
-      } catch { return []; }
-    },
-  );
+      setPendingHandovers(txData.filter((t: any) => t.status === 'approved'));
+      setActiveLoans(txData.filter((t: any) => t.status === 'active' || t.status === 'checked_out'));
+      setOverdueItems(txData.filter((t: any) => t.status === 'overdue'));
+      setMaintenanceItems(eqData.filter((e: any) => e.status === 'maintenance'));
+    } catch (err) {
+      console.error('Error loading storekeeper dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const isLoading = loadingHandovers && loadingLoans;
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
   const safeHandovers = Array.isArray(pendingHandovers) ? pendingHandovers : [];
   const safeActiveLoans = Array.isArray(activeLoans) ? activeLoans : [];
   const safeOverdue = Array.isArray(overdueItems) ? overdueItems : [];
   const safeMaintenance = Array.isArray(maintenanceItems) ? maintenanceItems : [];
 
-  if (isLoading) return (
+  if (loading) return (
     <div style={{ textAlign: 'center', padding: 80 }}>
-      <Spin size="large" />
+      <Spin size="large" tip="Đang tải dữ liệu..." />
     </div>
   );
 
