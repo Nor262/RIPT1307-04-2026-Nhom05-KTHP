@@ -55,7 +55,6 @@ const Register: React.FC = () => {
               <Input
                 placeholder="Họ và tên"
                 prefix={<IdcardOutlined className={styles.prefixIcon} />}
-                style={{ borderRadius: 8, height: 46 }}
                 autoComplete="off"
               />
             </Form.Item>
@@ -67,7 +66,6 @@ const Register: React.FC = () => {
               <Input
                 placeholder="Tên đăng nhập"
                 prefix={<UserOutlined className={styles.prefixIcon} />}
-                style={{ borderRadius: 8, height: 46 }}
                 autoComplete="off"
               />
             </Form.Item>
@@ -82,7 +80,6 @@ const Register: React.FC = () => {
               <Input
                 placeholder="Email"
                 prefix={<MailOutlined className={styles.prefixIcon} />}
-                style={{ borderRadius: 8, height: 46 }}
                 autoComplete="off"
               />
             </Form.Item>
@@ -97,7 +94,6 @@ const Register: React.FC = () => {
               <Input.Password
                 placeholder="Mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
-                style={{ borderRadius: 8, height: 46 }}
                 autoComplete="new-password"
               />
             </Form.Item>
@@ -120,7 +116,6 @@ const Register: React.FC = () => {
               <Input.Password
                 placeholder="Xác nhận mật khẩu"
                 prefix={<LockOutlined className={styles.prefixIcon} />}
-                style={{ borderRadius: 8, height: 46 }}
                 autoComplete="new-password"
               />
             </Form.Item>
@@ -131,12 +126,12 @@ const Register: React.FC = () => {
                 htmlType="submit"
                 block
                 loading={submitting}
-                style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+                style={{ height: 44, fontSize: '16px', fontWeight: 600 }}
               >
                 Đăng ký ngay
               </Button>
-              <div style={{ marginTop: 16, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
-                Đã có tài khoản? <Link to="/user/login" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng nhập ngay</Link>
+              <div style={{ marginTop: 16, textAlign: 'center', color: '#6B6B6B', fontSize: '14px' }}>
+                Đã có tài khoản? <Link to="/user/login" style={{ color: '#C00C0C', fontWeight: 600 }}>Đăng nhập ngay</Link>
               </div>
             </Form.Item>
           </Form>

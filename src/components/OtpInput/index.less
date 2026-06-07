@@ -10,26 +10,26 @@
 .otpBox {
   width: 48px;
   height: 52px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
+  border: 1.5px solid #E8E4DF;
+  border-radius: 6px;
   font-size: 22px;
   font-weight: 600;
   text-align: center;
-  color: #1e293b;
-  background-color: #f8fafc;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #1A1A1A;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease-out;
   outline: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 2px rgba(26, 26, 26, 0.02);
 
   /* Overrides default browser autofill background */
   &:-webkit-autofill,
   &:-webkit-autofill:hover, 
   &:-webkit-autofill:focus,
   &:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #f8fafc inset !important;
-    box-shadow: 0 0 0 1000px #f8fafc inset !important;
-    -webkit-text-fill-color: #1e293b !important;
-    border-color: #e2e8f0 !important;
+    -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+    box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+    -webkit-text-fill-color: #1A1A1A !important;
+    border-color: #E8E4DF !important;
   }
 
   &:hover {
@@ -38,10 +38,9 @@
   }
 
   &:focus {
-    border-color: #c00c0c;
+    border-color: #C00C0C;
     background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(192, 12, 12, 0.12), 0 4px 10px rgba(192, 12, 12, 0.05);
-    transform: translateY(-1px);
+    box-shadow: 0 0 0 3px rgba(192, 12, 12, 0.15);
     
     &:-webkit-autofill {
       -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
@@ -50,9 +49,9 @@
   }
 
   &.filled {
-    border-color: #c00c0c;
-    background-color: rgba(192, 12, 12, 0.04);
-    color: #c00c0c;
+    border-color: #C00C0C;
+    background-color: rgba(192, 12, 12, 0.03);
+    color: #C00C0C;
   }
 }
 
@@ -62,7 +61,7 @@
     width: 40px;
     height: 46px;
     font-size: 18px;
-    border-radius: 8px;
+    border-radius: 6px;
   }
   .otpWrapper {
     gap: 8px;

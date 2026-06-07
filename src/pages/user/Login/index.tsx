@@ -205,7 +205,6 @@ const Login: React.FC = () => {
                 <Input
                   placeholder="Email hoặc Tên đăng nhập"
                   prefix={<UserOutlined className={styles.prefixIcon} />}
-                  style={{ borderRadius: 8, height: 46 }}
                 />
               </Form.Item>
               <Form.Item
@@ -215,12 +214,11 @@ const Login: React.FC = () => {
                 <Input.Password
                   placeholder="Mật khẩu"
                   prefix={<LockOutlined className={styles.prefixIcon} />}
-                  style={{ borderRadius: 8, height: 46 }}
                 />
               </Form.Item>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-                <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#cc0404ba', fontWeight: 300 }}>Quên mật khẩu?</a>
+                <a onClick={() => setForgotPasswordVisible(true)} style={{ color: '#C00C0C', fontWeight: 600 }}>Quên mật khẩu?</a>
               </div>
 
               <Form.Item style={{ marginBottom: 8 }}>
@@ -229,7 +227,7 @@ const Login: React.FC = () => {
                   htmlType="submit"
                   block
                   loading={submitting}
-                  style={{ borderRadius: 8, height: 46, fontSize: '16px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+                  style={{ height: 44, fontSize: '16px', fontWeight: 600 }}
                 >
                   Đăng nhập
                 </Button>
@@ -246,8 +244,8 @@ const Login: React.FC = () => {
                   />
                 </div>
 
-                <div style={{ marginTop: 20, textAlign: 'center', color: '#64748b', fontSize: '14px' }}>
-                  Chưa có tài khoản? <Link to="/user/register" style={{ color: '#c00c0c', fontWeight: 600 }}>Đăng ký tài khoản</Link>
+                <div style={{ marginTop: 20, textAlign: 'center', color: '#6B6B6B', fontSize: '14px' }}>
+                  Chưa có tài khoản? <Link to="/user/register" style={{ color: '#C00C0C', fontWeight: 600 }}>Đăng ký tài khoản</Link>
                 </div>
               </Form.Item>
             </Form>
@@ -269,24 +267,23 @@ const Login: React.FC = () => {
             bodyStyle={{ padding: '20px 20px 12px 20px' }}
           >
             <div>
-              <div style={{ textAlign: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: 12, marginBottom: 20 }}>
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.3px' }}>
+              <div style={{ textAlign: 'center', borderBottom: '1px solid #E8E4DF', paddingBottom: 12, marginBottom: 20 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#1A1A1A', fontFamily: 'Playfair Display, Georgia, serif', letterSpacing: '-0.3px' }}>
                   Quên mật khẩu
                 </span>
               </div>
               {forgotStep === 1 ? (
                 <div>
                   <div style={{ marginBottom: 18 }}>
-                    <span style={{ display: 'block', fontWeight: 600, fontSize: '13.5px', color: '#475569', marginBottom: 6 }}>
+                    <span style={{ display: 'block', fontWeight: 600, fontSize: '13.5px', color: '#1A1A1A', marginBottom: 6 }}>
                       Email tài khoản
                     </span>
                     <Input
                       size="large"
                       placeholder="username@student.ptit.edu.vn"
-                      prefix={<UserOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
+                      prefix={<UserOutlined style={{ color: '#6B6B6B', marginRight: 4 }} />}
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      style={{ borderRadius: 8, height: 44 }}
                       autoComplete="off"
                     />
                   </div>
@@ -296,18 +293,18 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleSendOtp}
-                    style={{ borderRadius: 8, height: 44, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+                    style={{ height: 44, fontSize: '15px', fontWeight: 600 }}
                   >
                     Gửi mã xác nhận
                   </Button>
                 </div>
               ) : (
                 <div>
-                  <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.6', marginBottom: 20, textAlign: 'center' }}>
-                    Mã xác nhận đã được gửi về <strong style={{ color: '#0f172a' }}>{forgotEmail}</strong>. Vui lòng nhập mã OTP để tiếp tục.
+                  <p style={{ color: '#6B6B6B', fontSize: '14px', lineHeight: '1.6', marginBottom: 20, textAlign: 'center' }}>
+                    Mã xác nhận đã được gửi về <strong style={{ color: '#1A1A1A' }}>{forgotEmail}</strong>. Vui lòng nhập mã OTP để tiếp tục.
                   </p>
                   <div style={{ marginBottom: 18, textAlign: 'center' }}>
-                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13.5px', color: '#475569', marginBottom: 6 }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13.5px', color: '#1A1A1A', marginBottom: 6 }}>
                       Mã xác nhận (OTP)
                     </span>
                     <OtpInput
@@ -317,16 +314,15 @@ const Login: React.FC = () => {
                     />
                   </div>
                   <div style={{ marginBottom: 20 }}>
-                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13.5px', color: '#475569', marginBottom: 6 }}>
+                    <span style={{ display: 'block', textAlign: 'left', fontWeight: 600, fontSize: '13.5px', color: '#1A1A1A', marginBottom: 6 }}>
                       Mật khẩu mới
                     </span>
                     <Input.Password
                       size="large"
                       placeholder="••••••••"
-                      prefix={<LockOutlined style={{ color: '#94a3b8', marginRight: 4 }} />}
+                      prefix={<LockOutlined style={{ color: '#6B6B6B', marginRight: 4 }} />}
                       value={forgotPassword}
                       onChange={(e) => setForgotPassword(e.target.value)}
-                      style={{ borderRadius: 8, height: 44 }}
                       autoComplete="new-password"
                     />
                   </div>
@@ -336,17 +332,17 @@ const Login: React.FC = () => {
                     block
                     loading={forgotLoading}
                     onClick={handleResetPassword}
-                    style={{ borderRadius: 8, height: 44, fontSize: '15px', fontWeight: 600, background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)', border: 'none', marginBottom: 10, boxShadow: '0 4px 12px rgba(192, 12, 12, 0.15)' }}
+                    style={{ height: 44, fontSize: '15px', fontWeight: 600, marginBottom: 10 }}
                   >
                     Đặt lại mật khẩu
                   </Button>
                   <div style={{ textAlign: 'center', marginTop: 12 }}>
-                    <span style={{ fontSize: '13.5px', color: '#64748b' }}>Chưa nhận được mã? </span>
+                    <span style={{ fontSize: '13.5px', color: '#6B6B6B' }}>Chưa nhận được mã? </span>
                     <Button
                       type="link"
                       disabled={forgotCountdown > 0}
                       onClick={handleResendOtp}
-                      style={{ padding: 0, height: 'auto', fontSize: '13.5px', color: forgotCountdown > 0 ? '#94a3b8' : '#c00c0c', fontWeight: 600 }}
+                      style={{ padding: 0, height: 'auto', fontSize: '13.5px', color: forgotCountdown > 0 ? '#6B6B6B' : '#C00C0C', fontWeight: 600 }}
                     >
                       {forgotCountdown > 0 ? `Gửi lại mã (${forgotCountdown}s)` : 'Gửi lại mã'}
                     </Button>
@@ -358,7 +354,7 @@ const Login: React.FC = () => {
                       setForgotStep(1);
                       setForgotCountdown(0);
                     }}
-                    style={{ fontSize: '13.5px', color: '#64748b', fontWeight: 500, marginTop: 8 }}
+                    style={{ fontSize: '13.5px', color: '#6B6B6B', fontWeight: 500, marginTop: 8 }}
                   >
                     Quay lại nhập Email
                   </Button>

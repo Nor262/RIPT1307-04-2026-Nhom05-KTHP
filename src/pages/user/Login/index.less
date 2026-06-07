@@ -5,33 +5,19 @@
   flex-direction: column;
   min-height: 100vh;
   overflow: hidden;
-  /* Premium radial gradient background for a very clean, professional look */
-  background: radial-gradient(circle at 10% 20%, rgba(248, 250, 252, 1) 0%, rgba(241, 245, 249, 1) 100%);
+  background-color: #FAFAF8;
   position: relative;
 
-  /* Ambient glowing decorative circles */
   &::before {
     content: '';
     position: absolute;
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(192, 12, 12, 0.03) 0%, rgba(255, 255, 255, 0) 70%);
-    top: -100px;
-    left: -100px;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(192, 12, 12, 0.02) 0%, rgba(255, 255, 255, 0) 70%);
-    bottom: -150px;
-    right: -100px;
+    background: radial-gradient(circle, rgba(192, 12, 12, 0.04) 0%, rgba(192, 12, 12, 0) 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 0;
     pointer-events: none;
   }
@@ -63,22 +49,22 @@
 .logo {
   height: 52px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.02));
+  filter: drop-shadow(0 4px 8px rgba(192, 12, 12, 0.1));
 }
 
 .title {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  color: #0f172a;
+  color: #1A1A1A;
   letter-spacing: -0.5px;
   margin-top: 14px;
   margin-bottom: 6px;
   text-transform: uppercase;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Playfair Display', Georgia, serif !important;
 }
 
 .desc {
-  color: #64748b;
+  color: #6B6B6B;
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 0;
@@ -87,26 +73,20 @@
 .main {
   position: relative;
   width: 440px;
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  padding: 36px 32px;
-  box-shadow: 
-    0 10px 25px -5px rgba(0, 0, 0, 0.04),
-    0 8px 10px -6px rgba(0, 0, 0, 0.04),
-    0 0 0 1px rgba(0, 0, 0, 0.01);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #FFFFFF;
+  border-radius: 8px;
+  border: 1px solid #E8E4DF;
+  padding: 40px 36px;
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.06);
+  transition: all 0.3s ease-out;
 
   &:hover {
-    box-shadow: 
-      0 20px 25px -5px rgba(0, 0, 0, 0.06),
-      0 10px 10px -5px rgba(0, 0, 0, 0.03);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
   }
 }
 
 .prefixIcon {
-  color: #94a3b8;
+  color: #6B6B6B;
   margin-right: 8px;
   font-size: 16px;
   transition: color 0.2s;
@@ -115,32 +95,52 @@
 /* Modal styling improvements */
 :global {
   .ant-modal-content {
-    border-radius: 16px !important;
+    border-radius: 8px !important;
+    border: 1px solid #E8E4DF !important;
+    background-color: #FFFFFF !important;
+    box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08) !important;
     overflow: hidden;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   }
   
   .ant-modal-header {
+    background-color: transparent !important;
     margin-bottom: 16px !important;
   }
 
   .ant-input-affix-wrapper:hover,
   .ant-input-affix-wrapper:focus,
   .ant-input-affix-wrapper-focused {
-    border-color: #c00c0c !important;
-    box-shadow: 0 0 0 3px rgba(192, 12, 12, 0.1) !important;
+    border-color: #C00C0C !important;
+    box-shadow: 0 0 0 3px rgba(192, 12, 12, 0.15) !important;
     
     .ant-input-prefix span {
-      color: #c00c0c !important;
+      color: #C00C0C !important;
     }
   }
 
+  .ant-input:hover,
+  .ant-input:focus,
+  .ant-input-focused {
+    border-color: #C00C0C !important;
+    box-shadow: 0 0 0 3px rgba(192, 12, 12, 0.15) !important;
+  }
+
   .ant-input-affix-wrapper {
-    transition: all 0.2s;
-    border-color: #cbd5e1;
+    transition: all 0.3s;
+    border-color: #E8E4DF;
+    border-radius: 6px !important;
+    background-color: rgba(255, 255, 255, 0.5) !important;
     
     input {
       font-size: 15px;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      
+      &:hover, &:focus {
+        border: none !important;
+        box-shadow: none !important;
+      }
     }
   }
 
@@ -149,9 +149,9 @@
   input:-webkit-autofill:hover, 
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-    box-shadow: 0 0 0 1000px #ffffff inset !important;
-    -webkit-text-fill-color: #1e293b !important;
+    -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+    box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+    -webkit-text-fill-color: #1A1A1A !important;
   }
 }
 
@@ -161,10 +161,11 @@
     width: 100%;
     max-width: 380px;
     padding: 28px 24px;
+    border-radius: 8px;
   }
   
   .title {
-    font-size: 19px;
+    font-size: 22px;
   }
 }
 
@@ -174,10 +175,10 @@
   right: 24px;
   height: 50px;
   width: 50px;
-  border-radius: 25px;
-  background: linear-gradient(135deg, #c00c0c 0%, #8b0000 100%);
+  border-radius: 6px;
+  background: #C00C0C;
   border: none;
-  box-shadow: 0 4px 16px rgba(192, 12, 12, 0.3);
+  box-shadow: 0 4px 12px rgba(192, 12, 12, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -208,7 +209,8 @@
 
   &:hover {
     width: 210px;
-    box-shadow: 0 6px 20px rgba(192, 12, 12, 0.45);
+    background: #E03E3E;
+    box-shadow: 0 6px 20px rgba(192, 12, 12, 0.3);
     transform: translateY(-2px);
 
     .text {
