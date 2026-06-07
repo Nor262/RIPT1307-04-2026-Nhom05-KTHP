@@ -1,4 +1,6 @@
 import Footer from '@/components/Footer';
+import Header from '@/components/Layout/Header';
+import Sidebar from '@/components/Layout/Sidebar';
 import RightContent from '@/components/RightContent';
 import { notification } from 'antd';
 import 'moment/locale/vi';
@@ -140,6 +142,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			</a>
 		),
 
+		headerRender: (props, defaultDom) => <Header defaultDom={defaultDom as any} />,
+		menuRender: (props, defaultDom) => <Sidebar>{defaultDom}</Sidebar>,
 		childrenRender: (dom) => (
 			<ErrorBoundary>
 				<ContentWrapper dom={dom as any} />

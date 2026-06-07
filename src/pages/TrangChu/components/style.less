@@ -1,28 +1,103 @@
 @import '../../../styles/_variable.less';
 
-.home-welcome {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 100%;
-	text-align: center;
+.dashboard-page {
+  .home-welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, fade(@primary-color, 15%), fade(@primary-color, 5%));
+    border-radius: 16px;
+    text-align: center;
 
-	h1 {
-		font-weight: 300;
-		font-size: 38px;
+    h1 {
+      margin-bottom: 12px;
+      font-weight: 700;
+      font-size: 36px;
+      color: #091e42;
 
-		@media (max-width: @screen-xs) {
-			font-size: 26px;
-		}
-	}
+      @media (max-width: @screen-xs) {
+        font-size: 28px;
+      }
+    }
 
-	h2 {
-		font-weight: 700;
-		font-size: 20px;
+    h2 {
+      margin: 0;
+      font-weight: 500;
+      font-size: 18px;
+      color: fade(#000, 65%);
 
-		@media (max-width: @screen-xs) {
-			font-size: 18px;
-		}
-	}
+      @media (max-width: @screen-xs) {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .dashboard-summary,
+  .dashboard-alerts,
+  .dashboard-charts {
+    margin-bottom: 16px;
+  }
+
+  .dashboard-summary .ant-pro-card,
+  .dashboard-alerts .ant-card,
+  .dashboard-charts .ant-card {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .dashboard-alerts .ant-card {
+    min-height: 120px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  .dashboard-alert-card {
+    border-radius: 16px;
+    min-height: 120px;
+    transition: all 0.25s ease;
+  }
+
+  .dashboard-alert-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .dashboard-alerts .ant-card .ant-space {
+    align-items: center;
+  }
+
+  .dashboard-actions {
+    margin-bottom: 16px;
+  }
+
+  .dashboard-actions-card {
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+  }
+
+  .dashboard-actions-list {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard-action-button {
+    min-width: 180px;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    background: #fff;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+
+  .dashboard-action-button:hover {
+    background: rgba(24, 144, 255, 0.04);
+  }
 }

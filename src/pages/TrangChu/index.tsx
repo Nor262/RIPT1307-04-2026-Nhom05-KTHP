@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRequest } from '@umijs/max';
-import { Row, Col, Card, Statistic, Spin, Badge, List, Typography, Tag, Space } from 'antd';
+import { Row, Col, Card, Statistic, Spin, Badge, Typography, Space, Button } from 'antd';
 import {
   DatabaseOutlined,
   SwapOutlined,
@@ -8,10 +8,14 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   WarningOutlined,
+  TeamOutlined,
+  ToolOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import ReactApexChart from 'react-apexcharts';
 import { getDashboardStats } from '@/services/api';
 import { ProCard } from '@ant-design/pro-components';
+import './components/style.less';
 
 const { Text, Title } = Typography;
 
@@ -91,6 +95,13 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  const quickActions = [
+    { label: 'Quản lý Người dùng', icon: <TeamOutlined />, color: '#5b8cff' },
+    { label: 'Phê duyệt Mượn/Trả', icon: <SwapOutlined />, color: '#2fc25b' },
+    { label: 'Quản lý Thiết bị', icon: <ToolOutlined />, color: '#f6c022' },
+    { label: 'Xuất Báo cáo', icon: <BarChartOutlined />, color: '#975fe4' },
+  ];
+
   if (loading && !stats)
     return (
       <div style={{ textAlign: 'center', padding: 80 }}>
@@ -99,9 +110,14 @@ const Dashboard: React.FC = () => {
     );
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="dashboard-page" style={{ padding: '24px' }}>
+      <div className="home-welcome">
+        <h1>Xin chào trở lại</h1>
+        <h2>Đây là trang tổng quan quản lý thiết bị của bạn</h2>
+      </div>
+
       {/* Stats Cards */}
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} className="dashboard-summary">
         <Col xs={24} sm={12} md={6}>
           <ProCard ghost style={{ backgroundColor: '#e6f7ff', border: '1px solid #f0f0f0', borderRadius: 8, padding: '20px' }}>
             <Statistic
@@ -143,14 +159,10 @@ const Dashboard: React.FC = () => {
       </Row>
 
       {/* Alert Cards */}
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+      <Row gutter={[16, 16]} className="dashboard-alerts">
         <Col xs={24} sm={12}>
-          <Card size="small" style={{
-            backgroundImage: 'url("/background_card1.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
-            backgroundSize: 'contain',
-            borderLeft: '4px solid #faad14'
-          }}>
-            <Space>
+          <Card className="dashboard-alert-card" size="small">
+            <Space align="center">
               <ClockCircleOutlined style={{ fontSize: 24, color: '#faad14' }} />
               <div>
                 <Text type="secondary">Đơn chờ duyệt</Text>
@@ -162,12 +174,8 @@ const Dashboard: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12}>
-          <Card size="small" style={{
-            backgroundImage: 'url("/background_card2.svg")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right center',
-            backgroundSize: 'contain',
-            borderLeft: '4px solid #faad14'
-          }}>
-            <Space>
+          <Card className="dashboard-alert-card" size="small">
+            <Space align="center">
               <ExclamationCircleOutlined style={{ fontSize: 24, color: '#ff4d4f' }} />
               <div>
                 <Text type="secondary">Quá hạn trả</Text>
@@ -175,6 +183,26 @@ const Dashboard: React.FC = () => {
                   <Badge count={alerts.overdue_transactions || 0} overflowCount={99} showZero style={{ backgroundColor: '#ff4d4f' }} />
                 </Title>
               </div>
+            </Space>
+          </Card>
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} className="dashboard-actions">
+        <Col span={24}>
+          <Card className="dashboard-actions-card" bordered={false}>
+            <Space wrap size="middle" className="dashboard-actions-list">
+              {quickActions.map((action) => (
+                <Button
+                  key={action.label}
+                  type="text"
+                  className="dashboard-action-button"
+                  style={{ borderColor: action.color, color: action.color }}
+                >
+                  {action.icon}
+                  {action.label}
+                </Button>
+              ))}
             </Space>
           </Card>
         </Col>
