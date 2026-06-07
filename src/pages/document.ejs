@@ -33,7 +33,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="icon" href="<%= context.config.publicPath +'favicon.ico'%>" type="image/x-icon" />
+  <link rel="icon" type="image/png" href="<%= context.config.publicPath %>favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/png" href="<%= context.config.publicPath %>favicon.png" sizes="32x32" />
+  <link rel="shortcut icon" href="<%= context.config.publicPath %>favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="<%= context.config.publicPath %>apple-touch-icon.png" />
+  <link rel="manifest" href="<%= context.config.publicPath %>site.webmanifest" />
   <style>
     :root {
       /* Hỗ trợ đổi màu realtime */
