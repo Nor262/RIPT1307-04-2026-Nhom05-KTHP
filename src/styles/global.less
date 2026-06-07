@@ -1,15 +1,59 @@
+@import (css) url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&family=IBM+Plex+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 @import '_variable.less';
 @import 'layout.less';
 @import 'split-panel.less';
+
+:root {
+	--primary-color: #C00C0C;
+	--primary-1: rgba(192, 12, 12, 0.04);
+}
 
 html,
 body,
 #root {
 	height: 100%;
-	background-color: #f3f4f6;
+	background-color: #FAFAF8;
+	color: #1A1A1A;
+	font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+body::after {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	pointer-events: none;
+	z-index: 9999;
+	opacity: 0.035;
+	mix-blend-mode: multiply;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+h1, h2, h3, h4, h5, h6,
+.heading-fraunces,
+.heading-playfair,
+.ant-typography h1,
+.ant-typography h2,
+.ant-typography h3,
+.ant-typography h4 {
+	font-family: 'Playfair Display', Georgia, serif !important;
+	font-weight: 700;
+	color: #1A1A1A;
+}
+
+/* Small caps pattern — editorial section labels */
+.small-caps {
+	font-family: 'IBM Plex Mono', monospace !important;
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: #C00C0C;
 }
 
 a {
@@ -94,23 +138,42 @@ a {
 }
 
 ::-webkit-scrollbar {
-	width: 6px;
-	height: 6px;
+	width: 0px !important; /* Hide vertical scrollbar */
+	height: 6px !important; /* Keep thin horizontal scrollbar */
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-	background: transparent;
-}
-
-/* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #888;
+	background: rgba(0, 0, 0, 0.15) !important;
+	border-radius: 99px !important;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: #555;
+	background: rgba(0, 0, 0, 0.3) !important;
+}
+
+// Global layout element scrollbar hidden except tables
+html, body {
+	-ms-overflow-style: none !important;
+	scrollbar-width: none !important;
+	&::-webkit-scrollbar {
+		display: none !important;
+		width: 0 !important;
+		height: 0 !important;
+	}
+}
+
+// Restore horizontal scrollbars for tables to allow scrolling column actions
+.ant-table-content, 
+.ant-table-body,
+.ant-table-wrapper,
+.ant-table {
+	-ms-overflow-style: auto !important;
+	scrollbar-width: auto !important;
+	
+	&::-webkit-scrollbar {
+		display: block !important;
+		height: 6px !important;
+	}
 }
 
 .rbc-day-slot .rbc-event,
@@ -126,12 +189,25 @@ a {
 	margin-top: 0 !important;
 }
 
-.ant-input:hover {
-	border-color: var(--primary-color);
+.ant-input-affix-wrapper {
+	&:hover, &-focused {
+		border-color: var(--primary-color) !important;
+	}
 }
 
-.ant-input:focus {
-	border-color: var(--primary-color);
+.ant-input {
+	&:hover, &:focus {
+		border-color: var(--primary-color) !important;
+	}
+}
+
+.ant-input-affix-wrapper .ant-input {
+	border: none !important;
+	box-shadow: none !important;
+	&:hover, &:focus {
+		border: none !important;
+		box-shadow: none !important;
+	}
 }
 
 .btn-success {
@@ -583,4 +659,122 @@ canvas {
 		font-size: 28px;
 		margin-top: 8px;
 	}
+}
+
+/* Global fallback overrides for hardcoded legacy red styling */
+button,
+a,
+span,
+div,
+p,
+svg,
+span.ant-badge-count {
+	&[style*="color: #c00c0c"],
+	&[style*="color: rgb(192, 12, 12)"],
+	&[style*="color: rgb(192,12,12)"],
+	&[style*="color: #cc0404ba"] {
+		color: #C00C0C !important;
+	}
+
+	&[style*="border-color: #c00c0c"],
+	&[style*="border-color: rgb(192, 12, 12)"],
+	&[style*="border-color: rgb(192,12,12)"] {
+		border-color: #C00C0C !important;
+	}
+
+	&[style*="background-color: #c00c0c"],
+	&[style*="background-color: rgb(192, 12, 12)"],
+	&[style*="background-color: rgb(192,12,12)"],
+	&[style*="background: linear-gradient"],
+	&[style*="background:linear-gradient"] {
+		background: #C00C0C !important;
+		background-color: #C00C0C !important;
+		border-color: #C00C0C !important;
+	}
+}
+
+.ant-btn {
+	&[style*="color: #c00c0c"],
+	&[style*="color: rgb(192, 12, 12)"],
+	&[style*="color: rgb(192,12,12)"] {
+		color: #C00C0C !important;
+		border-color: #C00C0C !important;
+
+		&:hover {
+			color: #990909 !important;
+			border-color: #990909 !important;
+		}
+	}
+}
+
+/* Fix for large input fields (like textareas) to avoid clipping and text overlap when rounded */
+textarea,
+textarea.ant-input,
+.ant-input-textarea,
+.ant-input-textarea textarea,
+.ant-input-textarea-show-count {
+	border-radius: 6px !important;
+	padding: 10px 14px !important;
+}
+
+/* Ensure single-line inputs and dropdowns have adequate horizontal padding when rounded */
+.ant-input:not(textarea) {
+	padding-left: 12px !important;
+	padding-right: 12px !important;
+}
+
+.ant-select-single .ant-select-selector {
+	padding-left: 12px !important;
+	padding-right: 12px !important;
+}
+
+.ant-picker {
+	padding-left: 12px !important;
+	padding-right: 12px !important;
+}
+
+/* Force hide the Popover arrow globally to avoid rendering floating artifacts */
+.ant-popover-arrow {
+	display: none !important;
+}
+
+/* Ensure primary button text and their icons/children are always white for contrast */
+.ant-btn-primary {
+	color: #FFFFFF !important;
+	
+	span,
+	a,
+	.anticon,
+	svg {
+		color: #FFFFFF !important;
+	}
+	
+	&:hover, &:focus, &:active {
+		color: #FFFFFF !important;
+		
+		span,
+		a,
+		.anticon,
+		svg {
+			color: #FFFFFF !important;
+		}
+	}
+}
+
+/* Prevent text selection and text caret cursor (I-beam) on interactive elements */
+.ant-tabs-tab,
+.ant-btn,
+.ant-tag,
+.ant-badge,
+.ant-menu-item,
+.ant-menu-submenu-title,
+.ant-breadcrumb-link {
+	user-select: none !important;
+	-webkit-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+}
+
+.ant-tabs-tab {
+	cursor: pointer !important;
 }
