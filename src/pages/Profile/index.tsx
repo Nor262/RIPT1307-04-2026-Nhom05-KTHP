@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-components';
-import { Card, Form, Input, Button, Upload, message, Switch, Tabs, Row, Col, Avatar, Spin } from 'antd';
+import { Card, Form, Input, Button, Upload, message, Switch, Tabs, Row, Col, Avatar, Spin, Tag } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { useModel } from '@umijs/max';
 import axios from '@/utils/axios';
 
 import { useAuthStore } from '@/stores/useAuthStore';
+
+const roleMap: Record<string, { text: string; color: string; bg: string; border: string }> = {
+  admin: { text: 'Quản trị viên', color: '#B8860B', bg: 'rgba(184, 134, 11, 0.08)', border: 'rgba(184, 134, 11, 0.25)' },
+  storekeeper: { text: 'Quản lý kho', color: '#6B6B6B', bg: '#F5F3F0', border: '#E8E4DF' },
+  borrower: { text: 'Người mượn', color: '#C00C0C', bg: 'rgba(192, 12, 12, 0.08)', border: 'rgba(192, 12, 12, 0.25)' },
+};
 
 const ProfilePage: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -89,6 +95,8 @@ const ProfilePage: React.FC = () => {
     },
   };
 
+  const userRole = user?.role ? (roleMap[user.role] || { text: user.role, color: 'default' }) : null;
+
   return (
     <PageContainer>
       <Row gutter={24}>
@@ -98,7 +106,24 @@ const ProfilePage: React.FC = () => {
               <Spin spinning={uploading}>
                 <Avatar size={120} src={avatarUrl || user?.avatar_url} icon={<UserOutlined />} />
               </Spin>
-              <h2 style={{ marginTop: 16 }}>{user?.full_name}</h2>
+              <h2 style={{ marginTop: 16, marginBottom: 8 }}>{user?.full_name}</h2>
+              {userRole && (
+                <div style={{ marginBottom: 12 }}>
+                  <Tag 
+                    style={{ 
+                      padding: '4px 12px', 
+                      borderRadius: '6px', 
+                      backgroundColor: userRole.bg, 
+                      color: userRole.color, 
+                      borderColor: userRole.border,
+                      fontWeight: 600,
+                      fontSize: '13px'
+                    }}
+                  >
+                    {userRole.text}
+                  </Tag>
+                </div>
+              )}
               <p>{user?.email}</p>
               <Upload {...uploadProps} showUploadList={false} disabled={uploading}>
                 <Button icon={<UploadOutlined />} loading={uploading} disabled={uploading}>Đổi ảnh đại diện</Button>
