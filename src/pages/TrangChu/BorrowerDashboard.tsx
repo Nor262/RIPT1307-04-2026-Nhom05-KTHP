@@ -38,11 +38,11 @@ const { Text, Title } = Typography;
 
 const statusConfig: Record<string, { text: string; color: string; icon: React.ReactNode }> = {
   pending: { text: 'Chờ duyệt', color: '#faad14', icon: <ClockCircleOutlined /> },
-  approved: { text: 'Đã duyệt', color: '#c00c0c', icon: <CheckCircleOutlined /> },
-  rejected: { text: 'Từ chối', color: '#c00c0c', icon: <ExclamationCircleOutlined /> },
+  approved: { text: 'Đã duyệt', color: '#C00C0C', icon: <CheckCircleOutlined /> },
+  rejected: { text: 'Từ chối', color: '#A85448', icon: <ExclamationCircleOutlined /> },
   checked_out: { text: 'Đang mượn', color: '#13c2c2', icon: <SwapOutlined /> },
   completed: { text: 'Đã trả', color: '#52c41a', icon: <CheckCircleOutlined /> },
-  overdue: { text: 'Quá hạn', color: '#c00c0c', icon: <ExclamationCircleOutlined /> },
+  overdue: { text: 'Quá hạn', color: '#A85448', icon: <ExclamationCircleOutlined /> },
 };
 
 const BorrowerDashboard: React.FC = () => {
@@ -161,18 +161,11 @@ const BorrowerDashboard: React.FC = () => {
 
 
 
-  if (loading && allItems.length === 0) return (
-    <div style={{ textAlign: 'center', padding: 80 }}>
-      <Spin size="large" />
-    </div>
-  );
-
-  return (
-    <div style={{ padding: '24px', maxWidth: 960, margin: '0 auto' }}>
+  if (loading && allItems.length === 0) return (    <div style={{ padding: '24px', maxWidth: 960, margin: '0 auto' }}>
       <Card
         style={{
           marginBottom: 20,
-          background: 'linear-gradient(135deg, #c00c0c 0%, #8b0000 100%)',
+          background: 'linear-gradient(135deg, #C00C0C 0%, #800808 100%)',
           border: 'none',
           borderRadius: 14,
         }}
@@ -223,17 +216,17 @@ const BorrowerDashboard: React.FC = () => {
           <Card
             styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
-              borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card1.svg')",
+              borderRadius: 12, borderLeft: `4px solid #C00C0C`, backgroundImage: "url('./background_card1.svg')",
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right center',
             }}
           >
-            <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#c00c0c15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#c00c0c' }}>
+            <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'rgba(192, 12, 12, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#C00C0C' }}>
               <SwapOutlined />
             </div>
             <div>
               <Text type="secondary" style={{ fontSize: 12 }}>Đang mượn</Text>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#c00c0c', lineHeight: 1.2 }}>{activeCount}</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: '#C00C0C', lineHeight: 1.2 }}>{activeCount}</div>
             </div>
           </Card>
         </Col>
@@ -241,17 +234,17 @@ const BorrowerDashboard: React.FC = () => {
           <Card
             styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
-              borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card3.svg')",
+              borderRadius: 12, borderLeft: `4px solid #A85448`, backgroundImage: "url('./background_card3.svg')",
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right center',
             }}
           >
-            <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#ff4d4f15', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#c00c0c' }}>
+            <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'rgba(168, 84, 72, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, color: '#A85448' }}>
               <ExclamationCircleOutlined />
             </div>
             <div>
               <Text type="secondary" style={{ fontSize: 12 }}>Quá hạn</Text>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#c00c0c', lineHeight: 1.2 }}>{overdueCount}</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: '#A85448', lineHeight: 1.2 }}>{overdueCount}</div>
             </div>
           </Card>
         </Col>
@@ -259,7 +252,7 @@ const BorrowerDashboard: React.FC = () => {
           <Card
             styles={{ body: { padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 } }}
             style={{
-              borderRadius: 12, borderLeft: `4px solid #c00c0c`, backgroundImage: "url('./background_card4.svg')",
+              borderRadius: 12, borderLeft: `4px solid #52c41a`, backgroundImage: "url('./background_card4.svg')",
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right center',
             }}
@@ -279,7 +272,7 @@ const BorrowerDashboard: React.FC = () => {
       <Card
         title={
           <span style={{ fontSize: 15 }}>
-            <SwapOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
+            <SwapOutlined style={{ color: '#C00C0C', marginRight: 8 }} />
             Đơn mượn hiện tại
             {currentItems.length > 0 && (
               <Tag color="error" style={{ marginLeft: 8 }}>{currentItems.length}</Tag>
@@ -441,7 +434,7 @@ const BorrowerDashboard: React.FC = () => {
       <Modal
         title={
           <span style={{ fontWeight: 600 }}>
-            <CalendarOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
+            <CalendarOutlined style={{ color: '#C00C0C', marginRight: 8 }} />
             Gia hạn mượn thiết bị (BOK-07)
           </span>
         }
@@ -520,7 +513,7 @@ const BorrowerDashboard: React.FC = () => {
       <Modal
         title={
           <span style={{ fontWeight: 600 }}>
-            <CalendarOutlined style={{ color: '#c00c0c', marginRight: 8 }} />
+            <CalendarOutlined style={{ color: '#C00C0C', marginRight: 8 }} />
             Chi tiết đơn mượn thiết bị
           </span>
         }
