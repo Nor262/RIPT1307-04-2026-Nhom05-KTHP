@@ -90,7 +90,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
 			trigger={['click']}
 			visible={visible}
 			onVisibleChange={(setVisible)} // day la cho an vao chuong se goi ham
-			arrow
+			arrow={false}
 		>
 			<Tooltip title='Thông báo' placement='bottom'>
 				<a className={styles.badge}>

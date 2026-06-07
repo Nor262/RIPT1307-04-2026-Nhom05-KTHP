@@ -26,13 +26,18 @@ export default () => {
 
 			const rawData = response?.data?.data;
 
-			// console.log("Raw Data tầng 3:", rawData);
+			const list = (Array.isArray(rawData) ? rawData : []).map((item: any) => ({
+				...item,
+				read: item.is_read ?? item.read,
+				createdAt: item.created_at ?? item.createdAt,
+				description: item.description ?? item.message,
+				content: item.content ?? item.message,
+				senderName: item.senderName ?? 'Hệ thống',
+			}));
 
-			const list = rawData ?? [];
-
-			setDanhSach(rawData);
-			setUnread(rawData?.unread ?? 0);
-			setTotal(rawData?.total ?? 0);
+			setDanhSach(list);
+			setUnread(list.filter((item: any) => !item.read).length);
+			setTotal(list.length);
 
 			return list;
 		} catch (er) {

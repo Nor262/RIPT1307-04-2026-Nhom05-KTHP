@@ -80,16 +80,17 @@ const NoticeIconView = () => {
 			</div>
 
 			<Modal
-				width={800}
-				bodyStyle={{ padding: 0 }}
+				width={640}
+				title={record?.title || 'Chi tiết thông báo'}
 				destroyOnClose
 				onCancel={() => setVisibleDetail(false)}
 				visible={visibleDetail}
-				okButtonProps={{ hidden: true }}
+				okButtonProps={{ style: { display: 'none' } }}
 				cancelText='Đóng'
 			>
 				<ViewThongBao
 					record={record}
+					hideCard
 					afterViewDetail={() => {
 						setVisibleDetail(false);
 						setVisiblePopup(false);
