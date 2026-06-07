@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /user/login
+Allow: /user/register
+Allow: /gioi-thieu
+Disallow: /dashboard/
+Disallow: /asset/
+Disallow: /booking/
+Disallow: /reports/
+Disallow: /profile/
+Disallow: /system/
+
+Sitemap: https://equipmentmanagementsystem.netlify.app/sitemap.xml

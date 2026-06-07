@@ -1,0 +1,14 @@
+# Equipment Management System
+
+An enterprise-grade, multi-platform equipment lifecycle management system developed for educational labs, clubs, and centers.
+
+## Deployment Details
+
+- Production Web Portal: https://equipmentmanagementsystem.netlify.app/
+- Android Client Releases: https://github.com/Nor262/APP_Equipment_Management_System
+
+## Core Components
+
+- **Web Portal (Frontend)**: React / UmiJS application for admins and storekeepers to monitor inventory, handle check-in/out, approve requests, and export Excel reports.
+- **Backend API**: NestJS / MySQL server handling business logic, Task Queue (BullMQ/Redis), and push alerts (Firebase FCM).
+- **Mobile Application**: React Native / Expo app for borrowers and storekeepers to scan QR codes and book assets.
