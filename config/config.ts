@@ -12,9 +12,26 @@ export default defineConfig({
 		configProvider: {
 			theme: {
 				token: {
-					colorPrimary: '#c00c0c',
-					colorLink: '#c00c0c',
+					colorPrimary: '#C00C0C',
+					colorLink: '#C00C0C',
+					colorBgBase: '#FAFAF8',
+					colorTextBase: '#1A1A1A',
+					colorTextLightSolid: '#FFFFFF',
+					colorBorder: '#E8E4DF',
+					colorError: '#A85448',
 					borderRadius: 6,
+					fontFamily: '"Source Sans 3", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+				},
+				components: {
+					Button: {
+						controlHeight: 44,
+						borderRadius: 6,
+					},
+					Input: {
+						controlHeight: 44,
+						borderRadius: 6,
+						colorBgContainer: 'rgba(255, 255, 255, 0.5)',
+					},
 				},
 			},
 		},

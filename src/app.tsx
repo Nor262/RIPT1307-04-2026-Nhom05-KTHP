@@ -18,28 +18,35 @@ export function rootContainer(container: React.ReactNode) {
     <ConfigProvider
       theme={{
         token: {
-          borderRadius: 12,
-          colorBgLayout: '#f3f4f6',
-          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-          colorTextHeading: '#1f2937',
-          colorText: '#374151',
+          colorPrimary: '#C00C0C',
+          colorLink: '#C00C0C',
+          borderRadius: 6,
+          colorBgLayout: '#FAFAF8',
+          colorBgContainer: '#FFFFFF',
+          fontFamily: '"Source Sans 3", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          colorTextHeading: '#1A1A1A',
+          colorText: '#1A1A1A',
+          colorBorder: '#E8E4DF',
+          colorError: '#A85448',
         },
         components: {
           Button: {
-            controlHeight: 40,
-            borderRadius: 8,
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+            controlHeight: 44,
+            borderRadius: 6,
+            boxShadow: '0 1px 2px rgba(26, 26, 26, 0.04)',
           },
           Input: {
-            controlHeight: 40,
-            borderRadius: 8,
+            controlHeight: 44,
+            borderRadius: 6,
+            colorBgContainer: 'rgba(255, 255, 255, 0.5)',
           },
           Select: {
-            controlHeight: 40,
-            borderRadius: 8,
+            controlHeight: 44,
+            borderRadius: 6,
           },
           Card: {
-            boxShadowTertiary: '0 4px 24px rgba(0, 0, 0, 0.04)',
+            boxShadowTertiary: '0 4px 12px rgba(26, 26, 26, 0.06)',
+            borderRadius: 8,
           }
         }
       }}
@@ -185,27 +192,31 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 		// ProLayout Premium Styling
 		token: {
 			header: {
-				colorBgHeader: 'rgba(255, 255, 255, 0.65)',
-				colorHeaderTitle: '#1f2937',
+				colorBgHeader: 'rgba(253, 252, 248, 0.7)',
+				colorHeaderTitle: '#1A1A1A',
 			},
 			sider: {
-				colorMenuBackground: '#ffffff',
-				colorBgMenuItemSelected: 'rgba(22, 119, 255, 0.08)',
-				colorTextMenuSelected: '#1677ff',
+				colorMenuBackground: '#FAFAF8',
+				colorBgMenuItemSelected: 'rgba(192, 12, 12, 0.08)',
+				colorTextMenuSelected: '#C00C0C',
+				colorTextMenu: '#6B6B6B',
+				colorTextMenuItemHover: '#C00C0C',
+				colorBgMenuItemHover: 'rgba(192, 12, 12, 0.04)',
 			},
 			pageContainer: {
-				colorBgPageContainer: '#f3f4f6',
+				colorBgPageContainer: '#FAFAF8',
 			}
 		},
 		headerStyle: {
 			backdropFilter: 'blur(12px)',
 			WebkitBackdropFilter: 'blur(12px)',
-			boxShadow: '0 1px 4px rgba(0,0,0,0.02)',
-			borderBottom: '1px solid rgba(0,0,0,0.04)',
+			boxShadow: '0 4px 12px -2px rgba(192, 12, 12, 0.04)',
+			borderBottom: '2px solid rgba(222, 216, 207, 0.6)',
 		},
 		siderStyle: {
-			boxShadow: '2px 0 8px rgba(0,0,0,0.02)',
-			borderRight: 'none',
+			boxShadow: '2px 0 12px -2px rgba(192, 12, 12, 0.04)',
+			borderRight: '2px solid rgba(222, 216, 207, 0.6)',
+			backgroundColor: '#FAFAFA',
 		},
 		
 		...initialState?.settings,
