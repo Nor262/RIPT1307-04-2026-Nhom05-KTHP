@@ -291,9 +291,9 @@ const HandleTransaction: React.FC = () => {
               theme={{
                 components: {
                   Radio: {
-                    colorPrimary: '#c00c0c',
-                    colorPrimaryHover: '#ff7875',
-                    colorPrimaryActive: '#d9363e',
+                    colorPrimary: '#C00C0C',
+                    colorPrimaryHover: '#E03E3E',
+                    colorPrimaryActive: '#990909',
                   },
                 },
               }}
@@ -334,15 +334,15 @@ const HandleTransaction: React.FC = () => {
               <ConfigProvider
                 theme={{
                   token: {
-                    colorPrimary: '#c00c0c',
+                    colorPrimary: '#C00C0C',
                   },
                   components: {
                     Input: {
-                      colorPrimaryHover: '#ff7875',
-                      controlOutline: 'rgba(255, 77, 79, 0.1)',
+                      colorPrimaryHover: '#E03E3E',
+                      controlOutline: 'rgba(192, 12, 12, 0.1)',
                     },
                     Button: {
-                      colorPrimaryHover: '#ff7875',
+                      colorPrimaryHover: '#E03E3E',
                     }
                   },
                 }}
@@ -484,9 +484,9 @@ const HandleTransaction: React.FC = () => {
         title={
           <span style={{ fontWeight: 600 }}>
             {mode === 'checkout' ? (
-              <><LogoutOutlined style={{ color: '#c00c0c', marginRight: 8 }} /> Bàn giao thiết bị trực tiếp (Check-out)</>
+              <><LogoutOutlined style={{ color: '#C00C0C', marginRight: 8 }} /> Bàn giao thiết bị trực tiếp (Check-out)</>
             ) : (
-              <><LoginOutlined style={{ color: '#52c41a', marginRight: 8 }} /> Thu hồi thiết bị trực tiếp (Check-in)</>
+              <><LoginOutlined style={{ color: '#C00C0C', marginRight: 8 }} /> Thu hồi thiết bị trực tiếp (Check-in)</>
             )}
           </span>
         }

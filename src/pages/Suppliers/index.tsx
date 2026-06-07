@@ -81,13 +81,13 @@ const SupplierList: React.FC = () => {
         headerTitle="Danh sách nhà cung cấp"
         actionRef={actionRef}
         rowKey="id"
+        scroll={{ x: 'max-content' }}
         search={false}
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="primary"
-            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
+            style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C' }}
             onClick={() => {
               setCurrentRow(undefined);
               handleModalVisible(true);

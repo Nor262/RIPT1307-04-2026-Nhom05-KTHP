@@ -152,6 +152,7 @@ const MaintenanceList: React.FC = () => {
         headerTitle="Nhật ký bảo trì thiết bị"
         actionRef={actionRef}
         formRef={formRef}
+        scroll={{ x: 'max-content' }}
         form={{
           onValuesChange: () => {
             if (searchTimeoutRef.current) {
@@ -167,7 +168,7 @@ const MaintenanceList: React.FC = () => {
           labelWidth: 120, collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
+              <span style={{ color: '#C00C0C', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -183,15 +184,15 @@ const MaintenanceList: React.FC = () => {
                 formProps.form?.resetFields();
                 formProps.form?.submit();
               }}
-              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+              style={{ color: '#C00C0C', borderColor: '#C00C0C' }}
             >
-              Làm lại
+              Tải lại
             </Button>,
             <Button
               key="search"
               type="primary"
               onClick={() => formProps.form?.submit()}
-              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
+              style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -201,7 +202,7 @@ const MaintenanceList: React.FC = () => {
           <Button
             type="primary"
             key="primary"
-            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
+            style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C' }}
             onClick={() => handleModalVisible(true)}
           >
             <PlusOutlined /> Tạo bản ghi mới

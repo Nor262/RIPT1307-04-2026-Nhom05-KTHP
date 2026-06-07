@@ -133,11 +133,11 @@ const BookingApproval: React.FC = () => {
         const statusKey = record.status === 'active' ? 'checked_out' : record.status;
         const s = statusMap[statusKey] || { text: record.status, color: '#4b5563', bg: '#f3f4f6', border: '#e5e7eb' };
         return (
-          <span style={{ 
-            padding: '4px 12px', 
-            borderRadius: '999px', 
-            backgroundColor: s.bg, 
-            color: s.color, 
+          <span style={{
+            padding: '4px 12px',
+            borderRadius: '999px',
+            backgroundColor: s.bg,
+            color: s.color,
             border: `1px solid ${s.border}`,
             fontWeight: 500,
             fontSize: '13px',
@@ -191,11 +191,11 @@ const BookingApproval: React.FC = () => {
               </>
             )}
             {['active', 'overdue', 'checked_out'].includes(record.status) && (
-              <Button 
+              <Button
                 size="small"
-                icon={<BellOutlined />} 
-                onClick={() => handleSendReminder(record)} 
-                style={{ borderColor: '#d97706', color: '#d97706', background: '#fffbeb', fontSize: 12 }} 
+                icon={<BellOutlined />}
+                onClick={() => handleSendReminder(record)}
+                style={{ borderColor: '#d97706', color: '#d97706', background: '#fffbeb', fontSize: 12 }}
               >
                 Nhắc nhở
               </Button>
@@ -212,6 +212,7 @@ const BookingApproval: React.FC = () => {
         headerTitle="Danh sách Đơn mượn thiết bị"
         actionRef={actionRef}
         formRef={formRef}
+        scroll={{ x: 'max-content' }}
         form={{
           onValuesChange: (changedValues) => {
             if (changedValues.status !== undefined) {
@@ -231,7 +232,7 @@ const BookingApproval: React.FC = () => {
           collapseRender: (collapsed, showCollapseButton) => {
             if (!showCollapseButton) return null;
             return (
-              <span style={{ color: '#c00c0c', cursor: 'pointer' }}>
+              <span style={{ color: '#C00C0C', cursor: 'pointer' }}>
                 {collapsed ? (
                   <>Mở rộng <PlusOutlined style={{ fontSize: 12 }} /></>
                 ) : (
@@ -248,15 +249,15 @@ const BookingApproval: React.FC = () => {
                 setActiveTab('all');
                 formProps.form?.submit();
               }}
-              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+              style={{ color: '#C00C0C', borderColor: '#C00C0C' }}
             >
-              Làm lại
+              Tải lại
             </Button>,
             <Button
               key="search"
               type="primary"
               onClick={() => formProps.form?.submit()}
-              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
+              style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff' }}
             >
               Tìm ngay
             </Button>,
@@ -280,15 +281,15 @@ const BookingApproval: React.FC = () => {
                 }
               }
               if (typeof val === 'string') return val;
-              
+
               for (const key of legacyKeys) {
                 if (typeof obj[key] === 'string') return obj[key];
               }
-              
+
               for (const key of Object.keys(obj)) {
-                if (key.toLowerCase().includes(path[0].toLowerCase()) && 
-                    key.toLowerCase().includes(path[path.length - 1].toLowerCase()) &&
-                    typeof obj[key] === 'string') {
+                if (key.toLowerCase().includes(path[0].toLowerCase()) &&
+                  key.toLowerCase().includes(path[path.length - 1].toLowerCase()) &&
+                  typeof obj[key] === 'string') {
                   return obj[key];
                 }
               }

@@ -93,6 +93,7 @@ const CategoryManagement: React.FC = () => {
         headerTitle="Quản lý Danh mục thiết bị"
         actionRef={actionRef}
         formRef={formRef}
+        scroll={{ x: 'max-content' }}
         form={{
           onValuesChange: () => {
             if (searchTimeoutRef.current) {
@@ -113,15 +114,15 @@ const CategoryManagement: React.FC = () => {
                 formProps.form?.resetFields();
                 formProps.form?.submit();
               }}
-              style={{ color: '#c00c0c', borderColor: '#c00c0c' }}
+              style={{ color: '#C00C0C', borderColor: '#C00C0C' }}
             >
-              Làm lại
+              Tải lại
             </Button>,
             <Button
               key="search"
               type="primary"
               onClick={() => formProps.form?.submit()}
-              style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c', color: '#fff' }}
+              style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C', color: '#fff' }}
             >
               Tìm kiếm
             </Button>,
@@ -130,9 +131,8 @@ const CategoryManagement: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            danger
             key="create"
-            style={{ backgroundColor: '#c00c0c', borderColor: '#c00c0c' }}
+            style={{ backgroundColor: '#C00C0C', borderColor: '#C00C0C' }}
             onClick={() => {
               setCurrentRow(undefined);
               setModalVisible(true);
